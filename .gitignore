@@ -1,3 +1,4 @@
-./knowledge_structured
-./lexis_vectordb
-./knowledge_chunks
+knowledge_structured
+lexis_vectordb
+knowledge_chunks
+*.sqlite3
