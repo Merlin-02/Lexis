@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-interaccion.py - Asistente legal LexIA con RAG + Ollama.
-Versión con keep_alive=0, reintentos, sanitización de entrada y lenguaje amigable.
+interaccion.py - Asistente legal LexIA con Groq + RAG
+- Busca fragmentos legales con ChromaDB + BM25
+- Usa Groq (openai/gpt-oss-20b) para generar respuestas amables y precisas
+- Lee el system prompt desde ../knowledge/Prompt.txt
 """
 
 import sys
 import os
-import requests
-import json
 import time
+import threading
+from dotenv import load_dotenv
+from groq import Groq
 from typing import List, Dict, Any
 
+# Cargar variables de entorno desde Code/.env
+load_dotenv()
+
+# Añadir directorio actual al path para importar buscador
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from buscador import (
     inicializar_motores,
@@ -22,28 +29,27 @@ from buscador import (
 )
 
 # ============================================================
-# CONFIGURACIÓN DE OLLAMA
+# CONFIGURACIÓN DE GROQ
 # ============================================================
-OLLAMA_URL = "http://localhost:11434/api/generate"
-# Cambia por el modelo que tengas (ej. "llama3.1:8b", "phi3:mini", "tinyllama")
-MODELO_LLM = "llama3.1:8b"
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+if not GROQ_API_KEY:
+    print("Error: No se encontró GROQ_API_KEY en el archivo .env")
+    sys.exit(1)
 
-TEMPERATURA = 0.2            # Un poco más alta para respuestas naturales
+MODELO_GROQ = "openai/gpt-oss-20b"   # Modelo solicitado (verificar disponibilidad en Groq)
+TEMPERATURA = 0.2
+MAX_TOKENS = 800
 TOP_P = 0.9
-REPEAT_PENALTY = 1.1
-MAX_TOKENS = 800             # Respuestas más completas
-NUM_CTX = 4096               # Ventana de contexto
-TIMEOUT = 600
-KEEP_ALIVE = 0               # Descarga el modelo después de cada respuesta (libera memoria)
+TIMEOUT_SEGUNDOS = 120
 
-# Límites de caracteres
-MAX_SYSTEM_CHARS = 4000      # Suficiente para el nuevo prompt amigable
-MAX_USER_CHARS = 3500
-MAX_FRAGMENTOS = 1
-MAX_LEN_FRAGMENTO = 900
+# Límites de tamaño de prompt (Groq soporta mucho, pero por seguridad)
+MAX_SYSTEM_CHARS = 4000
+MAX_USER_CHARS = 8000
+MAX_FRAGMENTOS = 3          # Usamos 3 fragmentos para más contexto
+MAX_LEN_FRAGMENTO = 800
 
 # ============================================================
-# CARGA DEL SYSTEM PROMPT
+# CARGA DEL SYSTEM PROMPT (desde archivo)
 # ============================================================
 def cargar_system_prompt(ruta: str = "../knowledge/Prompt.txt") -> str:
     try:
@@ -63,111 +69,142 @@ def cargar_system_prompt(ruta: str = "../knowledge/Prompt.txt") -> str:
         sys.exit(1)
 
 # ============================================================
-# CONSTRUCCIÓN DEL BLOQUE DE LEYES (LIMITADO Y LIMPIO)
+# CONSTRUCCIÓN DEL BLOQUE DE LEYES RECUPERADAS
 # ============================================================
 def construir_bloque_leyes(hits: List[Dict[str, Any]]) -> str:
+    """Toma los hits más relevantes (ordenados de mayor a menor puntuación) y construye el bloque."""
     if not hits:
         return "No se encontraron fragmentos legales relevantes para esta consulta."
     
-    # hits viene ordenado de menor a mayor relevancia; tomamos los últimos (más relevantes)
-    hits_top = hits[-MAX_FRAGMENTOS:] if len(hits) > MAX_FRAGMENTOS else hits
+    # hits ya viene ordenado de mayor a menor relevancia (tras arreglo en buscador.py)
+    hits_top = hits[:MAX_FRAGMENTOS] if len(hits) > MAX_FRAGMENTOS else hits
     
     bloque = ""
     for i, hit in enumerate(hits_top, 1):
-        fuente = f"{hit['documento']} - {hit['articulo']}"
+        fuente = f"{hit['documento']} - {hit['articulo']} (Jerarquía: {hit['jerarquia']})"
         texto = hit['texto'][:MAX_LEN_FRAGMENTO]
-        # Limpiar caracteres extraños
         texto = texto.encode('utf-8', errors='replace').decode('utf-8')
         bloque += f"--- Fragmento {i} ---\nFuente: {fuente}\n{texto}\n\n"
     return bloque.strip()
 
 # ============================================================
-# LLAMADA A OLLAMA CON REINTENTOS Y KEEP_ALIVE=0
+# DETECCIÓN AUTOMÁTICA DE LEY (para filtrar sin que el usuario lo pida)
 # ============================================================
-def llamar_ollama(system_prompt: str, user_prompt: str) -> str:
+def detectar_ley_sugerida(consulta: str, documentos_disponibles: List[str]) -> str | None:
+    """Según palabras clave, sugiere un filtro de ley."""
+    consulta_lower = consulta.lower()
+    # Mapeo de términos a posibles documentos (case-insensitive)
+    mapa = {
+        "trabajo": ["Ley Trabajo", "Trabajo"],
+        "laboral": ["Ley Trabajo"],
+        "despido": ["Ley Trabajo"],
+        "salario": ["Ley Trabajo"],
+        "penal": ["Código Penal Tlaxcala", "Penal"],
+        "delito": ["Código Penal Tlaxcala"],
+        "robo": ["Código Penal Tlaxcala"],
+        "civil": ["Codigo Civil Tlaxcala", "Civil"],
+        "contrato": ["Codigo Civil Tlaxcala"],
+        "constitucion": ["Constitucion"],
+        "procedimiento civil": ["Procedimiento Civiles Tlaxcala"],
+        "procedimiento penal": ["Procedimiento Penal Tlaxcala"],
+    }
+    for palabra, posibles in mapa.items():
+        if palabra in consulta_lower:
+            for doc in documentos_disponibles:
+                for posible in posibles:
+                    if posible.lower() in doc.lower():
+                        return doc
+    return None
+
+# ============================================================
+# ANIMACIÓN DE ESPERA (hilo independiente)
+# ============================================================
+def animar_mensaje(parar_evento):
+    while not parar_evento.is_set():
+        for puntos in [".", "..", "...", ""]:
+            sys.stdout.write(f"\r⏳ Lexis está consultando la ley{puntos}   ")
+            sys.stdout.flush()
+            time.sleep(0.6)
+            if parar_evento.is_set():
+                break
+    sys.stdout.write("\r✓ Respuesta lista\n")
+
+# ============================================================
+# LLAMADA A GROQ (con animación y timeout)
+# ============================================================
+def llamar_groq(system_prompt: str, user_prompt: str) -> str:
     # Sanitizar entradas
     user_prompt = user_prompt.encode('ascii', errors='ignore').decode('ascii')
     system_prompt = system_prompt.encode('ascii', errors='ignore').decode('ascii')
     
-    # Truncar por seguridad
+    # Truncar si exceden límites
     if len(system_prompt) > MAX_SYSTEM_CHARS:
         system_prompt = system_prompt[:MAX_SYSTEM_CHARS]
     if len(user_prompt) > MAX_USER_CHARS:
         user_prompt = user_prompt[:MAX_USER_CHARS]
     
-    payload = {
-        "model": "llama3.1:8b",
-        "system": system_prompt,
-        "prompt": user_prompt,
-        "temperature": TEMPERATURA,
-        "top_p": TOP_P,
-        "repeat_penalty": REPEAT_PENALTY,
-        "num_predict": MAX_TOKENS,
-        "num_ctx": NUM_CTX,
-        "keep_alive": KEEP_ALIVE,   # CLAVE: evita acumulación de memoria
-        "stream": False,
-    }
-    
     print(f"📊 Tamaño system: {len(system_prompt)} chars | user: {len(user_prompt)} chars")
     
-    for intento in range(3):
-        try:
-            response = requests.post(OLLAMA_URL, json=payload, timeout=TIMEOUT)
-            if response.status_code == 200:
-                return response.json().get("response", "Sin respuesta del modelo.")
-            else:
-                # Si es 500, reintentamos
-                if response.status_code == 500 and intento < 2:
-                    print(f"  [Reintento {intento+1}/3 por error 500]")
-                    time.sleep(2 ** intento)  # espera exponencial
-                    continue
-                else:
-                    return f"Error HTTP {response.status_code}: {response.text[:200]}"
-        except requests.exceptions.Timeout:
-            if intento < 2:
-                print(f"  [Timeout, reintento {intento+1}/3]")
-                time.sleep(2)
-                continue
-            return "Error: Tiempo de espera agotado."
-        except requests.exceptions.RequestException as e:
-            if intento < 2:
-                print(f"  [Error de conexión, reintento {intento+1}/3]")
-                time.sleep(2)
-                continue
-            return f"Error de conexión: {e}"
+    cliente = Groq(api_key=GROQ_API_KEY)
     
-    return "No se pudo obtener respuesta tras varios intentos."
+    # Iniciar animación
+    parar = threading.Event()
+    hilo = threading.Thread(target=animar_mensaje, args=(parar,))
+    hilo.start()
+    
+    try:
+        respuesta = cliente.chat.completions.create(
+            model=MODELO_GROQ,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
+            ],
+            temperature=TEMPERATURA,
+            max_tokens=MAX_TOKENS,
+            top_p=TOP_P,
+            timeout=TIMEOUT_SEGUNDOS
+        )
+        parar.set()
+        hilo.join()
+        return respuesta.choices[0].message.content
+    except Exception as e:
+        parar.set()
+        hilo.join()
+        return f"Error al llamar a Groq: {e}"
 
 # ============================================================
-# BUCLE PRINCIPAL
+# BUCLE PRINCIPAL DE INTERACCIÓN
 # ============================================================
 def main():
     print("=" * 70)
-    print("LexIA - Tu abogado amable (con lenguaje sencillo)")
+    print("LexIA - Tu abogado amable (con Groq + RAG)")
+    print(f"Modelo: {MODELO_GROQ}")
     print("Escribe '/salir' para terminar")
     print("=" * 70)
 
-    # Cargar system prompt
+    # Cargar system prompt desde archivo
     system_prompt = cargar_system_prompt()
     print(f"[OK] System prompt cargado ({len(system_prompt)} caracteres)")
 
-    # Inicializar buscador
+    # Inicializar motores de búsqueda (ChromaDB, BM25, modelo semántico)
     print("Inicializando base de datos legal...")
     try:
         (coleccion,
          motor_bm25,
-         modelo,
+         modelo_semantico,
          diccionario_textos,
          diccionario_metadatos,
          documentos_disponibles,
          jerarquias_disponibles) = inicializar_motores(CARPETA_DB, MODELO_NOMBRE)
         print("[OK] Base de datos conectada")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error al inicializar buscador: {e}")
         sys.exit(1)
 
-    print("\nConsejo: puedes filtrar por ley escribiendo '/filtro ley:nombre'")
-    print("Ejemplo: /filtro ley:trabajo")
+    print("\nConsejos:")
+    print("  - Puedes filtrar manualmente por ley: /filtro ley:trabajo")
+    print("  - O usar /filtro limpiar para quitar filtros")
+    print("  - Lexis también intentará detectar automáticamente la ley que necesitas")
     print("-" * 70)
 
     filtro_doc_actual = None
@@ -178,7 +215,7 @@ def main():
         if not consulta_raw:
             continue
         
-        # Comandos
+        # Comandos del sistema
         if consulta_raw.lower() == "/salir":
             print("¡Hasta luego! Espero haberte ayudado.")
             break
@@ -209,21 +246,29 @@ def main():
                 print("  Formato no reconocido.")
             continue
         
-        # Sanitizar consulta
+        # Sanitizar consulta (eliminar caracteres raros)
         consulta_limpia = consulta_raw.encode('ascii', errors='ignore').decode('ascii')
         
-        # Búsqueda
+        # --- DETECCIÓN AUTOMÁTICA DE FILTRO (si no hay filtro manual) ---
+        filtro_a_usar = filtro_doc_actual
+        if filtro_a_usar is None:
+            sugerida = detectar_ley_sugerida(consulta_limpia, documentos_disponibles)
+            if sugerida:
+                print(f"  🔍 Detecté que tu consulta se relaciona con '{sugerida}'. Aplicando filtro automático.")
+                filtro_a_usar = sugerida
+        
+        # Búsqueda RAG
         print("\n🔍 Buscando leyes que apliquen a tu caso...")
         try:
             hits = busqueda_hibrida(
                 consulta=consulta_limpia,
                 coleccion=coleccion,
                 motor_bm25=motor_bm25,
-                modelo=modelo,
+                modelo=modelo_semantico,
                 diccionario_textos=diccionario_textos,
                 diccionario_metadatos=diccionario_metadatos,
-                top_k=MAX_FRAGMENTOS * 2,
-                filtro_documento=filtro_doc_actual,
+                top_k=TOP_K_DEFAULT,          # Recuperamos muchos (15) y luego seleccionamos los mejores
+                filtro_documento=filtro_a_usar,
                 filtro_jerarquia=filtro_jer_actual,
             )
         except Exception as e:
@@ -234,18 +279,20 @@ def main():
             print("  No encontré leyes relacionadas. ¿Podrías darme más detalles?")
             continue
         
-        # Construir bloque de leyes
+        # hits ya viene ordenado de mayor a menor relevancia (por el cambio en buscador.py)
+        # Construimos bloque con los primeros MAX_FRAGMENTOS
         leyes_bloque = construir_bloque_leyes(hits)
-        print(f"  Encontré {len(hits)} fragmento(s). Usando el más relevante.")
+        print(f"  Encontré {len(hits)} fragmento(s). Usando los {MAX_FRAGMENTOS} más relevantes.")
         
+        # Armar el prompt del usuario en el formato esperado
         user_prompt = f"""[CONSULTA DEL USUARIO]
 {consulta_limpia}
 
 [LEYES RECUPERADAS]
 {leyes_bloque}"""
         
-        print("🤖 Pensando en la mejor respuesta para ti...")
-        respuesta = llamar_ollama(system_prompt, user_prompt)
+        print("🤖 Lexis está preparando su respuesta...")
+        respuesta = llamar_groq(system_prompt, user_prompt)
         print("\n" + respuesta)
         print("\n" + "-" * 70)
 

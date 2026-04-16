@@ -19,8 +19,8 @@ K_RRF          = 60
 # Peso relativo de cada motor (deben sumar 1.0)
 # Sube PESO_SEMANTICO si las consultas son conceptuales/vagas
 # Sube PESO_LEXICO    si las consultas usan terminos juridicos exactos
-PESO_SEMANTICO = 0.6
-PESO_LEXICO    = 0.4
+PESO_SEMANTICO = 0.2
+PESO_LEXICO    = 0.8
 
 
 # =============================================================
@@ -180,11 +180,11 @@ def busqueda_hibrida(
     for rango, doc_id in enumerate(ids_lexicos):
         puntuaciones_rrf[doc_id] += PESO_LEXICO / (K_RRF + rango + 1)
 
-    # Ordenar de MENOR a MAYOR puntuacion RRF (menos relevante primero)
+    # Ordenar de MAYOR a MENOR puntuacion RRF (mas relevante primero)
     ids_por_relevancia = sorted(
         puntuaciones_rrf.keys(),
         key=lambda x: puntuaciones_rrf[x],
-        reverse=False,   # <-- MENOR a MAYOR
+        reverse=True,   # <-- MAYOR a MENOR
     )
 
     # ----------------------------------------------------------
@@ -197,8 +197,8 @@ def busqueda_hibrida(
         filtro_jerarquia,
     )
 
-    # Tomamos los ultimos top_k (los de mayor puntuacion tras filtrar)
-    ids_finales = ids_filtrados[-top_k:]
+    # Tomamos los primeros top_k (los de mayor puntuacion tras filtrar)
+    ids_finales = ids_filtrados[:top_k]
 
     # ----------------------------------------------------------
     # 5. Construir resultado final
