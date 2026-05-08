@@ -1,19 +1,44 @@
 #buscador.py
 import string
 import warnings
+import time
 import chromadb
 from sentence_transformers import SentenceTransformer
 from rank_bm25 import BM25Okapi
 from collections import defaultdict
+from pathlib import Path
 
 warnings.filterwarnings("ignore")
+
+try:
+    from analizador_legal import detectar_normativa
+    ANALIZADOR_DISPONIBLE = True
+except ImportError:
+    ANALIZADOR_DISPONIBLE = False
+
+try:
+    from mejoras import (
+        cargar_indice_bm25,
+        guardar_indice_bm25,
+        expandir_consulta,
+        analizar_tipo_consulta,
+        guardar_log_busqueda,
+        GestorErrores,
+        rerankear_resultados,
+    )
+    MEJORAS_DISPONIBLES = True
+    gestor_errores = GestorErrores()
+except ImportError:
+    MEJORAS_DISPONIBLES = False
+    gestor_errores = None
 
 # =============================================================
 # CONFIGURACION GLOBAL
 # =============================================================
 CARPETA_DB     = "../lexis_vectordb"
 MODELO_NOMBRE  = "paraphrase-multilingual-MiniLM-L12-v2"
-TOP_K_DEFAULT  = 15
+TOP_K_DEFAULT  = 30
+HABILITAR_RERANKEO = True
 K_RRF          = 60
 
 # Peso relativo de cada motor (deben sumar 1.0)
@@ -54,15 +79,34 @@ def inicializar_motores(ruta_db: str, modelo_nombre: str):
     print("Cargando el motor semantico...")
     modelo = SentenceTransformer(modelo_nombre)
 
-    print("Construyendo el indice lexico (BM25) en memoria...")
+    print("Cargando índice BM25...")
+    
     # Incluimos metadatos para poder filtrar sin consulta extra
     datos_db          = coleccion.get(include=["documents", "metadatas"])
     ids_documentos    = datos_db["ids"]
     textos_documentos = datos_db["documents"]
-    metadatos_lista   = datos_db["metadatas"]  # lista de dicts
+    metadatos_lista   = datos_db["metadatas"]
 
-    corpus_tokenizado = [preprocesar_texto(doc) for doc in textos_documentos]
-    motor_bm25        = BM25Okapi(corpus_tokenizado)
+    # Intentar cargar índice BM25 desde caché
+    ruta_cache = Path(ruta_db) / "cache"
+    ruta_cache.mkdir(exist_ok=True)
+    ruta_bm25 = ruta_cache / "bm25_index.pkl"
+    
+    datos_cache = cargar_indice_bm25(ruta_bm25) if MEJORAS_DISPONIBLES else None
+    
+    if datos_cache and len(datos_cache.get('corpus', [])) == len(textos_documentos):
+        # Usar índice cacheado
+        motor_bm25 = datos_cache['motor']
+        corpus_tokenizado = datos_cache['corpus']
+    else:
+        # Construir nuevo índice
+        print("Construyendo el índice léxico (BM25)...")
+        corpus_tokenizado = [preprocesar_texto(doc) for doc in textos_documentos]
+        motor_bm25 = BM25Okapi(corpus_tokenizado)
+        
+        # Guardar en caché
+        if MEJORAS_DISPONIBLES:
+            guardar_indice_bm25(motor_bm25, corpus_tokenizado, ruta_bm25)
 
     # Mapas id -> texto y id -> metadatos para recuperacion rapida
     diccionario_textos    = {i: t for i, t in zip(ids_documentos, textos_documentos)}
@@ -113,8 +157,17 @@ def aplicar_filtros(
         doc_val = meta.get("documento", "").lower()
         jer_val = meta.get("jerarquia",  "").lower()
 
-        cumple_doc = (fd is None) or (fd in doc_val)
-        cumple_jer = (fj is None) or (fj in jer_val)
+        # Matching más flexible: bidireccional
+        cumple_doc = True
+        if fd:
+            # Buscar si el filtro está en el documento O viceversa
+            cumple_doc = (fd in doc_val) or (doc_val in fd) or (
+                any(palabra in doc_val for palabra in fd.split() if len(palabra) > 3)
+            )
+        
+        cumple_jer = True
+        if fj:
+            cumple_jer = (fj in jer_val) or (jer_val in fj)
 
         if cumple_doc and cumple_jer:
             ids_filtrados.append(doc_id)
@@ -137,67 +190,153 @@ def busqueda_hibrida(
     filtro_jerarquia: str | None = None,
 ) -> list[dict]:
     """
+    0. Pre-filtrado por documento (MEJORA: filtra ANTES de buscar)
     1. Busqueda semantica  (ChromaDB)
     2. Busqueda lexica     (BM25)
     3. Fusion RRF ponderada
-    4. Filtrado por metadatos (documento / jerarquia)
-    Resultados ordenados de MENOR a MAYOR puntuacion RRF.
+    4. Filtrado final por jerarquia
+    Resultados ordenados de MAYOR a MENOR puntuacion RRF.
     """
-    # Ampliamos n_results internamente para compensar el filtrado posterior
-    n_interno = top_k * 4
+    inicio_tiempo = time.time()
+    error_msg = None
+    
+    # MEJORA: Expansión de consulta con sinónimos
+    if MEJORAS_DISPONIBLES:
+        consulta_expandida = expandir_consulta(consulta)
+    else:
+        consulta_expandida = consulta
+    
+    # MEJORA: Análisis dinámico de pesos
+    if MEJORAS_DISPONIBLES:
+        info_pesos = analizar_tipo_consulta(consulta)
+        peso_semantico = info_pesos['peso_semantico']
+        peso_lexico = info_pesos['peso_lexico']
+    else:
+        peso_semantico = PESO_SEMANTICO
+        peso_lexico = PESO_LEXICO
 
+    # Ampliamos n_results internamente para compensar el filtrado posterior
+    n_interno = top_k * 8  # Aumentado para asegurar suficientes resultados tras filtrado
+
+    # ================================================================
+    # 0. PRE-FILTRADO: Obtener IDs que cumplen el filtro de documento
+    # ================================================================
+    ids_permitidos = None
+    if filtro_documento:
+        fd = filtro_documento.lower().strip()
+        
+        # Mapeo de términos a documentos exactos
+        mapeo_exacto = {
+            'código penal': 'Código Penal Tlaxcala',
+            'codigo penal': 'Código Penal Tlaxcala',
+            'penal': 'Código Penal Tlaxcala',
+            'ley trabajo': 'Ley Trabajo',
+            'ley del trabajo': 'Ley Trabajo',
+            'trabajo': 'Ley Trabajo',
+            'laboral': 'Ley Trabajo',
+            'código civil': 'Codigo Civil Tlaxcala',
+            'codigo civil': 'Codigo Civil Tlaxcala',
+            'civil': 'Codigo Civil Tlaxcala',
+            'constitucion': 'Constitucion',
+            'constitucional': 'Constitucion',
+            'procedimiento civil': 'Procedimiento Civiles Tlaxcala',
+            'procedimiento penal': 'Procedimiento Penal Tlaxcala',
+        }
+        
+        # Si hay coincidencia exacta, usar ese documento
+        documento_exacto = mapeo_exacto.get(fd)
+        if documento_exacto:
+            ids_permitidos = set()
+            for doc_id, meta in diccionario_metadatos.items():
+                if meta.get("documento", "").lower() == documento_exacto.lower():
+                    ids_permitidos.add(doc_id)
+        else:
+            # Fallback: búsqueda por palabras
+            palabras_filtro = [p for p in fd.split() if len(p) > 2]
+            palabras_clave = {'penal', 'civil', 'laboral', 'trabajo', 'constitucion', 'procedimiento'}
+            
+            ids_permitidos = set()
+            for doc_id, meta in diccionario_metadatos.items():
+                doc_val = meta.get("documento", "").lower()
+                
+                # Si hay palabras clave específicas, usarlas
+                if any(p in palabras_clave for p in palabras_filtro):
+                    if any(p in doc_val for p in palabras_filtro if p in palabras_clave):
+                        ids_permitidos.add(doc_id)
+                else:
+                    # Matching normal
+                    if all(p in doc_val for p in palabras_filtro):
+                        ids_permitidos.add(doc_id)
+        
+        if not ids_permitidos:
+            print(f"  [AVISO] No se encontraron documentos para filtro: {filtro_documento}")
+            return []
+    
     # ----------------------------------------------------------
-    # 1. Busqueda Semantica
+    # 1. Busqueda Semantica (luego filtraremos por IDs)
     # ----------------------------------------------------------
-    vector_consulta      = modelo.encode([consulta]).tolist()
+    vector_consulta = modelo.encode([consulta]).tolist()
+    
+    # Buscar en todos los documentos, filtraremos después
     resultados_semanticos = coleccion.query(
         query_embeddings=vector_consulta,
         n_results=min(n_interno, len(diccionario_textos)),
     )
+    
     ids_semanticos = resultados_semanticos["ids"][0]
+    
+    # FILTRAR: solo IDs permitidos
+    if ids_permitidos:
+        ids_semanticos = [id_ for id_ in ids_semanticos if id_ in ids_permitidos]
 
     # ----------------------------------------------------------
-    # 2. Busqueda Lexica (BM25)
+    # 2. Busqueda Lexica (BM25) - solo en documentos permitidos
     # ----------------------------------------------------------
-    consulta_tokenizada  = preprocesar_texto(consulta)
+    consulta_tokenizada  = preprocesar_texto(consulta_expandida)
     puntuaciones_bm25    = motor_bm25.get_scores(consulta_tokenizada)
 
-    ids_ordenados_bm25 = sorted(
-        zip(diccionario_textos.keys(), puntuaciones_bm25),
-        key=lambda x: x[1],
-        reverse=True,
-    )
+    if ids_permitidos:
+        # Filtrar solo IDs permitidos
+        ids_ordenados_bm25 = [
+            (doc_id, score) 
+            for doc_id, score in zip(diccionario_textos.keys(), puntuaciones_bm25)
+            if doc_id in ids_permitidos
+        ]
+    else:
+        ids_ordenados_bm25 = list(zip(diccionario_textos.keys(), puntuaciones_bm25))
+    
+    ids_ordenados_bm25.sort(key=lambda x: x[1], reverse=True)
     ids_lexicos = [item[0] for item in ids_ordenados_bm25[:n_interno]]
 
     # ----------------------------------------------------------
-    # 3. Fusion RRF Ponderada
+    # 3. Fusion RRF Ponderada (con pesos dinámicos)
     # ----------------------------------------------------------
     puntuaciones_rrf: dict[str, float] = defaultdict(float)
 
     for rango, doc_id in enumerate(ids_semanticos):
-        puntuaciones_rrf[doc_id] += PESO_SEMANTICO / (K_RRF + rango + 1)
+        puntuaciones_rrf[doc_id] += peso_semantico / (K_RRF + rango + 1)
 
     for rango, doc_id in enumerate(ids_lexicos):
-        puntuaciones_rrf[doc_id] += PESO_LEXICO / (K_RRF + rango + 1)
+        puntuaciones_rrf[doc_id] += peso_lexico / (K_RRF + rango + 1)
 
     # Ordenar de MAYOR a MENOR puntuacion RRF (mas relevante primero)
     ids_por_relevancia = sorted(
         puntuaciones_rrf.keys(),
         key=lambda x: puntuaciones_rrf[x],
-        reverse=True,   # <-- MAYOR a MENOR
+        reverse=True,
     )
 
     # ----------------------------------------------------------
-    # 4. Filtrado por metadatos
+    # 4. Filtrado final por jerarquia
     # ----------------------------------------------------------
     ids_filtrados = aplicar_filtros(
         ids_por_relevancia,
         diccionario_metadatos,
-        filtro_documento,
-        filtro_jerarquia,
+        filtro_documento=None,  # Ya aplicado
+        filtro_jerarquia=filtro_jerarquia,
     )
 
-    # Tomamos los primeros top_k (los de mayor puntuacion tras filtrar)
+    # Tomamos los primeros top_k
     ids_finales = ids_filtrados[:top_k]
 
     # ----------------------------------------------------------
@@ -209,13 +348,39 @@ def busqueda_hibrida(
         resultados.append({
             "id"             : doc_id,
             "texto"          : diccionario_textos[doc_id],
-            "puntuacion_rrf" : puntuaciones_rrf[doc_id],
+            "puntuacion_rrf" : puntuaciones_rrf.get(doc_id, 0),
             "documento"      : meta.get("documento", "N/D"),
             "articulo"       : meta.get("articulo",  "N/D"),
             "jerarquia"      : meta.get("jerarquia",  "N/D"),
         })
 
-    return resultados  # orden: menor -> mayor puntuacion RRF
+    # MEJORA: Re-rankeo de resultados
+    if HABILITAR_RERANKEO and MEJORAS_DISPONIBLES and resultados:
+        try:
+            resultados = rerankear_resultados(
+                resultados,
+                consulta,
+                modelo,
+                top_n=top_k,
+                peso_rrf=0.3,
+                peso_semantico=0.7
+            )
+        except Exception as e:
+            print(f"  [INFO] Re-rankeo no disponible: {e}")
+
+    # MEJORA: Logging de búsqueda
+    tiempo_respuesta = time.time() - inicio_tiempo
+    if MEJORAS_DISPONIBLES:
+        guardar_log_busqueda(
+            consulta=consulta,
+            filtro_documento=filtro_documento,
+            filtro_jerarquia=filtro_jerarquia,
+            num_resultados=len(resultados),
+            tiempo_respuesta=tiempo_respuesta,
+            errores=error_msg
+        )
+
+    return resultados
 
 
 # =============================================================
@@ -316,6 +481,13 @@ def main():
             if not consulta_limpia:
                 print("  [!] Escribe tambien una consulta, no solo filtros.\n")
                 continue
+
+            # DETECCIÓN AUTOMÁTICA si no hay filtro explícito
+            if not filtro_documento_activo and ANALIZADOR_DISPONIBLE:
+                documento_auto, info = detectar_normativa(consulta_limpia, documentos_disponibles)
+                if documento_auto:
+                    print(f"  🔍 Auto-detección: '{documento_auto}'")
+                    filtro_documento_activo = documento_auto
 
             # Informar filtros activos
             if filtro_documento_activo or filtro_jerarquia_activa:

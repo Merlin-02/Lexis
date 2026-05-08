@@ -28,6 +28,17 @@ from buscador import (
     MODELO_NOMBRE,
 )
 
+try:
+    from analizador_legal import (
+        detectar_normativa,
+        analizar_coherencia_consulta,
+        generar_consulta_corregida,
+    )
+    ANALIZADOR_DISPONIBLE = True
+except ImportError:
+    ANALIZADOR_DISPONIBLE = False
+    print("[AVISO] Módulo analizador_legal no disponible, usando detección básica")
+
 # ============================================================
 # CONFIGURACIÓN DE GROQ
 # ============================================================
@@ -92,8 +103,11 @@ def construir_bloque_leyes(hits: List[Dict[str, Any]]) -> str:
 # ============================================================
 def detectar_ley_sugerida(consulta: str, documentos_disponibles: List[str]) -> str | None:
     """Según palabras clave, sugiere un filtro de ley."""
+    if ANALIZADOR_DISPONIBLE:
+        documento, info = detectar_normativa(consulta, documentos_disponibles)
+        return documento
+    
     consulta_lower = consulta.lower()
-    # Mapeo de términos a posibles documentos (case-insensitive)
     mapa = {
         "trabajo": ["Ley Trabajo", "Trabajo"],
         "laboral": ["Ley Trabajo"],
@@ -248,6 +262,18 @@ def main():
         
         # Sanitizar consulta (eliminar caracteres raros)
         consulta_limpia = consulta_raw.encode('ascii', errors='ignore').decode('ascii')
+        
+        # --- ANÁLISIS DE COHERENCIA DE LA CONSULTA ---
+        if ANALIZADOR_DISPONIBLE:
+            es_coherente, sugerencias = analizar_coherencia_consulta(consulta_limpia)
+            if not es_coherente:
+                print(f"  ⚠️ {sugerencias[0]}")
+                consulta_corregida = generar_consulta_corregida(consulta_limpia)
+                if consulta_corregida != consulta_limpia:
+                    consulta_limpia = consulta_corregida
+                    print(f"  📝 Consulta interpretada como: \"{consulta_limpia}\"")
+            elif any('vaga' in s.lower() for s in sugerencias):
+                print(f"  💡 {sugerencias[0]}")
         
         # --- DETECCIÓN AUTOMÁTICA DE FILTRO (si no hay filtro manual) ---
         filtro_a_usar = filtro_doc_actual
