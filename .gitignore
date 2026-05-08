@@ -3,3 +3,4 @@ lexis_vectordb/
 knowledge_chunks/
 knowledge_structured/
 /Code/prueba.py
+/Code/.env
