@@ -304,8 +304,36 @@ def main():
             print(f"Error en búsqueda: {e}")
             continue
         
-        # Fallback: si no hay resultados o son pocos, usar índice temático
-        if not hits or len(hits) < 3:
+        # Fallback: verificar si los resultados son relevantes
+        def verificar_relevancia(hits, consulta):
+            """Verifica si los primeros resultados contienen conceptos legales relevantes."""
+            if not hits:
+                return False
+            
+            consulta_lower = consulta.lower()
+            
+            # Extraer conceptos clave de la consulta
+            conceptos_clave = []
+            if any(p in consulta_lower for p in ['hora extra', 'horas extra', 'tiempo extra']):
+                conceptos_clave.extend(['hora', 'extra', 'pago', 'retribu'])
+            if any(p in consulta_lower for p in ['despido', 'despedir', 'despedirme', 'despidieron']):
+                conceptos_clave.extend(['despido', 'despido', 'rescisión', 'indemniz'])
+            if any(p in consulta_lower for p in ['renuncia', 'renunciar', 'renuncie']):
+                conceptos_clave.extend(['renuncia', 'renunci', 'nul'])
+            
+            if not conceptos_clave:
+                return True  # No hay conceptos claros, asumir OK
+            
+            # Verificar si AL MENOS UNO de los top 3 contiene un concepto clave
+            for h in hits[:3]:
+                texto = h['texto'].lower()
+                if any(c in texto for c in conceptos_clave):
+                    return True
+            
+            return False  # Ningún resultado relevante
+        
+        # Usar fallback si no hay resultados o no son relevantes
+        if not hits or len(hits) < 3 or not verificar_relevancia(hits, consulta_limpia):
             print("  [INFO] Buscando en índice temático...")
             
             # Detectar qué normativa buscar
