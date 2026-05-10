@@ -27,7 +27,7 @@ from buscador import (
     CARPETA_DB,
     MODELO_NOMBRE,
 )
-from indice_tematico import buscar_por_concepto, INDICE_TEMATICO
+from indice_tematico import buscar_por_concepto, detectar_documento
 
 try:
     from analizador_legal import (
@@ -230,6 +230,13 @@ def main():
     # Historial de conversación
     historial_conversacion = []
     info_usuario = {"nombre": None}
+    
+    # Contexto de la conversación
+    contexto_conversacion = {
+        "tema_legal": None,
+        "situacion_usuario": None,
+        "documento_actual": None,
+    }
 
     while True:
         consulta_raw = input("\n📝 Tu consulta: ").strip()
@@ -406,7 +413,33 @@ def main():
             print("  No encontré leyes relacionadas. ¿Podrías darme más detalles?")
             continue
         
-        # hits ya viene ordenado de mayor a menor relevancia (por el cambio en buscador.py)
+        # Actualizar contexto de la conversación
+        contexto_conversacion["documento_actual"] = filtro_a_usar
+        
+        # Extraer tema legal de la consulta para mantener contexto
+        consulta_lower = consulta_limpia.lower()
+        temas_legales = {
+            "horas extras": "horas extras y pago overtime",
+            "despido": "despido y terminación laboral",
+            "renuncia": "renuncia y rescisión",
+            "salario": "salario y pago",
+            "vacaciones": "vacaciones y prima vacacional",
+            "aguinaldo": "aguinaldo",
+            "contrato": "contrato laboral",
+            "indemnización": "indemnización",
+            "robo": "robo y hurto",
+            "lesión": "lesiones",
+            "violencia": "violencia",
+            "divorcio": "divorcio",
+            "matrimonio": "matrimonio",
+            "herencia": "herencia",
+            "propiedad": "propiedad",
+        }
+        for palabra, tema in temas_legales.items():
+            if palabra in consulta_lower:
+                contexto_conversacion["tema_legal"] = tema
+                break
+        
         # Construimos bloque con los primeros MAX_FRAGMENTOS
         leyes_bloque = construir_bloque_leyes(hits)
         print(f"  Encontré {len(hits)} fragmento(s). Usando los {MAX_FRAGMENTOS} más relevantes.")
@@ -415,17 +448,23 @@ def main():
         contexto_historico = ""
         if historial_conversacion:
             contexto_historico = "[HISTORIAL DE LA CONVERSACIÓN]\n"
-            for i, (pregunta, respuesta_corta) in enumerate(historial_conversacion[-3:], 1):
-                contexto_historico += f"Interacción {i}:\nUsuario: {pregunta}\nLexIS: {respuesta_corta[:200]}...\n"
+            for i, (pregunta, contexto_info) in enumerate(historial_conversacion[-3:], 1):
+                contexto_historico += f"Interacción {i}:\nUsuario: {pregunta}\nContexto: {contexto_info}\n"
             contexto_historico += "\n"
         
+        # Construir contexto actual
+        contexto_actual = ""
         if info_usuario["nombre"]:
-            saludo_inicial = f"El usuario se llama {info_usuario['nombre']}. "
-        else:
-            saludo_inicial = ""
+            contexto_actual += f"El usuario se llama {info_usuario['nombre']}. "
+        if contexto_conversacion["tema_legal"]:
+            contexto_actual += f"Actualmente estamos hablando sobre: {contexto_conversacion['tema_legal']}. "
+        if contexto_conversacion["documento_actual"]:
+            contexto_actual += f"La normativa aplicable es: {contexto_conversacion['documento_actual']}. "
         
-        user_prompt = f"""{saludo_inicial}{contexto_historico}[CONSULTA ACTUAL DEL USUARIO]
+        user_prompt = f"""{contexto_actual}{contexto_historico}[CONSULTA ACTUAL DEL USUARIO]
 {consulta_limpia}
+
+[NOTA: Esta es una continuación de la conversación. Considera el contexto anterior.]
 
 [LEYES RECUPERADAS]
 {leyes_bloque}"""
@@ -433,9 +472,9 @@ def main():
         print("🤖 Lexis está preparando su respuesta...")
         respuesta = llamar_groq(system_prompt, user_prompt)
         
-        # Guardar en historial (solo guardar pregunta, no toda la respuesta completa para no exceder tokens)
-        respuesta_corta = respuesta[:150] + "..." if len(respuesta) > 150 else respuesta
-        historial_conversacion.append((consulta_limpia, respuesta_corta))
+        # Guardar en historial con contexto
+        contexto_info = f"Tema: {contexto_conversacion.get('tema_legal', 'general')} | Ley: {filtro_a_usar or 'automático'}"
+        historial_conversacion.append((consulta_limpia, contexto_info))
         
         # Limitar historial a últimos 5 intercambios
         if len(historial_conversacion) > 5:
