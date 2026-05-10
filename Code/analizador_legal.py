@@ -54,7 +54,7 @@ PALABRAS_CLAVE_POR_AREA = {
             'protección', 'violencia laboral', 'hostigamiento', 'acoso', 'acoso sexual',
             'discriminación', 'discriminacion laboral', 'igualdad', 'capacitación', 'capacitacion',
             'treceavo', 'domingo', 'descanso', 'semana', 'festivo', 'prima dominical',
-            'tiempo extra', 'sobretiempo', '形成', 'prestaciones', 'beneficio', 'regimen',
+            'tiempo extra', 'sobretiempo', 'hora extra', 'horas extras', 'prestaciones', 'beneficio', 'regimen',
             'ley federal del trabajo', 'lft', 'ctm', 'cmg', 'servicio', 'prestador',
             'dependencia', 'subordinación', 'subordinacion', 'dirección', 'organización',
             'inspección', 'vistoria', 'multa', 'sanción', 'infracción', 'amparo', 'reclamación',
@@ -278,7 +278,7 @@ PALABRAS_CLAVE_POR_AREA = {
             'convalidatorio', 'ratificatorio', 'confirmatorio', 'modificatorio', 'extintivo',
             'prescriptivo', 'conversivo', 'subrogatorio', 'delegatorio', 'mandatario'
         ],
-        'palabras_excluyentes': ['penal', 'delito', 'trabajo', 'laboral']
+        'palabras_excluyentes': ['penal', 'delito', 'trabajo', 'laboral', 'pagar', 'pago']
     },
     'procesal_penal': {
         'alta_prioridad': [
@@ -470,7 +470,7 @@ PALABRAS_CLAVE_POR_AREA = {
             'libertad', 'vigilada', 'decision', 'de', 'suspensión', 'condicional', 'de',
             'la', 'pena', 'decision', 'de', 'suspensión', 'condicional', 'del', 'procedimiento'
         ],
-        'palabras_excluyentes': ['trabajo', 'laboral', 'civil', 'matrimonio', 'contrato']
+        'palabras_excluyentes': ['trabajo', 'laboral', 'civil', 'matrimonio', 'contrato', 'salario', 'pagar', 'pago']
     }
 }
 
@@ -575,23 +575,32 @@ def detectar_area_legal(consulta: str) -> Optional[str]:
     palabras_no_legales = consulta_palabras.intersection(PALABRAS_NO_LEGALES)
     
     PRIORIDADES = {
-        'penal': 10,
-        'laboral': 15,  # Aumentado para priorizar laboral
-        'civil': 10,
+        'penal': 5,
+        'laboral': 20,  # Aumentado para priorizar laboral
+        'civil': 8,
         'constitucional': 5,
-        'procesal_penal': 2,
-        'procesal_civil': 2
+        'procesal_penal': 1,
+        'procesal_civil': 1
     }
     
     mejores_puntuaciones = {}
     total_palabras = len(consulta_palabras)
     
     for area, datos in PALABRAS_CLAVE_POR_AREA.items():
-        palabras_clave = set(normalizarizarTexto(p) for p in datos['alta_prioridad'])
-        palabras_excluyentes = set(normalizarizarTexto(p) for p in datos.get('palabras_excluyentes', []))
+        # Cambiar a búsqueda de subcadenas para soportar frases
+        palabras_clave = [normalizarizarTexto(p) for p in datos['alta_prioridad']]
+        palabras_excluyentes = [normalizarizarTexto(p) for p in datos.get('palabras_excluyentes', [])]
         
-        coincidencias = consulta_palabras.intersection(palabras_clave)
-        exclusiones = consulta_palabras.intersection(palabras_excluyentes)
+        # Buscar subcadenas en la consulta completa
+        coincidencias = set()
+        for kw in palabras_clave:
+            if kw in consulta_norm:
+                coincidencias.add(kw)
+        
+        exclusiones = set()
+        for kw in palabras_excluyentes:
+            if kw in consulta_norm:
+                exclusiones.add(kw)
         
         # Calcular proporción de palabras legales
         if total_palabras > 0:

@@ -27,6 +27,7 @@ from buscador import (
     CARPETA_DB,
     MODELO_NOMBRE,
 )
+from indice_tematico import buscar_por_concepto, INDICE_TEMATICO
 
 try:
     from analizador_legal import (
@@ -93,6 +94,8 @@ def construir_bloque_leyes(hits: List[Dict[str, Any]]) -> str:
     bloque = ""
     for i, hit in enumerate(hits_top, 1):
         fuente = f"{hit['documento']} - {hit['articulo']} (Jerarquía: {hit['jerarquia']})"
+        if hit.get('origen') == 'tematico':
+            fuente += f" [Tema: {hit.get('tema', 'General')}]"
         texto = hit['texto'][:MAX_LEN_FRAGMENTO]
         texto = texto.encode('utf-8', errors='replace').decode('utf-8')
         bloque += f"--- Fragmento {i} ---\nFuente: {fuente}\n{texto}\n\n"
@@ -300,6 +303,58 @@ def main():
         except Exception as e:
             print(f"Error en búsqueda: {e}")
             continue
+        
+        # Fallback: si no hay resultados o son pocos, usar índice temático
+        if not hits or len(hits) < 3:
+            print("  [INFO] Buscando en índice temático...")
+            
+            # Detectar qué normativa buscar
+            documento_detectado = detectar_documento(consulta_limpia)
+            if documento_detectado:
+                print(f"  [INFO] Documento detectado: {documento_detectado}")
+            
+            resultados_tematicos = buscar_por_concepto(consulta_limpia, documento_detectado)
+            
+            if resultados_tematicos:
+                print(f"  [INFO] Encontré {len(resultados_tematicos)} artículos relacionados en el índice temático.")
+                # Obtener artículos de ChromaDB basados en el índice temático
+                hits_fallback = []
+                articulos_buscados = set()
+                doc_buscado = documento_detectado or filtro_a_usar
+                
+                for rt in resultados_tematicos[:15]:
+                    art_num = rt['articulo'].replace('.-', '-').replace('.', '').replace('ARTICULO ', 'Artículo ')
+                    art_normalizado = art_num.lower().replace(' ', '').replace('artículo', 'articulo')
+                    
+                    if art_num in articulos_buscados:
+                        continue
+                    
+                    # Buscar en los diccionarios locales
+                    for doc_id, meta in diccionario_metadatos.items():
+                        # Filtrar por documento si hay uno detectado
+                        if doc_buscado:
+                            doc_norm = meta.get('documento', '').lower()
+                            if doc_buscado.lower() not in doc_norm and doc_norm not in doc_buscado.lower():
+                                continue
+                        
+                        art_meta = meta.get('articulo', '').replace('.-', '-').replace('.', '')
+                        art_meta_norm = art_meta.lower().replace(' ', '').replace('artículo', 'articulo')
+                        
+                        if art_normalizado in art_meta_norm or art_meta_norm in art_normalizado:
+                            hits_fallback.append({
+                                'id': doc_id,
+                                'texto': diccionario_textos.get(doc_id, ''),
+                                'articulo': meta.get('articulo', ''),
+                                'documento': meta.get('documento', ''),
+                                'jerarquia': meta.get('jerarquia', ''),
+                                'score': 1.0,
+                                'origen': 'tematico',
+                                'tema': rt.get('tema', '')
+                            })
+                            articulos_buscados.add(art_num)
+                            break
+                if hits_fallback:
+                    hits = hits_fallback
         
         if not hits:
             print("  No encontré leyes relacionadas. ¿Podrías darme más detalles?")

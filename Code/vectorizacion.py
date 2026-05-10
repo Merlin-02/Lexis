@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 # MEJORA: tamaño de lote para la generación de embeddings.
 # Reduce este valor si tienes poca RAM/VRAM (ej. 32 o 64).
-BATCH_SIZE = 128
+BATCH_SIZE = 64  # Reducido para modelo más grande
 
 
 # ==========================================
@@ -212,7 +212,7 @@ def vectorizar_documentos(
 if __name__ == "__main__":
     carpeta_chunks = "../knowledge_chunks"
     carpeta_db     = "../lexis_vectordb"
-    modelo_elegido = "paraphrase-multilingual-MiniLM-L12-v2"
+    modelo_elegido = "paraphrase-multilingual-mpnet-base-v2"
 
     coleccion_lexis = inicializar_base_vectorial(carpeta_db)
     vectorizar_documentos(carpeta_chunks, coleccion_lexis, modelo_elegido)

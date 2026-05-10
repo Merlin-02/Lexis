@@ -36,7 +36,7 @@ except ImportError:
 # CONFIGURACION GLOBAL
 # =============================================================
 CARPETA_DB     = "../lexis_vectordb"
-MODELO_NOMBRE  = "paraphrase-multilingual-MiniLM-L12-v2"
+MODELO_NOMBRE  = "paraphrase-multilingual-mpnet-base-v2"
 TOP_K_DEFAULT  = 30
 HABILITAR_RERANKEO = True
 K_RRF          = 60
@@ -44,8 +44,8 @@ K_RRF          = 60
 # Peso relativo de cada motor (deben sumar 1.0)
 # Sube PESO_SEMANTICO si las consultas son conceptuales/vagas
 # Sube PESO_LEXICO    si las consultas usan terminos juridicos exactos
-PESO_SEMANTICO = 0.2
-PESO_LEXICO    = 0.8
+PESO_SEMANTICO = 0.05
+PESO_LEXICO    = 0.95
 
 
 # =============================================================
@@ -273,21 +273,26 @@ def busqueda_hibrida(
             return []
     
     # ----------------------------------------------------------
-    # 1. Busqueda Semantica (luego filtraremos por IDs)
+    # 1. Busqueda Semantica (solo en documentos permitidos si hay filtro)
     # ----------------------------------------------------------
     vector_consulta = modelo.encode([consulta]).tolist()
     
-    # Buscar en todos los documentos, filtraremos después
+    # Optimización: si hay filtro, buscar solo en documentos permitidos
+    # ChromaDB no permite filtrado directo por metadata en query, así que
+    # recuperamos más resultados y filtramos después
     resultados_semanticos = coleccion.query(
         query_embeddings=vector_consulta,
-        n_results=min(n_interno, len(diccionario_textos)),
+        n_results=min(n_interno * 2, len(diccionario_textos)),
     )
     
     ids_semanticos = resultados_semanticos["ids"][0]
     
-    # FILTRAR: solo IDs permitidos
+    # FILTRAR: solo IDs permitidos (reordenados por relevancia original de ChromaDB)
     if ids_permitidos:
+        # Preservar el orden original de relevancia de ChromaDB
         ids_semanticos = [id_ for id_ in ids_semanticos if id_ in ids_permitidos]
+    else:
+        ids_semanticos = list(ids_semanticos)
 
     # ----------------------------------------------------------
     # 2. Busqueda Lexica (BM25) - solo en documentos permitidos
@@ -320,6 +325,43 @@ def busqueda_hibrida(
         puntuaciones_rrf[doc_id] += peso_lexico / (K_RRF + rango + 1)
 
     # Ordenar de MAYOR a MENOR puntuacion RRF (mas relevante primero)
+    ids_por_relevancia = sorted(
+        puntuaciones_rrf.keys(),
+        key=lambda x: puntuaciones_rrf[x],
+        reverse=True,
+    )
+
+    # ----------------------------------------------------------
+    # 3.5. Boost para conceptos legales clave
+    # ----------------------------------------------------------
+    consulta_lower = consulta.lower()
+    conceptos_boost = {
+        'horas extras': 2.0,
+        'hora extra': 2.0,
+        'despido': 1.8,
+        'despedir': 1.8,
+        'renuncia': 1.5,
+        'indemnización': 1.5,
+        'liquidación': 1.5,
+        'pago': 1.3,
+        'salario': 1.3,
+        'aguinaldo': 1.5,
+        'vacaciones': 1.5,
+        'prima': 1.3,
+        'contrato': 1.2,
+        'rescisión': 1.5,
+        'reinstala': 1.5,
+    }
+    
+    for doc_id in ids_por_relevancia:
+        texto_doc = diccionario_textos.get(doc_id, '').lower()
+        boost = 1.0
+        for concepto, factor in conceptos_boost.items():
+            if concepto in consulta_lower and concepto in texto_doc:
+                boost *= factor
+        puntuaciones_rrf[doc_id] *= boost
+    
+    # Reordenar con los boosts aplicados
     ids_por_relevancia = sorted(
         puntuaciones_rrf.keys(),
         key=lambda x: puntuaciones_rrf[x],
