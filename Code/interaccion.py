@@ -226,6 +226,10 @@ def main():
 
     filtro_doc_actual = None
     filtro_jer_actual = None
+    
+    # Historial de conversación
+    historial_conversacion = []
+    info_usuario = {"nombre": None}
 
     while True:
         consulta_raw = input("\n📝 Tu consulta: ").strip()
@@ -265,6 +269,20 @@ def main():
         
         # Sanitizar consulta (eliminar caracteres raros)
         consulta_limpia = consulta_raw.encode('ascii', errors='ignore').decode('ascii')
+        
+        # Detectar nombre del usuario en la consulta
+        import re
+        patrones_nombre = [
+            r'me llamo\s+(\w+)',
+            r'mi nombre es\s+(\w+)',
+            r'soy\s+(\w+)',
+            r'^hola\s+soy\s+(\w+)',
+        ]
+        for patron in patrones_nombre:
+            match = re.search(patron, consulta_limpia.lower())
+            if match:
+                info_usuario["nombre"] = match.group(1).capitalize()
+                print(f"  [INFO] Encantado de conocerte, {info_usuario['nombre']}!")
         
         # --- ANÁLISIS DE COHERENCIA DE LA CONSULTA ---
         if ANALIZADOR_DISPONIBLE:
@@ -394,7 +412,19 @@ def main():
         print(f"  Encontré {len(hits)} fragmento(s). Usando los {MAX_FRAGMENTOS} más relevantes.")
         
         # Armar el prompt del usuario en el formato esperado
-        user_prompt = f"""[CONSULTA DEL USUARIO]
+        contexto_historico = ""
+        if historial_conversacion:
+            contexto_historico = "[HISTORIAL DE LA CONVERSACIÓN]\n"
+            for i, (pregunta, respuesta_corta) in enumerate(historial_conversacion[-3:], 1):
+                contexto_historico += f"Interacción {i}:\nUsuario: {pregunta}\nLexIS: {respuesta_corta[:200]}...\n"
+            contexto_historico += "\n"
+        
+        if info_usuario["nombre"]:
+            saludo_inicial = f"El usuario se llama {info_usuario['nombre']}. "
+        else:
+            saludo_inicial = ""
+        
+        user_prompt = f"""{saludo_inicial}{contexto_historico}[CONSULTA ACTUAL DEL USUARIO]
 {consulta_limpia}
 
 [LEYES RECUPERADAS]
@@ -402,6 +432,15 @@ def main():
         
         print("🤖 Lexis está preparando su respuesta...")
         respuesta = llamar_groq(system_prompt, user_prompt)
+        
+        # Guardar en historial (solo guardar pregunta, no toda la respuesta completa para no exceder tokens)
+        respuesta_corta = respuesta[:150] + "..." if len(respuesta) > 150 else respuesta
+        historial_conversacion.append((consulta_limpia, respuesta_corta))
+        
+        # Limitar historial a últimos 5 intercambios
+        if len(historial_conversacion) > 5:
+            historial_conversacion = historial_conversacion[-5:]
+        
         print("\n" + respuesta)
         print("\n" + "-" * 70)
 
