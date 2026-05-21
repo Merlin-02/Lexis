@@ -1,0 +1,1 @@
+El codigo de momento tiene errores cuando le hablamos de un caso concreto, ya que no esta bien implementado el filtro por ley.

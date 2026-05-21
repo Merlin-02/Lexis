@@ -1,0 +1,6 @@
+lexis_vectordb/
+*.sqlite3
+knowledge_chunks/
+knowledge_structured/
+/Code/prueba.py
+/Code/.env

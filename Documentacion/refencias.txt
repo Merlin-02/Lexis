@@ -1,0 +1,2 @@
+https://medium.com/@pratham52/create-your-own-local-ai-chatbot-with-ollama-and-langchain-ccd0a8c423e3
+https://www.promptingguide.ai/es/introduction/basics
