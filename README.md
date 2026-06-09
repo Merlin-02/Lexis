@@ -306,6 +306,6 @@ Dulce Anahí Luna García
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Proyecto de uso educativo y de investigación.
