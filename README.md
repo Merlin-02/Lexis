@@ -1,7 +1,7 @@
 # LEXIS — Sistema de Asistencia Legal Automatizada con RAG
 
 <p align="center">
-  <img src="image/LogoLexis.png" alt="LexIS Logo" width="250">
+  <img src="image/LogoLexis2.png" alt="LexIS Logo" width="250">
 </p>
 
 > *"El derecho no debería ser un privilegio para quienes pueden pagarlo, sino una herramienta accesible para quienes lo necesitan. La tecnología no reemplaza al abogado, pero puede tender el puente entre la ignorancia de la ley y su comprensión."*
@@ -305,8 +305,8 @@ python -m pytest test_unidades.py -v
 
 ## Equipo de Desarrollo
 
-Kevin Merlin Cabrera Coyotzi
-Dulce Anahí Luna García
+- Kevin Merlin Cabrera Coyotzi
+- Dulce Anahí Luna García
 
 ---
 
