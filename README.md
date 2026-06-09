@@ -1,10 +1,10 @@
-# ⚖️ LEXIS — Sistema de Asistencia Legal Automatizada con RAG
+# LEXIS — Sistema de Asistencia Legal Automatizada con RAG
 
 > *"El derecho no debería ser un privilegio para quienes pueden pagarlo, sino una herramienta accesible para quienes lo necesitan. La tecnología no reemplaza al abogado, pero puede tender el puente entre la ignorancia de la ley y su comprensión."*
 
 ---
 
-## 🌎 Contexto y Motivación
+## Contexto y Motivación
 
 En México, el acceso a la información jurídica representa un desafío estructural para la población general. El lenguaje técnico-legal, la dispersión normativa entre más de 30 códigos estatales y federales, los costos elevados de la asesoría profesional, y las barreras geográficas en zonas rurales generan una brecha profunda entre el ciudadano y sus derechos.
 
@@ -12,7 +12,7 @@ En México, el acceso a la información jurídica representa un desafío estruct
 
 ---
 
-## 🎯 Propósito y Finalidad
+## Propósito y Finalidad
 
 **Objetivo General**
 
@@ -27,7 +27,7 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 
 ---
 
-## 📊 Estado del Proyecto — Junio 2025
+## Estado del Proyecto — Junio 2026
 
 | Componente | Avance | Estado |
 |------------|:------:|--------|
@@ -52,7 +52,7 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ```
   USUARIO (lenguaje natural)
@@ -111,7 +111,7 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 
 ---
 
-## 📚 Normativas Indexadas
+## Normativas Indexadas
 
 Actualmente el sistema cuenta con **10,825 fragmentos legales** indexados provenientes de 6 normativas:
 
@@ -126,7 +126,7 @@ Actualmente el sistema cuenta con **10,825 fragmentos legales** indexados proven
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 | Categoría | Tecnología | Versión | Propósito |
 |-----------|------------|:-------:|-----------|
@@ -142,7 +142,7 @@ Actualmente el sistema cuenta con **10,825 fragmentos legales** indexados proven
 
 ---
 
-## 📁 Estructura del Repositorio
+## Estructura del Repositorio
 
 ```
 Lexis/
@@ -183,7 +183,7 @@ Lexis/
 
 ---
 
-## 🔧 Instalación y Uso
+## Instalación y Uso
 
 ### Prerrequisitos
 
@@ -224,7 +224,7 @@ python interaccion.py
 
 ---
 
-## 💡 Características Implementadas
+## Características Implementadas
 
 ### Búsqueda Inteligente
 - **Búsqueda híbrida** con fusión RRF ponderada (BM25 95% + semántica 5% ajustable dinámicamente)
@@ -256,7 +256,7 @@ python interaccion.py
 
 ---
 
-## 🧪 Pruebas Unitarias
+## Pruebas Unitarias
 
 10 tests que cubren:
 
@@ -281,7 +281,7 @@ python -m pytest test_unidades.py -v
 
 ---
 
-## 📋 Hoja de Ruta (Trabajo Futuro)
+## Hoja de Ruta (Trabajo Futuro)
 
 - [ ] **Interfaz web**: Migrar de terminal a Streamlit o aplicación web moderna con experiencia de usuario mejorada
 - [ ] **Ground Truth**: Construir dataset de evaluación con pares pregunta-artículos relevantes-respuesta ideal
@@ -293,19 +293,16 @@ python -m pytest test_unidades.py -v
 
 ---
 
-## ⚠️ Aviso Legal
+## Aviso Legal
 
 **LEXIS** es una herramienta tecnológica diseñada exclusivamente para fines de orientación e información jurídica de primer contacto. **Bajo ninguna circunstancia las respuestas generadas por este sistema de inteligencia artificial sustituyen el consejo, la representación o el diagnóstico formal de un profesional del derecho debidamente acreditado.** En caso de requerir iniciar un proceso judicial o enfrentar una situación legal crítica, consulte a un abogado con todos sus documentos.
 
 ---
 
-## 👥 Equipo de Desarrollo
+## Equipo de Desarrollo
 
-| Rol | Responsable |
-|-----|-------------|
-| Desarrollador Principal | Merlin |
-| Investigación y Pruebas | Dulce |
-| Prompt Engineering | Dulce |
+Kevin Merlin Cabrera Coyotzi
+Dulce Anahí Luna García
 
 ---
 
