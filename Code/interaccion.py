@@ -48,7 +48,7 @@ if not GROQ_API_KEY:
     print("Error: No se encontró GROQ_API_KEY en el archivo .env")
     sys.exit(1)
 
-MODELO_GROQ = "openai/gpt-oss-20b"   # Modelo solicitado (verificar disponibilidad en Groq)
+MODELO_GROQ = "openai/gpt-oss-20b"   # verificar disponibilidad en Groq
 TEMPERATURA = 0.2
 MAX_TOKENS = 800
 TOP_P = 0.9

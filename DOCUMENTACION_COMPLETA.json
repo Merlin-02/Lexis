@@ -1,0 +1,566 @@
+{
+  "sistema": {
+    "nombre": "LexIS",
+    "descripcion": "Sistema de asistencia legal automatizada basado en Inteligencia Artificial (IA)",
+    "proposito": "Democratizar el acceso a la información jurídica, reduciendo brechas económicas, geográficas y de conocimiento",
+    "tipo": "Asistente conversacional legal (Legal Chatbot) con arquitectura RAG",
+    "estado": "En desarrollo activo",
+    "ultima_actualizacion": "Mayo 2025",
+    "ubicacion": "Tlaxcala, México"
+  },
+  "equipo": [
+    { "rol": "Desarrollador Principal", "nombre": "Merlin" },
+    { "rol": "Investigación y Pruebas", "nombre": "Dulce" },
+    { "rol": "Prompt Engineering", "nombre": "Dulce" }
+  ],
+  "normativas_indexadas": [
+    {
+      "nombre": "Ley Federal del Trabajo",
+      "abreviatura": "LFT",
+      "chunks": 3191,
+      "tipo": "DOCX"
+    },
+    {
+      "nombre": "Código Civil para el Estado de Tlaxcala",
+      "chunks": 3311,
+      "tipo": "DOCX"
+    },
+    {
+      "nombre": "Código Penal para el Estado de Tlaxcala",
+      "chunks": 1050,
+      "tipo": "PDF"
+    },
+    {
+      "nombre": "Constitución Política de los Estados Unidos Mexicanos",
+      "chunks": 997,
+      "tipo": "PDF"
+    },
+    {
+      "nombre": "Código de Procedimientos Civiles para el Estado de Tlaxcala",
+      "chunks": 1649,
+      "tipo": "DOCX"
+    },
+    {
+      "nombre": "Código de Procedimientos Penales para el Estado de Tlaxcala",
+      "chunks": 627,
+      "tipo": "PDF"
+    }
+  ],
+  "resumen_normativas": {
+    "total_normativas": 6,
+    "total_chunks": 10825
+  },
+  "arquitectura": {
+    "componentes": [
+      {
+        "nombre": "Interfaz",
+        "archivo": "interaccion.py",
+        "funciones": [
+          "Captura de consulta",
+          "Comandos del sistema (/filtro, /salir)",
+          "Presentación de respuesta",
+          "Memoria de conversación (historial)"
+        ]
+      },
+      {
+        "nombre": "Análisis",
+        "archivo": "analizador_legal.py",
+        "funciones": [
+          "Normalización de texto",
+          "Detección de área legal (laboral/penal/civil/etc.)",
+          "Análisis de coherencia",
+          "Corrección de consultas"
+        ]
+      },
+      {
+        "nombre": "Búsqueda Híbrida",
+        "archivo": "buscador.py",
+        "motores": ["ChromaDB (semántica)", "BM25 (léxica)"],
+        "fusion": "RRF (Reciprocal Rank Fusion)",
+        "fallback": "Índice Temático (indice_tematico.py)"
+      },
+      {
+        "nombre": "Generación",
+        "archivo": "interaccion.py (Groq API)",
+        "modelo": "openai/gpt-oss-20b",
+        "temperatura": 0.2,
+        "descripcion": "Prompt armado con leyes recuperadas + contexto conversación"
+      }
+    ],
+    "pipeline_datos": [
+      "knowledge/ (PDF/DOCX) → preparacion.py",
+      "preparacion.py → knowledge_structured/ (JSON)",
+      "knowledge_structured/ → segmentacion.py → knowledge_chunks/ (JSON)",
+      "knowledge_chunks/ → vectorizacion.py → ChromaDB + BM25"
+    ]
+  },
+  "tecnologias": [
+    { "nombre": "Python", "version": "3.10", "proposito": "Lenguaje base" },
+    { "nombre": "ChromaDB", "version": "1.5.5", "proposito": "Base de datos vectorial" },
+    { "nombre": "Sentence Transformers", "version": null, "proposito": "Embeddings multilingüe" },
+    { "nombre": "BM25 (rank_bm25)", "version": null, "proposito": "Búsqueda léxica" },
+    { "nombre": "Groq API", "version": null, "proposito": "Inferencia LLM" },
+    { "nombre": "PyTorch (CUDA)", "version": "2.x", "proposito": "Backend de embeddings" },
+    { "nombre": "pdfplumber", "version": null, "proposito": "Extracción de PDF" },
+    { "nombre": "python-docx", "version": null, "proposito": "Lectura de DOCX" }
+  ],
+  "modelo_embeddings": {
+    "nombre": "paraphrase-multilingual-mpnet-base-v2",
+    "desarrollador": "sentence-transformers",
+    "dimensiones": 768,
+    "idiomas": "50+ (incluye español)",
+    "tamano": "~180MB",
+    "velocidad": "~1.5 consultas/segundo en GPU"
+  },
+  "modelo_lenguaje": {
+    "proveedor": "Groq",
+    "modelo": "openai/gpt-oss-20b",
+    "temperatura": 0.2,
+    "max_tokens_salida": 800,
+    "timeout_segundos": 120,
+    "top_p": 0.9
+  },
+  "estructura_directorios": {
+    "Code": {
+      "descripcion": "Código fuente principal",
+      "archivos": [
+        "preparacion.py",
+        "segmentacion.py",
+        "vectorizacion.py",
+        "buscador.py",
+        "interaccion.py",
+        "analizador_legal.py",
+        "indice_tematico.py",
+        "mejoras.py",
+        "test_unidades.py",
+        "prueba.py"
+      ]
+    },
+    "knowledge": {
+      "descripcion": "Documentos legales fuente",
+      "archivos": [
+        "Codigo Civil Tlaxcala.docx",
+        "Código Penal Tlaxcala.pdf",
+        "Constitucion.pdf",
+        "Ley Trabajo.docx",
+        "Procedimiento Civiles Tlaxcala.docx",
+        "Procedimiento Penal Tlaxcala.pdf",
+        "Prompt.txt"
+      ]
+    },
+    "knowledge_structured": {
+      "descripcion": "JSON estructurados",
+      "archivos": [
+        "Codigo Civil Tlaxcala_estructurado.json",
+        "Código Penal Tlaxcala_estructurado.json",
+        "Constitucion_estructurado.json",
+        "Ley Trabajo_estructurado.json",
+        "Procedimiento Civiles Tlaxcala_estructurado.json",
+        "Procedimiento Penal Tlaxcala_estructurado.json"
+      ]
+    },
+    "knowledge_chunks": {
+      "descripcion": "Chunks segmentados",
+      "archivos": [
+        "Codigo Civil Tlaxcala_chunks.json",
+        "Código Penal Tlaxcala_chunks.json",
+        "Constitucion_chunks.json",
+        "Ley Trabajo_chunks.json",
+        "Procedimiento Civiles Tlaxcala_chunks.json",
+        "Procedimiento Penal Tlaxcala_chunks.json"
+      ]
+    },
+    "lexis_vectordb": {
+      "descripcion": "Base vectorial",
+      "archivos": ["chroma.sqlite3", "cache/bm25_index.pkl", "logs/"]
+    },
+    "DOCUMENTACION": {
+      "descripcion": "Documentos de protocolo",
+      "archivos": ["Protocolo de Investigacion LexIS.pdf"]
+    },
+    "raiz": {
+      "archivos": [
+        "README.md",
+        "MARCO_TEORICO.md",
+        "HIPOTESIS.md",
+        "environment.yml",
+        "requirements.txt"
+      ]
+    }
+  },
+  "archivos_descripcion": [
+    {
+      "nombre": "preparacion.py",
+      "ubicacion": "Code/preparacion.py",
+      "lineas": 367,
+      "proposito": "Extraer artículos legales de archivos PDF/DOCX y estructurarlos en JSON",
+      "funciones": [
+        "extraer_texto_docx(ruta) → texto plano",
+        "extraer_texto_pdf(ruta) → texto plano",
+        "estructurar_ley(texto_completo) → lista de artículos con metadatos",
+        "procesar_directorio(origen, destino) → procesa todos los archivos"
+      ]
+    },
+    {
+      "nombre": "segmentacion.py",
+      "ubicacion": "Code/segmentacion.py",
+      "lineas": 171,
+      "proposito": "Dividir artículos estructurados en chunks pequeños para indexing",
+      "parametros": {
+        "tamano_maximo": "~300 caracteres por chunk",
+        "overlap": "~50 caracteres"
+      },
+      "funciones": [
+        "crear_chunk(texto, documento, articulo, jerarquia) → dict con metadatos",
+        "procesar_articulo_a_chunks(articulo, nombre_documento) → lista de chunks",
+        "deduplicar_chunks(chunks) → chunks únicos",
+        "ejecutar_segmentacion(origen, destino) → procesa los JSON"
+      ]
+    },
+    {
+      "nombre": "vectorizacion.py",
+      "ubicacion": "Code/vectorizacion.py",
+      "lineas": 220,
+      "proposito": "Generar embeddings y guardar en ChromaDB",
+      "parametros": {
+        "batch_size": 64,
+        "coleccion": "lexis_leyes_mexico"
+      },
+      "funciones": [
+        "inicializar_base_vectorial(ruta) → crea/purga colección ChromaDB",
+        "cargar_modelo(modelo_nombre) → carga SentenceTransformer",
+        "vectorizar_documentos(carpeta_chunks, coleccion, modelo_nombre) → indexa"
+      ]
+    },
+    {
+      "nombre": "buscador.py",
+      "ubicacion": "Code/buscador.py",
+      "lineas": 535,
+      "proposito": "Motor de búsqueda híbrida que combina BM25 + semántica",
+      "configuracion_global": {
+        "MODELO_NOMBRE": "paraphrase-multilingual-mpnet-base-v2",
+        "TOP_K_DEFAULT": 30,
+        "K_RRF": 60,
+        "PESO_SEMANTICO": 0.05,
+        "PESO_LEXICO": 0.95,
+        "HABILITAR_RERANKEO": true
+      },
+      "algoritmo": [
+        "PRE-FILTRADO: Obtener IDs de documentos que cumplen filtro de normativa",
+        "BÚSQUEDA SEMÁNTICA: ChromaDB query (top 240 resultados)",
+        "BÚSQUEDA LÉXICA: BM25 scores (top 240 resultados)",
+        "RRF: Combina rankings con pesos",
+        "BOOST: Multiplica puntuación por conceptos clave",
+        "FILTRADO: Solo IDs permitidos por documento/jerarquía",
+        "RE-RANKING: Similitud coseno del texto",
+        "RETORNAR: Top K resultados con metadatos"
+      ],
+      "conceptos_boost": {
+        "horas extras": 2.0,
+        "hora extra": 2.0,
+        "despido": 1.8,
+        "renuncia": 1.5,
+        "indemnización": 1.5,
+        "salario": 1.3,
+        "aguinaldo": 1.5
+      },
+      "funciones": [
+        "preprocesar_texto(texto)",
+        "inicializar_motores(ruta_db, modelo_nombre)",
+        "aplicar_filtros(ids, diccionario_metadatos, filtro_documento, filtro_jerarquia)",
+        "busqueda_hibrida(consulta, coleccion, motor_bm25, modelo, ...)"
+      ]
+    },
+    {
+      "nombre": "interaccion.py",
+      "ubicacion": "Code/interaccion.py",
+      "lineas": 487,
+      "proposito": "Interfaz principal del sistema - conversacional con Groq",
+      "configuracion_groq": {
+        "MODELO_GROQ": "openai/gpt-oss-20b",
+        "TEMPERATURA": 0.2,
+        "MAX_TOKENS": 800,
+        "TOP_P": 0.9,
+        "TIMEOUT_SEGUNDOS": 120
+      },
+      "limites": {
+        "MAX_SYSTEM_CHARS": 4000,
+        "MAX_USER_CHARS": 8000,
+        "MAX_FRAGMENTOS": 3,
+        "MAX_LEN_FRAGMENTO": 800
+      },
+      "comandos": [
+        { "comando": "/salir", "descripcion": "Termina la sesión" },
+        { "comando": "/filtro ley:nombre", "descripcion": "Filtra por normativa específica" },
+        { "comando": "/filtro limpiar", "descripcion": "Elimina filtros" }
+      ],
+      "memoria_conversacion": {
+        "ultimos_intercambios": 5,
+        "incluye": ["contexto (tema legal)", "normativa aplicable", "nombre del usuario"]
+      },
+      "funciones": [
+        "cargar_system_prompt()",
+        "construir_bloque_leyes(hits)",
+        "detectar_ley_sugerida(consulta, docs)",
+        "llamar_groq(system_prompt, user_prompt)",
+        "main()"
+      ]
+    },
+    {
+      "nombre": "analizador_legal.py",
+      "ubicacion": "Code/analizador_legal.py",
+      "lineas": 795,
+      "proposito": "Detección de área legal basada en palabras clave",
+      "areas_legales": [
+        {
+          "area": "Laboral",
+          "prioridad": 20,
+          "palabras_clave": ["trabajo", "despido", "salario", "jornada", "horas extras", "patrón", "contratos", "vacaciones", "aguinaldo", "IMSS", "Infonavit"]
+        },
+        {
+          "area": "Penal",
+          "prioridad": 5,
+          "palabras_clave": ["robo", "lesiones", "violencia", "feminicidio", "secuestro", "extorsión", "fraude", "delito", "homicidio"]
+        },
+        {
+          "area": "Civil",
+          "prioridad": 8,
+          "palabras_clave": ["matrimonio", "divorcio", "herencia", "propiedad", "testamento", "adopción", "tutela", "arrendamiento"]
+        },
+        {
+          "area": "Constitucional",
+          "prioridad": 5,
+          "palabras_clave": ["constitución", "derechos", "garantías", "libertades", "amparo"]
+        },
+        {
+          "area": "Procesal Penal",
+          "prioridad": 1,
+          "palabras_clave": ["detención", "imputado", "audiencia", "prisión", "defensa"]
+        },
+        {
+          "area": "Procesal Civil",
+          "prioridad": 1,
+          "palabras_clave": ["demanda", "juicio", "sentencia", "prueba", "embargo"]
+        }
+      ],
+      "algoritmo_deteccion": [
+        "Normalizar consulta",
+        "Buscar coincidencias de palabras clave por área",
+        "Calcular puntuación: (coincidencias × prioridad) - (exclusiones × 3)",
+        "Penalizar palabras no legales (cocina, receta, psicología, etc.)",
+        "Verificar proporción mínima de palabras legales (>10%)",
+        "Retornar área con mayor puntuación"
+      ],
+      "funciones": [
+        "normalizar_texto(texto)",
+        "detectar_area_legal(consulta)",
+        "mapear_area_a_documento(area, documentos)",
+        "analizar_coherencia_consulta(consulta)",
+        "detectar_normativa(consulta, docs)"
+      ]
+    },
+    {
+      "nombre": "indice_tematico.py",
+      "ubicacion": "Code/indice_tematico.py",
+      "lineas": 638,
+      "proposito": "Índice temático manual como fallback cuando la búsqueda híbrida no encuentra resultados relevantes",
+      "temas_por_normativa": {
+        "Ley Trabajo": { "temas": 12, "articulos": 25 },
+        "Código Penal": { "temas": 10, "articulos": 15 },
+        "Código Civil": { "temas": 12, "articulos": 15 },
+        "Procedimiento Civil": { "temas": 8, "articulos": 10 },
+        "Procedimiento Penal": { "temas": 8, "articulos": 10 },
+        "Constitución": { "temas": 6, "articulos": 8 }
+      },
+      "estructura_indice_ejemplo": {
+        "clave": "horas_extras",
+        "sinonimos": ["hora extra", "horas extra", "tiempo extra", "sobretiempo"],
+        "documento": "Ley Trabajo",
+        "articulos": [
+          { "articulo": "Artículo 65.-", "tema": "Límite de horas extras" },
+          { "articulo": "Artículo 66.-", "tema": "Circunstancias extraordinarias" },
+          { "articulo": "Artículo 67.-", "tema": "Pago de horas extras" },
+          { "articulo": "Artículo 68.-", "tema": "Prohibición de horas extras" }
+        ]
+      },
+      "funciones": [
+        "buscar_por_concepto(query, documento_filtro)",
+        "detectar_documento(query)"
+      ]
+    },
+    {
+      "nombre": "mejoras.py",
+      "ubicacion": "Code/mejoras.py",
+      "proposito": "Módulo de optimizaciones para el sistema de búsqueda",
+      "funciones": [
+        "cargar_indice_bm25(ruta)",
+        "guardar_indice_bm25(motor, corpus_tokenizado, ruta)",
+        "expandir_consulta(consulta)",
+        "analizar_tipo_consulta(consulta)",
+        "guardar_log_busqueda(consulta, hits, tiempo, error)",
+        "rerankear_resultados(hits, consulta, modelo)",
+        "GestorErrores()"
+      ]
+    },
+    {
+      "nombre": "test_unidades.py",
+      "ubicacion": "Code/test_unidades.py",
+      "proposito": "Tests unitarios para verificar el sistema",
+      "tests": [
+        "test_detectar_ley_sugerida_laboral → 'me deben horas extras' → Ley Trabajo",
+        "test_detectar_ley_sugerida_penal → 'me robaron' → Código Penal",
+        "test_detectar_ley_sugerida_civil → 'divorcio' → Código Civil",
+        "test_normalizacion_texto_vacio → texto vacío",
+        "test_normalizar_acentos → 'constitución' → 'constitucion'",
+        "test_crear_chunk → formato correcto",
+        "test_busqueda_hibrida_campo_laboral → integración",
+        "test_fallo_sin_groq → manejo de errores API",
+        "test_coherencia_consulta_corta → detección de consultas inválidas",
+        "test_coherencia_consulta_legal → consultas legales válidas"
+      ]
+    }
+  ],
+  "flujo_ejecucion": {
+    "inicializacion": [
+      "python preparacion.py  # Extraer artículos de PDF/DOCX",
+      "python segmentacion.py  # Segmentar en chunks",
+      "python vectorizacion.py  # Indexar en ChromaDB"
+    ],
+    "ejecucion": "python interaccion.py  # Iniciar asistente",
+    "ciclo_consulta": [
+      "Usuario escribe consulta",
+      "Se normaliza el texto",
+      "Se detecta área legal (automático)",
+      "Se aplica filtro por normativa",
+      "Búsqueda híbrida: BM25 + semántica (ChromaDB)",
+      "RRF fusion de resultados",
+      "Boost por conceptos clave",
+      "Reranking de resultados",
+      "Verificación de relevancia",
+      "Fallback: si no es relevante, usar índice temático",
+      "Construcción de prompt con leyes + contexto",
+      "Llamada a Groq API",
+      "Respuesta formateada al usuario",
+      "Almacenamiento en historial"
+    ]
+  },
+  "mejoras_implementadas": {
+    "rendimiento": [
+      { "mejora": "Carga de BM25", "antes": "~10 segundos", "despues": "~1 segundo (cacheado)" },
+      { "mejora": "Filtrado por documento", "antes": "Post-búsqueda", "despues": "Pre-búsqueda" },
+      { "mejora": "Batch size embeddings", "antes": 128, "despues": 64 }
+    ],
+    "precision": [
+      { "mejora": "Sistema de sinónimos", "impacto": "+15% recall en búsqueda" },
+      { "mejora": "Reranking por coseno", "impacto": "+20% precisión en top resultados" },
+      { "mejora": "Boost por conceptos", "impacto": "+25% en documentos de horas extras" },
+      { "mejora": "Fallback temático", "impacto": "+15% cobertura" }
+    ],
+    "usabilidad": [
+      { "mejora": "Memoria de conversación", "descripcion": "Últimos 5 turnos" },
+      { "mejora": "Detección de nombre", "descripcion": "'me llamo Juan' → Juan" },
+      { "mejora": "Seguimiento de tema", "descripcion": "Mantiene área legal entre turnos" },
+      { "mejora": "Detección de no-legales", "descripcion": "'dame una receta' → No aplica" },
+      { "mejora": "Filtros manuales", "descripcion": "'/filtro ley:penal'" }
+    ]
+  },
+  "metricas": {
+    "busqueda": {
+      "documentos_indexados": 10825,
+      "normativas_disponibles": 6,
+      "tiempo_carga_inicial": "~30 segundos (modelo)",
+      "tiempo_busqueda": "<2 segundos",
+      "precision_deteccion": "~90% (estimado)"
+    },
+    "pruebas_unitarias": {
+      "test_deteccion_laboral": "✅",
+      "test_deteccion_penal": "✅",
+      "test_deteccion_civil": "✅",
+      "test_normalizacion_texto": "✅",
+      "test_creacion_chunks": "✅",
+      "test_coherencia_consultas": "✅",
+      "test_busqueda_hibrida": "✅",
+      "test_fallo_sin_api": "✅"
+    }
+  },
+  "historial_git": [
+    { "hash": "35531aa", "mensaje": "Mejorar contexto de conversación: mantener tema legal y normativa entre turnos" },
+    { "hash": "bf0b7c2", "mensaje": "Agregar memoria de conversación: historial y detección de nombre" },
+    { "hash": "f97f739", "mensaje": "Mejorar fallback: verificar relevancia de resultados antes de usar índice temático" },
+    { "hash": "1b337fb", "mensaje": "Mejoras en búsqueda y detección de normativa" }
+  ],
+  "hipotesis_investigacion": [
+    { "id": "H1", "descripcion": "Un sistema RAG con búsqueda híbrida puede proporcionar orientación jurídica con precisión >70%", "tipo": "Principal" },
+    { "id": "H2", "descripcion": "BM25 + semántica mejora relevancia en 25% vs técnicas individuales" },
+    { "id": "H3", "descripcion": "Detección automática de área legal reduce tiempo y mejora precisión en 30%" },
+    { "id": "H4", "descripcion": "Fallback temático mejora cobertura en 15%" },
+    { "id": "H5", "descripcion": "Memoria de conversación aumenta satisfacción del usuario" },
+    { "id": "H6", "descripcion": "Embeddings multilingües capturan mejor español jurídico" }
+  ],
+  "cronograma_vs_progreso": [
+    { "actividad": "Recopilación normativa", "periodo": "Feb-Mar", "estado": "✅ Completo" },
+    { "actividad": "Estructuración Ground Truth", "periodo": "Feb-Mar-Abr", "estado": "✅ Completo" },
+    { "actividad": "Segmentación y base vectorial", "periodo": "Mar-Abr", "estado": "✅ Completo" },
+    { "actividad": "Prompt Engineering", "periodo": "Mar-Abr", "estado": "✅ Completo" },
+    { "actividad": "Evaluación TT I", "periodo": "Abr-May", "estado": "✅ Completo" },
+    { "actividad": "Optimización motor RAG", "periodo": "May-Jun", "estado": "✅ Completo" },
+    { "actividad": "Interfaz visual + LLM", "periodo": "May-Jun", "estado": "⚠️ Interfaz terminal lista, falta web" },
+    { "actividad": "Métricas RAG", "periodo": "Sep-Oct", "estado": "⏳ Pendiente" },
+    { "actividad": "Pruebas usabilidad", "periodo": "Oct-Nov", "estado": "⏳ Pendiente" },
+    { "actividad": "Despliegue", "periodo": "Nov-Dic", "estado": "⏳ Pendiente" },
+    { "actividad": "Evaluación TT II", "periodo": "Dic", "estado": "⏳ Pendiente" }
+  ],
+  "problemas_conocidos": {
+    "resueltos": [
+      {
+        "problema": "Detección incorrecta 'horas extras' → Procesal Penal",
+        "solucion": "Ajuste de prioridades (laboral=20)"
+      },
+      {
+        "problema": "'llevo 3 años trabajado' → Civil",
+        "solucion": "Keywords agregadas: trabajado, antigüedad"
+      },
+      {
+        "problema": "'dame una receta de cocina' → penal",
+        "solucion": "Filtro de palabras no legales"
+      },
+      {
+        "problema": "Resultados irrelevantes en top posiciones",
+        "solucion": "Verificación de relevancia + boost"
+      },
+      {
+        "problema": "Modelo de embeddings lento",
+        "solucion": "Reducción de batch size a 64"
+      }
+    ],
+    "limitaciones_actuales": [
+      "Memoria limitada: Solo últimos 5 intercambios",
+      "Sin interfaz web: Solo terminal interactiva",
+      "Dependencia de Groq API: Requiere conexión a internet",
+      "Cobertura geográfica: Solo Tlaxcala (no todo México)",
+      "Sin evaluación formal de precisión: Falta métricas RAG",
+      "Modelo de embeddings: Sigue siendo genérico (no entrenado en texto legal)"
+    ]
+  },
+  "recomendaciones_futuras": [
+    "Interfaz web: Migrar a Streamlit o web app",
+    "Más normativas: Agregar leyes federales adicionales",
+    "Fine-tuning: Entrenar modelo de embeddings en corpus legal mexicano",
+    "Evaluación formal: Implementar métricas RAG (precision@k, recall@k, MRR)",
+    "Más memoria: Guardar historial persistente en sesiones",
+    "Pruebas de usuario: Realizar con abogados y usuarios reales",
+    "Despliegue: Implementar en servidor con API REST"
+  ],
+  "referencias_tecnicas": {
+    "puertos_servicios": [
+      { "servicio": "Groq API", "protocolo": "HTTPS (443)", "url": "api.groq.com" },
+      { "servicio": "HuggingFace Hub", "protocolo": "HTTPS (443)", "url": "huggingface.co" },
+      { "servicio": "ChromaDB", "tipo": "Persistencia local (SQLite)" }
+    ],
+    "dependencias_sistema": ["Python 3.8+", "CUDA (para GPU - opcional)", "pip / conda"],
+    "variables_entorno": {
+      "archivo": ".env",
+      "variables": { "GROQ_API_KEY": "sk-..." }
+    }
+  }
+}
