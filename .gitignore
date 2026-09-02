@@ -4,3 +4,10 @@ knowledge_chunks/
 knowledge_structured/
 /Code/prueba.py
 /Code/.env
+.env
+Code/.env
+lexis_vectordb/
+__pycache__/
+Code/__pycache__/
+.vs/
+Code/.vs/
