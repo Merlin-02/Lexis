@@ -6,6 +6,7 @@ os.environ["ANONYMIZED_TELEMETRY"] = "False"
 os.environ["CHROMA_TELEMETRY"] = "False"
 
 import streamlit as st
+import streamlit.components.v1 as components
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,9 +35,22 @@ try:
 except ImportError:
     ANALIZADOR_DISPONIBLE = False
 
+try:
+    from grafo_lexis.integracion_rag import (
+        construir_contexto_graphrag,
+        obtener_recuperador_grafo,
+    )
+    from grafo_lexis.visualizador_obsidian import (
+        extraer_datos_subgrafo_consulta,
+        extraer_datos_cerebro_global,
+        generar_html_obsidian,
+    )
+    GRAPHRAG_DISPONIBLE = True
+except ImportError:
+    GRAPHRAG_DISPONIBLE = False
+
 st.set_page_config(
     page_title="LEXIS - Asistencia Legal con IA",
-    page_icon="⚖️",
     layout="wide"
 )
 
@@ -238,10 +252,10 @@ st.markdown(estilos_css, unsafe_allow_html=True)
 with st.sidebar:
     if ruta_logo.exists():
         st.image(str(ruta_logo), width="stretch")
-    st.title("⚖️ Asistente LEXIS")
-    st.caption("Sistema de Asesoría Legal Basado en RAG")
+    st.title("Asistente LEXIS")
+    st.caption("Sistema de Asesoría Legal Basado en RAG y Grafo de Conocimiento")
     
-    modo_seleccionado = st.toggle("Modo Oscuro 🌙", value=st.session_state.modo_oscuro)
+    modo_seleccionado = st.toggle("Modo Oscuro", value=st.session_state.modo_oscuro)
     if modo_seleccionado != st.session_state.modo_oscuro:
         st.session_state.modo_oscuro = modo_seleccionado
         st.rerun()
@@ -250,9 +264,13 @@ with st.sidebar:
     
     opciones_ley = ["Automático"] + documentos_disponibles
     ley_seleccionada = st.selectbox("Filtrar por legislación:", opciones_ley)
+
+    mostrar_cerebro_global = st.toggle("Explorar Grafo de Conocimiento Global", value=False)
+    if mostrar_cerebro_global and GRAPHRAG_DISPONIBLE:
+        max_nodos_cerebro = st.slider("Nodos a mostrar en el grafo:", min_value=60, max_value=300, value=160, step=20)
     
     st.markdown("---")
-    if st.button("🧹 Limpiar historial"):
+    if st.button("Limpiar historial"):
         st.session_state.messages = []
         st.session_state.historial_rag = []
         st.rerun()
@@ -271,6 +289,19 @@ st.markdown(
     "aplicables en la base de datos y genera una orientación fundamentada."
 )
 
+if mostrar_cerebro_global and GRAPHRAG_DISPONIBLE:
+    with st.container(border=True):
+        st.subheader("Grafo de Conocimiento Jurídico LEXIS (Vista interactiva tipo Obsidian)")
+        st.caption(
+            "Usa la rueda del ratón para hacer zoom, arrastra los nodos o haz clic sobre cualquier nodo para inspeccionar su contenido y las conexiones entre leyes."
+        )
+        rec_global = obtener_recuperador_grafo()
+        datos_globales = extraer_datos_cerebro_global(
+            rec_global.grafo, max_nodos_articulos=max_nodos_cerebro
+        )
+        html_global = generar_html_obsidian(datos_globales, altura_px=560)
+        components.html(html_global, height=580, scrolling=False)
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "historial_rag" not in st.session_state:
@@ -279,8 +310,11 @@ if "historial_rag" not in st.session_state:
 for msg in st.session_state.messages:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
+        if msg.get("grafo_html"):
+            with st.expander("Ver Grafo de Nodos Activados y Concatenados (Vista Obsidian)", expanded=False):
+                components.html(msg["grafo_html"], height=490, scrolling=False)
         if "fuentes" in msg and msg["fuentes"]:
-            with st.expander("📚 Ver fundamentos y normativas consultadas"):
+            with st.expander("Ver fundamentos y normativas consultadas"):
                 st.markdown(msg["fuentes"])
 
 if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
@@ -292,16 +326,14 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
         if ANALIZADOR_DISPONIBLE:
             es_coherente, sugerencias = analizar_coherencia_consulta(prompt)
             if not es_coherente:
-                st.warning(f"⚠️ {sugerencias[0]}")
+                st.warning(f"Aviso: {sugerencias[0]}")
             elif any("vaga" in s.lower() for s in sugerencias):
-                st.info(f"💡 {sugerencias[0]}")
+                st.info(f"Sugerencia: {sugerencias[0]}")
 
         with st.spinner("Buscando leyes aplicables y redactando asesoría..."):
+            # En modo "Automático", buscamos en todas las leyes simultáneamente (ChromaDB + BM25 + Grafo)
+            # para permitir consultas inter-ley (ej. Código Civil + Procedimientos Civiles).
             filtro_doc = None if ley_seleccionada == "Automático" else ley_seleccionada
-            if not filtro_doc and ANALIZADOR_DISPONIBLE:
-                filtro_doc, _ = detectar_normativa(prompt, documentos_disponibles)
-            if not filtro_doc:
-                filtro_doc = detectar_documento(prompt)
 
             try:
                 hits = busqueda_hibrida(
@@ -320,7 +352,12 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
                 st.error(f"Error en la búsqueda: {e}")
 
             if not hits or len(hits) < 3:
-                res_tematicos = buscar_por_concepto(prompt, filtro_doc)
+                doc_sugerido = filtro_doc
+                if not doc_sugerido and ANALIZADOR_DISPONIBLE:
+                    doc_sugerido, _ = detectar_normativa(prompt, documentos_disponibles)
+                if not doc_sugerido:
+                    doc_sugerido = detectar_documento(prompt)
+                res_tematicos = buscar_por_concepto(prompt, doc_sugerido)
                 if res_tematicos:
                     hits_fallback = []
                     for rt in res_tematicos[:10]:
@@ -337,9 +374,33 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
             if not hits:
                 respuesta = "No encontré artículos normativos relacionados directamente con tu caso en la base de datos actual. ¿Podrías darme más contexto o detalles específicos?"
                 fuentes_md = ""
+                grafo_html_consulta = ""
                 st.markdown(respuesta)
             else:
-                bloque_leyes = construir_bloque_leyes(hits)
+                resumen_grafo_md = ""
+                grafo_html_consulta = ""
+                if GRAPHRAG_DISPONIBLE:
+                    try:
+                        rec = obtener_recuperador_grafo()
+                        ctx_grafo = construir_contexto_graphrag(
+                            hits,
+                            max_fragmentos_base=MAX_FRAGMENTOS,
+                            max_vecinos_grafo=4,
+                            recuperador=rec,
+                        )
+                        bloque_leyes = ctx_grafo["bloque_prompt"]
+                        resumen_grafo_md = ctx_grafo["resumen_grafo_md"]
+                        datos_subgrafo = extraer_datos_subgrafo_consulta(
+                            rec.grafo, ctx_grafo["expansion"], incluir_nodos_ley=True
+                        )
+                        if datos_subgrafo["nodes"]:
+                            grafo_html_consulta = generar_html_obsidian(
+                                datos_subgrafo, altura_px=470
+                            )
+                    except Exception:
+                        bloque_leyes = construir_bloque_leyes(hits)
+                else:
+                    bloque_leyes = construir_bloque_leyes(hits)
 
                 contexto_hist = ""
                 if st.session_state.historial_rag:
@@ -359,12 +420,24 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
                 respuesta = llamar_groq(system_prompt, user_prompt)
                 st.markdown(respuesta)
 
-                fuentes_md = ""
+                if grafo_html_consulta:
+                    with st.expander(
+                        "Ver Grafo de Nodos Activados y Concatenados (Vista Obsidian)",
+                        expanded=True,
+                    ):
+                        st.caption(
+                            "Los nodos cian son los artículos recuperados directamente por tu consulta; los nodos conectados muestran qué otros artículos o leyes se concatenaron desde el grafo para construir la respuesta. Haz clic en cualquier nodo para ver el fragmento exacto."
+                        )
+                        components.html(grafo_html_consulta, height=490, scrolling=False)
+
+                fuentes_md = "#### Artículos recuperados directamente\n"
                 hits_top = hits[:MAX_FRAGMENTOS] if len(hits) > MAX_FRAGMENTOS else hits
                 for h in hits_top:
                     fuentes_md += f"* **{h.get('documento', 'N/D')}** — *{h.get('articulo', 'N/D')}* ({h.get('jerarquia', 'N/D')})\n"
+                if resumen_grafo_md:
+                    fuentes_md += "\n#### Artículos conectados en el Grafo de Conocimiento (GraphRAG)\n" + resumen_grafo_md + "\n"
                 
-                with st.expander("📚 Ver fundamentos y normativas consultadas"):
+                with st.expander("Ver fundamentos y normativas consultadas"):
                     st.markdown(fuentes_md)
 
                 st.session_state.historial_rag.append((prompt, f"Ley: {filtro_doc or 'General'}"))
@@ -372,5 +445,6 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
         st.session_state.messages.append({
             "role": "assistant",
             "content": respuesta,
-            "fuentes": fuentes_md
+            "fuentes": fuentes_md,
+            "grafo_html": grafo_html_consulta,
         })

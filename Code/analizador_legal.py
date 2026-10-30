@@ -57,19 +57,17 @@ PALABRAS_CLAVE_POR_AREA = {
             'tiempo extra', 'sobretiempo', 'hora extra', 'horas extras', 'prestaciones', 'beneficio', 'regimen',
             'ley federal del trabajo', 'lft', 'ctm', 'cmg', 'servicio', 'prestador',
             'dependencia', 'subordinación', 'subordinacion', 'dirección', 'organización',
-            'inspección', 'vistoria', 'multa', 'sanción', 'infracción', 'amparo', 'reclamación',
-            'queja', 'demanda', 'juicio', 'laudo', 'tribunal', 'juez', 'conciliación',
-            'audiencia', 'procedimiento', 'recurso', 'revocación', 'apelación', 'laborando',
+            'inspección', 'vistoria', 'multa', 'sanción', 'infracción', 'reclamación',
+            'laudo', 'conciliación laboral', 'tribunal laboral', 'centro de conciliación',
             'laboraba', 'empleo', 'empleando', 'renuncia', 'renunciar', 'renuncie', 'vacante', 'jefe',
-            'gerente', 'supervisor', 'encargado', 'dueño', 'dueno', 'patronal', 'empresa',
-            'salario', 'sueldo', 'pago', 'pagar', 'remuneración', 'discriminación', 'discriminar',
-            'discriminado', 'género', 'genero', 'mujer', 'hombre', 'embarazada', 'embarazo',
-            'discapacidad', 'discapacitado', 'edad', 'religión', 'religion', 'origen',
-            'hostigamiento', 'hostigar', 'hostigado', 'acoso', 'acosar', 'acosado',
-            'ambiente', 'laboral', 'clima', 'mobbing', 'violencia', 'vg'
+            'gerente', 'supervisor', 'encargado', 'patronal', 'empresa',
+            'salario', 'sueldo', 'remuneración', 'discriminación laboral',
+            'embarazada', 'hostigamiento laboral', 'acoso laboral',
+            'ambiente laboral', 'clima laboral', 'mobbing'
         ],
         'palabras_excluyentes': ['penal', 'delito', 'robo', 'asalto', 'homicidio', 'asesinato',
-            'cívil', 'matrimonio', 'herencia', 'testamento', 'divorcio', 'custodia']
+            'civil', 'matrimonio', 'herencia', 'testamento', 'divorcio', 'custodia',
+            'adopción', 'adopcion', 'adoptado', 'adoptada', 'adoptante', 'adoptar', 'patria potestad', 'tutela']
     },
     'penal': {
         'alta_prioridad': [
@@ -129,7 +127,8 @@ PALABRAS_CLAVE_POR_AREA = {
             'heredero', 'legatario', 'testador', 'testamento', 'sucesión', 'herencia',
             'legítima', 'mejora', 'donación', 'entre vivos', 'mortis causa', 'codicilo',
             'matrimonio', 'divorcio', 'divorciarme', 'divorciar', 'concubinato', 'unión', 'pareja', 'filiación',
-            'paternidad', 'maternidad', 'adopción', 'tutela', 'patria potestad',
+            'paternidad', 'maternidad', 'adopción', 'adopcion', 'adoptado', 'adoptada', 'adoptante', 'adoptar',
+            'revocación de la adopción', 'revocar adopción', 'tutela', 'patria potestad',
             'casa', 'vivienda', 'inmueble', 'departamento', 'departamento', 'terreno', 'lote',
             'propiedad', 'posesión', 'usufructo', 'servidumbre', 'derecho de paso', 'medidor',
             'luz', 'agua', 'servicios', 'servicio público', 'servicios públicos'
@@ -233,7 +232,8 @@ PALABRAS_CLAVE_POR_AREA = {
     },
     'procesal_civil': {
         'alta_prioridad': [
-            'procesal', 'procedimiento', 'proceso', 'juicio', 'tramite', 'diligencia',
+            'procesal', 'procedimiento', 'proceso', 'juicio', 'tramite', 'trámite', 'tramitar', 'tramitará',
+            'revocación de la adopción', 'adopción', 'adoptado', 'adoptante', 'diligencia',
             'actuación', 'actuación judicial', 'órgano', 'jurisdiccional', 'tribunal',
             'juzgado', 'juez', 'magistrado', 'secretario', 'actuario', 'oficial',
             'notificador', 'perito', 'testigo', 'parte', 'demandante', 'demandado',
@@ -575,31 +575,40 @@ def detectar_area_legal(consulta: str) -> Optional[str]:
     palabras_no_legales = consulta_palabras.intersection(PALABRAS_NO_LEGALES)
     
     PRIORIDADES = {
-        'penal': 5,
-        'laboral': 20,  # Aumentado para priorizar laboral
-        'civil': 8,
+        'penal': 6,
+        'laboral': 6,
+        'civil': 6,
         'constitucional': 5,
-        'procesal_penal': 1,
-        'procesal_civil': 1
+        'procesal_penal': 6,
+        'procesal_civil': 6
     }
     
     mejores_puntuaciones = {}
     total_palabras = len(consulta_palabras)
     
     for area, datos in PALABRAS_CLAVE_POR_AREA.items():
-        # Cambiar a búsqueda de subcadenas para soportar frases
         palabras_clave = [normalizarizarTexto(p) for p in datos['alta_prioridad']]
         palabras_excluyentes = [normalizarizarTexto(p) for p in datos.get('palabras_excluyentes', [])]
         
-        # Buscar subcadenas en la consulta completa
+        # Buscar palabras completas o frases con límite de palabra
         coincidencias = set()
         for kw in palabras_clave:
-            if kw in consulta_norm:
+            if not kw:
+                continue
+            if ' ' in kw:
+                if re.search(r'\b' + re.escape(kw) + r'\b', consulta_norm):
+                    coincidencias.add(kw)
+            elif kw in consulta_palabras:
                 coincidencias.add(kw)
         
         exclusiones = set()
         for kw in palabras_excluyentes:
-            if kw in consulta_norm:
+            if not kw:
+                continue
+            if ' ' in kw:
+                if re.search(r'\b' + re.escape(kw) + r'\b', consulta_norm):
+                    exclusiones.add(kw)
+            elif kw in consulta_palabras:
                 exclusiones.add(kw)
         
         # Calcular proporción de palabras legales
