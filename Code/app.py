@@ -9,11 +9,12 @@ import streamlit as st
 import streamlit.components.v1 as components
 from dotenv import load_dotenv
 
-load_dotenv()
-
 DIR_ACTUAL = Path(__file__).resolve().parent
 ROOT_DIR = DIR_ACTUAL.parent
 sys.path.append(str(DIR_ACTUAL))
+
+load_dotenv(DIR_ACTUAL / ".env", override=True)
+load_dotenv(ROOT_DIR / ".env", override=False)
 
 from buscador import (
     inicializar_motores,
@@ -27,6 +28,13 @@ from interaccion import (
     construir_bloque_leyes,
     llamar_groq,
     MAX_FRAGMENTOS
+)
+from gestor_evaluacion import (
+    GestorSesionesEvaluacion,
+    generar_dispositivo_id,
+    generar_mensaje_id,
+    generar_sesion_id,
+    obtener_entorno_despliegue,
 )
 
 try:
@@ -105,6 +113,15 @@ if st.session_state.modo_oscuro:
         button[kind="secondary"]:hover {
             background-color: #475569 !important;
             border-color: #64748B !important;
+        }
+        button[kind="primary"] {
+            background-color: #0284C7 !important;
+            color: #F8FAFC !important;
+            border: 1px solid #38BDF8 !important;
+        }
+        button[kind="primary"]:hover {
+            background-color: #0369A1 !important;
+            border-color: #7DD3FC !important;
         }
         div[data-baseweb="select"] > div {
             background-color: #0F172A !important;
@@ -189,6 +206,15 @@ else:
             background-color: #E2E8F0 !important;
             border-color: #94A3B8 !important;
         }
+        button[kind="primary"] {
+            background-color: #0284C7 !important;
+            color: #FFFFFF !important;
+            border: 1px solid #0369A1 !important;
+        }
+        button[kind="primary"]:hover {
+            background-color: #0369A1 !important;
+            border-color: #075985 !important;
+        }
         div[data-baseweb="select"] > div {
             background-color: #FFFFFF !important;
             color: #0F172A !important;
@@ -249,11 +275,237 @@ else:
 
 st.markdown(estilos_css, unsafe_allow_html=True)
 
+# =============================================================
+# GESTIÓN DE ENTORNO (.env) Y SESIONES PERSISTENTES POR DISPOSITIVO
+# =============================================================
+ENTORNO_ACTUAL = obtener_entorno_despliegue()
+MODO_PRUEBAS = ENTORNO_ACTUAL == "pruebas"
+gestor_sesiones = GestorSesionesEvaluacion()
+
+
+def _detectar_dispositivo_actual() -> str:
+    """Obtiene o genera un identificador estable por dispositivo/navegador."""
+    qp_disp = st.query_params.get("dispositivo")
+    if qp_disp:
+        return str(qp_disp)
+    try:
+        headers = st.context.headers
+        ua = headers.get("User-Agent", "")
+        lang = headers.get("Accept-Language", "")
+        host = headers.get("Host", "")
+        semilla = f"{ua}|{lang}|{host}"
+    except Exception:
+        semilla = ""
+    return generar_dispositivo_id(semilla)
+
+
+if "dispositivo_id" not in st.session_state:
+    st.session_state.dispositivo_id = _detectar_dispositivo_actual()
+
+if "nombre_evaluador" not in st.session_state:
+    st.session_state.nombre_evaluador = ""
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+if "historial_rag" not in st.session_state:
+    st.session_state.historial_rag = []
+if "experiencia_final" not in st.session_state:
+    st.session_state.experiencia_final = {
+        "calificacion_global_estrellas": None,
+        "comentarios_experiencia": "",
+        "sugerencias_correccion_futura": "",
+        "guardado_en": None,
+    }
+if "estado_sesion" not in st.session_state:
+    st.session_state.estado_sesion = "activa"
+
+if "sesion_id" not in st.session_state:
+    qp_ses = st.query_params.get("sesion")
+    cargada = gestor_sesiones.cargar_sesion(qp_ses) if qp_ses else None
+    if cargada:
+        st.session_state.sesion_id = cargada["sesion_id"]
+        st.session_state.dispositivo_id = cargada.get("dispositivo_id", st.session_state.dispositivo_id)
+        st.session_state.nombre_evaluador = cargada.get("nombre_evaluador", "")
+        st.session_state.messages = cargada.get("messages", [])
+        st.session_state.historial_rag = [tuple(x) for x in cargada.get("historial_rag", [])]
+        st.session_state.experiencia_final = cargada.get(
+            "experiencia_final", st.session_state.experiencia_final
+        )
+        st.session_state.estado_sesion = cargada.get("estado", "activa")
+    else:
+        st.session_state.sesion_id = generar_sesion_id()
+
+st.query_params["dispositivo"] = st.session_state.dispositivo_id
+st.query_params["sesion"] = st.session_state.sesion_id
+
+
+def sincronizar_sesion_en_disco() -> None:
+    """Guarda el estado completo de la sesión actual en sesiones_evaluacion/."""
+    datos = gestor_sesiones.crear_estructura_sesion(
+        sesion_id=st.session_state.sesion_id,
+        dispositivo_id=st.session_state.dispositivo_id,
+        entorno=ENTORNO_ACTUAL,
+        nombre_evaluador=st.session_state.nombre_evaluador,
+    )
+    datos["estado"] = st.session_state.estado_sesion
+    datos["messages"] = st.session_state.messages
+    datos["historial_rag"] = [list(x) for x in st.session_state.historial_rag]
+    datos["experiencia_final"] = st.session_state.experiencia_final
+    gestor_sesiones.guardar_sesion(datos)
+
+
+def cargar_sesion_en_estado(sesion_id_destino: str) -> bool:
+    """Carga una conversación guardada desde disco en st.session_state."""
+    datos = gestor_sesiones.cargar_sesion(sesion_id_destino)
+    if not datos:
+        return False
+    st.session_state.sesion_id = datos["sesion_id"]
+    st.session_state.dispositivo_id = datos.get("dispositivo_id", st.session_state.dispositivo_id)
+    st.session_state.nombre_evaluador = datos.get("nombre_evaluador", st.session_state.nombre_evaluador)
+    st.session_state.messages = datos.get("messages", [])
+    st.session_state.historial_rag = [tuple(x) for x in datos.get("historial_rag", [])]
+    st.session_state.experiencia_final = datos.get(
+        "experiencia_final",
+        {
+            "calificacion_global_estrellas": None,
+            "comentarios_experiencia": "",
+            "sugerencias_correccion_futura": "",
+            "guardado_en": None,
+        },
+    )
+    st.session_state.estado_sesion = datos.get("estado", "activa")
+    st.query_params["sesion"] = st.session_state.sesion_id
+    return True
+
+
+def iniciar_nueva_conversacion() -> None:
+    """Inicia una nueva sesión conservando intactas las anteriores en disco."""
+    if st.session_state.messages:
+        sincronizar_sesion_en_disco()
+    st.session_state.sesion_id = generar_sesion_id()
+    st.session_state.messages = []
+    st.session_state.historial_rag = []
+    st.session_state.experiencia_final = {
+        "calificacion_global_estrellas": None,
+        "comentarios_experiencia": "",
+        "sugerencias_correccion_futura": "",
+        "guardado_en": None,
+    }
+    st.session_state.estado_sesion = "activa"
+    st.query_params["sesion"] = st.session_state.sesion_id
+
+
+def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
+    """
+    Muestra los botones de Like y Dislike cuando LEXIS_ENV=pruebas y, tras votar,
+    despliega la calificación de 0 a 5 estrellas junto con el campo opcional de
+    corrección jurídica para validación por Licenciados en Derecho.
+    """
+    if not MODO_PRUEBAS:
+        return
+
+    if "id_mensaje" not in msg:
+        msg["id_mensaje"] = generar_mensaje_id(idx)
+    id_msg = msg["id_mensaje"]
+
+    ev = msg.setdefault(
+        "evaluacion",
+        {
+            "voto": None,
+            "estrellas": None,
+            "correccion_juridica": "",
+            "evaluado_en": None,
+        },
+    )
+    voto_actual = ev.get("voto")
+    estrellas_actuales = ev.get("estrellas")
+
+    st.markdown("---")
+    st.caption(
+        "Validación de respuesta (Modo Pruebas — Evaluación por Licenciados en Derecho):"
+    )
+
+    col_like, col_dislike, col_estado = st.columns([2, 2, 4], vertical_alignment="center")
+    with col_like:
+        etiqueta_like = "Like ( Seleccionado )" if voto_actual == "like" else "Like ( Respuesta adecuada )"
+        if st.button(
+            etiqueta_like,
+            key=f"btn_like_{id_msg}",
+            type="primary" if voto_actual == "like" else "secondary",
+            use_container_width=True,
+        ):
+            ev["voto"] = "like"
+            sincronizar_sesion_en_disco()
+            st.rerun()
+
+    with col_dislike:
+        etiqueta_dislike = (
+            "Dislike ( Seleccionado )"
+            if voto_actual == "dislike"
+            else "Dislike ( Respuesta incorrecta / incompleta )"
+        )
+        if st.button(
+            etiqueta_dislike,
+            key=f"btn_dislike_{id_msg}",
+            type="primary" if voto_actual == "dislike" else "secondary",
+            use_container_width=True,
+        ):
+            ev["voto"] = "dislike"
+            sincronizar_sesion_en_disco()
+            st.rerun()
+
+    with col_estado:
+        if voto_actual in ("like", "dislike"):
+            voto_txt = "Like" if voto_actual == "like" else "Dislike"
+            est_txt = (
+                f"{estrellas_actuales}/5 estrellas"
+                if estrellas_actuales is not None
+                else "Pendiente puntuar de 0 a 5 estrellas"
+            )
+            st.caption(f"Estado de evaluación: **{voto_txt}** | **{est_txt}**")
+
+    # Después de pulsar Like o Dislike, aparecen las estrellas de 0 a 5 y la observación jurídica
+    if voto_actual in ("like", "dislike"):
+        st.caption("Califica la calidad y precisión jurídica de esta respuesta (de 0 a 5 estrellas):")
+        cols_estrellas = st.columns(6)
+        for num_est in range(6):
+            with cols_estrellas[num_est]:
+                simbolos = "★" * num_est if num_est > 0 else "0"
+                etiqueta_est = f"{num_est}/5 ({simbolos})" if num_est > 0 else "0/5 (0 ★)"
+                es_seleccionada = estrellas_actuales == num_est
+                if st.button(
+                    etiqueta_est,
+                    key=f"btn_star_{id_msg}_{num_est}",
+                    type="primary" if es_seleccionada else "secondary",
+                    use_container_width=True,
+                ):
+                    ev["estrellas"] = num_est
+                    sincronizar_sesion_en_disco()
+                    st.rerun()
+
+        with st.expander(
+            "Agregar observación o corrección jurídica para esta respuesta (opcional)",
+            expanded=bool(ev.get("correccion_juridica")),
+        ):
+            nota_actual = ev.get("correccion_juridica", "")
+            nueva_nota = st.text_area(
+                "Indica qué artículo, criterio o interpretación legal debe corregirse o reforzarse:",
+                value=nota_actual,
+                key=f"txt_corr_{id_msg}",
+                height=85,
+            )
+            if st.button("Guardar observación jurídica", key=f"btn_save_corr_{id_msg}"):
+                ev["correccion_juridica"] = nueva_nota.strip()
+                sincronizar_sesion_en_disco()
+                st.success("Observación jurídica guardada en el registro de evaluación.")
+
+
 with st.sidebar:
     if ruta_logo.exists():
         st.image(str(ruta_logo), width="stretch")
     st.title("Asistente LEXIS")
     st.caption("Sistema de Asesoría Legal Basado en RAG y Grafo de Conocimiento")
+    st.caption(f"Entorno activo (.env): **{ENTORNO_ACTUAL.upper()}** | Sesión: `{st.session_state.sesion_id}`")
     
     modo_seleccionado = st.toggle("Modo Oscuro", value=st.session_state.modo_oscuro)
     if modo_seleccionado != st.session_state.modo_oscuro:
@@ -270,10 +522,53 @@ with st.sidebar:
         max_nodos_cerebro = st.slider("Nodos a mostrar en el grafo:", min_value=60, max_value=300, value=160, step=20)
     
     st.markdown("---")
-    if st.button("Limpiar historial"):
-        st.session_state.messages = []
-        st.session_state.historial_rag = []
-        st.rerun()
+    st.subheader("Sesiones del Dispositivo")
+    nuevo_evaluador = st.text_input(
+        "Nombre del Evaluador / Lic. en Derecho:",
+        value=st.session_state.nombre_evaluador,
+        placeholder="Ej. Lic. Juan Pérez",
+    )
+    if nuevo_evaluador != st.session_state.nombre_evaluador:
+        st.session_state.nombre_evaluador = nuevo_evaluador
+        if st.session_state.messages:
+            sincronizar_sesion_en_disco()
+
+    ver_todas_sesiones = st.checkbox(
+        "Mostrar sesiones de todos los dispositivos",
+        value=False,
+    )
+    filtro_disp = None if ver_todas_sesiones else st.session_state.dispositivo_id
+    sesiones_guardadas = gestor_sesiones.listar_sesiones(dispositivo_id=filtro_disp)
+
+    if sesiones_guardadas:
+        opciones_sesiones = ["(Seleccionar conversación guardada...)"] + [
+            f"{s['sesion_id']} | {s['titulo']} ({s['num_mensajes']} msgs, {s['estado']})"
+            for s in sesiones_guardadas
+        ]
+        seleccion_sesion = st.selectbox(
+            "Retomar conversación anterior:",
+            opciones_sesiones,
+        )
+        if seleccion_sesion != "(Seleccionar conversación guardada...)":
+            id_elegido = seleccion_sesion.split(" | ")[0].strip()
+            if id_elegido != st.session_state.sesion_id:
+                if st.button("Cargar conversación seleccionada", use_container_width=True):
+                    if cargar_sesion_en_estado(id_elegido):
+                        st.rerun()
+    else:
+        st.caption("Aún no hay conversaciones previas guardadas para este dispositivo.")
+
+    col_nueva, col_limpiar = st.columns(2)
+    with col_nueva:
+        if st.button("Nueva sesión", use_container_width=True):
+            iniciar_nueva_conversacion()
+            st.rerun()
+    with col_limpiar:
+        if st.button("Limpiar actual", use_container_width=True):
+            st.session_state.messages = []
+            st.session_state.historial_rag = []
+            sincronizar_sesion_en_disco()
+            st.rerun()
 
 col_logo, col_titulo = st.columns([1, 6], vertical_alignment="center")
 
@@ -302,12 +597,7 @@ if mostrar_cerebro_global and GRAPHRAG_DISPONIBLE:
         html_global = generar_html_obsidian(datos_globales, altura_px=560)
         components.html(html_global, height=580, scrolling=False)
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-if "historial_rag" not in st.session_state:
-    st.session_state.historial_rag = []
-
-for msg in st.session_state.messages:
+for idx_msg, msg in enumerate(st.session_state.messages):
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
         if msg.get("grafo_html"):
@@ -316,9 +606,12 @@ for msg in st.session_state.messages:
         if "fuentes" in msg and msg["fuentes"]:
             with st.expander("Ver fundamentos y normativas consultadas"):
                 st.markdown(msg["fuentes"])
+        if msg["role"] == "assistant":
+            renderizar_controles_evaluacion_mensaje(msg, idx_msg)
 
 if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
+    sincronizar_sesion_en_disco()
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -371,6 +664,9 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
                         })
                     hits = hits_fallback
 
+            nodos_grafo_usados = []
+            articulos_recuperados_meta = []
+
             if not hits:
                 respuesta = "No encontré artículos normativos relacionados directamente con tu caso en la base de datos actual. ¿Podrías darme más contexto o detalles específicos?"
                 fuentes_md = ""
@@ -390,8 +686,14 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
                         )
                         bloque_leyes = ctx_grafo["bloque_prompt"]
                         resumen_grafo_md = ctx_grafo["resumen_grafo_md"]
+                        exp_info = ctx_grafo.get("expansion", {})
+                        nodos_grafo_usados = list(exp_info.get("nodos_semilla", [])) + [
+                            v.get("nodo_id")
+                            for v in exp_info.get("vecinos_citados_salientes", [])
+                            if v.get("nodo_id")
+                        ]
                         datos_subgrafo = extraer_datos_subgrafo_consulta(
-                            rec.grafo, ctx_grafo["expansion"], incluir_nodos_ley=True
+                            rec.grafo, exp_info, incluir_nodos_ley=True
                         )
                         if datos_subgrafo["nodes"]:
                             grafo_html_consulta = generar_html_obsidian(
@@ -433,7 +735,13 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
                 fuentes_md = "#### Artículos recuperados directamente\n"
                 hits_top = hits[:MAX_FRAGMENTOS] if len(hits) > MAX_FRAGMENTOS else hits
                 for h in hits_top:
-                    fuentes_md += f"* **{h.get('documento', 'N/D')}** — *{h.get('articulo', 'N/D')}* ({h.get('jerarquia', 'N/D')})\n"
+                    doc_h = h.get("documento", "N/D")
+                    art_h = h.get("articulo", "N/D")
+                    jer_h = h.get("jerarquia", "N/D")
+                    fuentes_md += f"* **{doc_h}** — *{art_h}* ({jer_h})\n"
+                    articulos_recuperados_meta.append(
+                        {"documento": doc_h, "articulo": art_h, "jerarquia": jer_h}
+                    )
                 if resumen_grafo_md:
                     fuentes_md += "\n#### Artículos conectados en el Grafo de Conocimiento (GraphRAG)\n" + resumen_grafo_md + "\n"
                 
@@ -442,9 +750,100 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
 
                 st.session_state.historial_rag.append((prompt, f"Ley: {filtro_doc or 'General'}"))
 
-        st.session_state.messages.append({
+        nuevo_idx = len(st.session_state.messages)
+        nuevo_mensaje = {
+            "id_mensaje": generar_mensaje_id(nuevo_idx),
             "role": "assistant",
             "content": respuesta,
+            "consulta_origen": prompt,
+            "ley_filtrada": ley_seleccionada,
             "fuentes": fuentes_md,
+            "articulos_recuperados": articulos_recuperados_meta,
+            "nodos_grafo": nodos_grafo_usados,
             "grafo_html": grafo_html_consulta,
-        })
+            "evaluacion": {
+                "voto": None,
+                "estrellas": None,
+                "correccion_juridica": "",
+                "evaluado_en": None,
+            },
+        }
+        st.session_state.messages.append(nuevo_mensaje)
+        sincronizar_sesion_en_disco()
+        renderizar_controles_evaluacion_mensaje(nuevo_mensaje, nuevo_idx)
+
+# =============================================================
+# APARTADO ANTES DE TERMINAR LA CONVERSACIÓN: COMENTARIOS DE EXPERIENCIA
+# =============================================================
+if st.session_state.messages:
+    st.markdown("---")
+    with st.expander(
+        "Comentarios sobre la Experiencia y Cierre de Conversación",
+        expanded=(st.session_state.estado_sesion == "finalizada"),
+    ):
+        st.caption(
+            "Antes de concluir tu sesión, registra tus comentarios sobre la experiencia, la calidad jurídica de las respuestas y cualquier recomendación para futuras mejoras del modelo."
+        )
+        exp_actual = st.session_state.experiencia_final
+
+        opciones_estrellas_global = [0, 1, 2, 3, 4, 5]
+        val_global_actual = exp_actual.get("calificacion_global_estrellas")
+        idx_global = (
+            opciones_estrellas_global.index(val_global_actual)
+            if val_global_actual in opciones_estrellas_global
+            else 5
+        )
+
+        calif_global = st.selectbox(
+            "Calificación general de la sesión (0 a 5 estrellas):",
+            options=opciones_estrellas_global,
+            index=idx_global,
+            format_func=lambda x: f"{x}/5 estrellas ({'★' * x})" if x > 0 else "0/5 estrellas (0 ★)",
+            key="sel_calif_global_exp",
+        )
+
+        comentarios_exp = st.text_area(
+            "Comentarios con respecto a la experiencia de uso y utilidad del asistente:",
+            value=exp_actual.get("comentarios_experiencia", ""),
+            placeholder="Escribe aquí tus impresiones sobre la experiencia, claridad y desempeño general...",
+            height=90,
+            key="txt_comentarios_exp",
+        )
+
+        sugerencias_futuras = st.text_area(
+            "Observaciones jurídicas generales para corrección futura de respuestas (Licenciados en Derecho):",
+            value=exp_actual.get("sugerencias_correccion_futura", ""),
+            placeholder="Indica criterios jurisprudenciales, artículos omitidos o ajustes recomendados para el modelo...",
+            height=90,
+            key="txt_sugerencias_futuras",
+        )
+
+        col_guardar_exp, col_finalizar_exp = st.columns(2)
+        with col_guardar_exp:
+            if st.button("Guardar comentarios de experiencia", use_container_width=True):
+                st.session_state.experiencia_final = {
+                    "calificacion_global_estrellas": int(calif_global),
+                    "comentarios_experiencia": comentarios_exp.strip(),
+                    "sugerencias_correccion_futura": sugerencias_futuras.strip(),
+                    "guardado_en": exp_actual.get("guardado_en"),
+                }
+                sincronizar_sesion_en_disco()
+                st.success("Comentarios de experiencia guardados correctamente en la sesión.")
+
+        with col_finalizar_exp:
+            if st.button(
+                "Guardar comentarios y finalizar conversación",
+                type="primary",
+                use_container_width=True,
+            ):
+                st.session_state.experiencia_final = {
+                    "calificacion_global_estrellas": int(calif_global),
+                    "comentarios_experiencia": comentarios_exp.strip(),
+                    "sugerencias_correccion_futura": sugerencias_futuras.strip(),
+                    "guardado_en": exp_actual.get("guardado_en"),
+                }
+                st.session_state.estado_sesion = "finalizada"
+                sincronizar_sesion_en_disco()
+                st.success(
+                    f"Conversación `{st.session_state.sesion_id}` finalizada y guardada. Puedes retomarla cuando lo necesites desde el panel lateral o iniciar una nueva sesión."
+                )

@@ -1,0 +1,18 @@
+{
+  "sesion_id": "ses_20261030_143221_233ff0",
+  "dispositivo_id": "disp_e9cb9fbec3",
+  "nombre_evaluador": "",
+  "entorno": "pruebas",
+  "estado": "activa",
+  "titulo": "Nueva conversación",
+  "creada_en": "2026-10-30T14:32:26",
+  "actualizada_en": "2026-10-30T14:32:26",
+  "messages": [],
+  "historial_rag": [],
+  "experiencia_final": {
+    "calificacion_global_estrellas": null,
+    "comentarios_experiencia": "",
+    "sugerencias_correccion_futura": "",
+    "guardado_en": null
+  }
+}
