@@ -596,11 +596,32 @@ def cerrar_sesion_usuario() -> None:
         del st.query_params["sesion"]
 
 
+def mensaje_esta_evaluado(msg: dict) -> bool:
+    """Verifica si un mensaje del asistente ya cuenta con voto (Like/Dislike) y estrellas (0 a 5)."""
+    if msg.get("role") != "assistant":
+        return True
+    if ENTORNO_ACTUAL == "produccion":
+        return True
+    ev = msg.get("evaluacion", {})
+    return ev.get("voto") in ("like", "dislike") and ev.get("estrellas") is not None
+
+
+def contar_respuestas_sin_evaluar(mensajes: list[dict]) -> int:
+    """Cuenta cuántas respuestas del asistente aún no han sido evaluadas por el usuario."""
+    if ENTORNO_ACTUAL == "produccion":
+        return 0
+    return sum(
+        1
+        for m in mensajes
+        if m.get("role") == "assistant" and not mensaje_esta_evaluado(m)
+    )
+
+
 def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
     """
-    Muestra para cualquier usuario los botones de Like y Dislike y, tras votar,
-    despliega la calificación de 0 a 5 estrellas junto con el campo opcional de
-    comentarios o corrección sobre la respuesta.
+    Muestra para cualquier usuario los botones obligatorios de Like y Dislike y,
+    tras votar, despliega la calificación obligatoria de 0 a 5 estrellas junto con
+    el campo opcional de comentarios o corrección sobre la respuesta.
     """
     if ENTORNO_ACTUAL == "produccion":
         return
@@ -622,9 +643,18 @@ def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
     estrellas_actuales = ev.get("estrellas")
 
     st.markdown("---")
-    st.caption(
-        "Calificación de la respuesta (Evalúa con Like o Dislike y puntúa de 0 a 5 estrellas):"
-    )
+    if voto_actual is None:
+        st.info(
+            "**Evaluación obligatoria (Paso 1 de 2):** Selecciona **Like** o **Dislike** para calificar esta respuesta."
+        )
+    elif estrellas_actuales is None:
+        st.warning(
+            "**Evaluación obligatoria (Paso 2 de 2):** Ahora selecciona una puntuación de **0 a 5 estrellas** abajo para poder continuar con otra consulta."
+        )
+    else:
+        st.caption(
+            "Calificación registrada (puedes modificar tu voto o estrellas si lo deseas):"
+        )
 
     col_like, col_dislike, col_estado = st.columns([2, 2, 4], vertical_alignment="center")
     with col_like:
@@ -659,15 +689,15 @@ def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
         if voto_actual in ("like", "dislike"):
             voto_txt = "Like" if voto_actual == "like" else "Dislike"
             est_txt = (
-                f"{estrellas_actuales}/5 estrellas"
+                f"{estrellas_actuales}/5 estrellas (Completado)"
                 if estrellas_actuales is not None
-                else "Pendiente puntuar de 0 a 5 estrellas"
+                else "Falta puntuar de 0 a 5 estrellas (Obligatorio)"
             )
             st.caption(f"Estado de tu evaluación: **{voto_txt}** | **{est_txt}**")
 
     # Después de pulsar Like o Dislike, aparecen las estrellas de 0 a 5 y el comentario opcional
     if voto_actual in ("like", "dislike"):
-        st.caption("Puntúa la calidad, claridad y utilidad de esta respuesta (de 0 a 5 estrellas):")
+        st.caption("Puntúa la calidad, claridad y utilidad de esta respuesta (de 0 a 5 estrellas — obligatorio):")
         cols_estrellas = st.columns(6)
         for num_est in range(6):
             with cols_estrellas[num_est]:
@@ -701,6 +731,8 @@ def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
                 st.success("Comentario guardado en el registro de evaluación.")
 
 
+respuestas_pendientes_global = contar_respuestas_sin_evaluar(st.session_state.messages)
+
 with st.sidebar:
     if ruta_logo.exists():
         st.image(str(ruta_logo), width="stretch")
@@ -714,8 +746,13 @@ with st.sidebar:
             f"Usuario: `{usuario_activo['username']}` | Perfil: **{usuario_activo.get('rol', 'Usuario General')}**"
         )
         if st.button("Cerrar sesión", use_container_width=True):
-            cerrar_sesion_usuario()
-            st.rerun()
+            if respuestas_pendientes_global > 0:
+                st.error(
+                    "Primero califica la respuesta pendiente (Like/Dislike y de 0 a 5 estrellas) antes de cerrar sesión."
+                )
+            else:
+                cerrar_sesion_usuario()
+                st.rerun()
     
     modo_seleccionado = st.toggle("Modo Oscuro", value=st.session_state.modo_oscuro)
     if modo_seleccionado != st.session_state.modo_oscuro:
@@ -762,7 +799,11 @@ with st.sidebar:
             id_elegido = seleccion_sesion.split(" | ")[0].strip()
             if id_elegido != st.session_state.sesion_id:
                 if st.button("Cargar conversación seleccionada", use_container_width=True):
-                    if cargar_sesion_en_estado(id_elegido):
+                    if respuestas_pendientes_global > 0:
+                        st.error(
+                            "Primero califica la respuesta pendiente (Like/Dislike y 0 a 5 estrellas) antes de cambiar de conversación."
+                        )
+                    elif cargar_sesion_en_estado(id_elegido):
                         st.rerun()
     else:
         st.caption("Aún no tienes conversaciones previas guardadas en tu cuenta.")
@@ -770,14 +811,62 @@ with st.sidebar:
     col_nueva, col_limpiar = st.columns(2)
     with col_nueva:
         if st.button("Nueva sesión", use_container_width=True):
-            iniciar_nueva_conversacion()
-            st.rerun()
+            if respuestas_pendientes_global > 0:
+                st.error(
+                    "Califica primero la respuesta pendiente antes de iniciar una nueva sesión."
+                )
+            else:
+                iniciar_nueva_conversacion()
+                st.rerun()
     with col_limpiar:
         if st.button("Limpiar actual", use_container_width=True):
-            st.session_state.messages = []
-            st.session_state.historial_rag = []
-            sincronizar_sesion_en_disco()
-            st.rerun()
+            if respuestas_pendientes_global > 0:
+                st.error(
+                    "Califica primero la respuesta pendiente antes de limpiar la conversación."
+                )
+            else:
+                st.session_state.messages = []
+                st.session_state.historial_rag = []
+                sincronizar_sesion_en_disco()
+                st.rerun()
+
+    st.markdown("---")
+    with st.expander("Exportar Evaluaciones y Usuarios (Admin)"):
+        clave_admin_esperada = os.getenv("LEXIS_ADMIN_KEY", "lexis_admin_2026")
+        clave_admin_in = st.text_input(
+            "Clave de administrador:",
+            type="password",
+            key="input_admin_export_key",
+        )
+        if clave_admin_in and clave_admin_in == clave_admin_esperada:
+            if gestor_sesiones.archivo_consolidado.exists():
+                bytes_eval = gestor_sesiones.archivo_consolidado.read_bytes()
+                st.download_button(
+                    "Descargar evaluaciones_consolidado.json",
+                    data=bytes_eval,
+                    file_name="evaluaciones_consolidado.json",
+                    mime="application/json",
+                    use_container_width=True,
+                )
+            else:
+                st.caption("Aún no existe evaluaciones_consolidado.json.")
+
+            if gestor_usuarios.archivo_usuarios.exists():
+                import json as _json
+
+                raw_usrs = gestor_usuarios._cargar_usuarios()
+                usrs_limpios = {
+                    u: gestor_usuarios._sanitizar_perfil(d) for u, d in raw_usrs.items()
+                }
+                st.download_button(
+                    "Descargar usuarios_registrados.json",
+                    data=_json.dumps(usrs_limpios, ensure_ascii=False, indent=2).encode("utf-8"),
+                    file_name="usuarios_registrados.json",
+                    mime="application/json",
+                    use_container_width=True,
+                )
+        elif clave_admin_in:
+            st.error("Clave de administrador incorrecta.")
 
 col_logo, col_titulo = st.columns([1, 6], vertical_alignment="center")
 
@@ -820,7 +909,23 @@ for idx_msg, msg in enumerate(st.session_state.messages):
         if msg["role"] == "assistant":
             renderizar_controles_evaluacion_mensaje(msg, idx_msg)
 
-if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
+bloqueo_por_evaluacion_pendiente = respuestas_pendientes_global > 0
+if bloqueo_por_evaluacion_pendiente:
+    st.warning(
+        "**Evaluación requerida para continuar:** Antes de realizar una nueva consulta o finalizar la sesión, "
+        "por favor califica la respuesta anterior seleccionando **Like o Dislike** y asignando una puntuación de **0 a 5 estrellas**."
+    )
+
+placeholder_chat = (
+    "Primero califica la respuesta anterior (Like/Dislike y 0 a 5 estrellas) para hacer otra consulta..."
+    if bloqueo_por_evaluacion_pendiente
+    else "Escribe tu consulta legal aquí..."
+)
+
+if prompt := st.chat_input(
+    placeholder_chat,
+    disabled=bloqueo_por_evaluacion_pendiente,
+):
     st.session_state.messages.append({"role": "user", "content": prompt})
     sincronizar_sesion_en_disco()
     with st.chat_message("user"):
@@ -981,7 +1086,7 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
         }
         st.session_state.messages.append(nuevo_mensaje)
         sincronizar_sesion_en_disco()
-        renderizar_controles_evaluacion_mensaje(nuevo_mensaje, nuevo_idx)
+        st.rerun()
 
 # =============================================================
 # APARTADO ANTES DE TERMINAR LA CONVERSACIÓN: COMENTARIOS DE EXPERIENCIA
@@ -1047,17 +1152,22 @@ if st.session_state.messages:
                 type="primary",
                 use_container_width=True,
             ):
-                st.session_state.experiencia_final = {
-                    "calificacion_global_estrellas": int(calif_global),
-                    "comentarios_experiencia": comentarios_exp.strip(),
-                    "sugerencias_correccion_futura": sugerencias_futuras.strip(),
-                    "guardado_en": exp_actual.get("guardado_en"),
-                }
-                st.session_state.estado_sesion = "finalizada"
-                sincronizar_sesion_en_disco()
-                st.success(
-                    f"Conversación `{st.session_state.sesion_id}` finalizada y guardada. Puedes retomarla cuando lo necesites desde el panel lateral o iniciar una nueva sesión."
-                )
+                if respuestas_pendientes_global > 0:
+                    st.error(
+                        "Antes de finalizar la conversación, por favor califica la respuesta pendiente arriba (Like/Dislike y de 0 a 5 estrellas)."
+                    )
+                else:
+                    st.session_state.experiencia_final = {
+                        "calificacion_global_estrellas": int(calif_global),
+                        "comentarios_experiencia": comentarios_exp.strip(),
+                        "sugerencias_correccion_futura": sugerencias_futuras.strip(),
+                        "guardado_en": exp_actual.get("guardado_en"),
+                    }
+                    st.session_state.estado_sesion = "finalizada"
+                    sincronizar_sesion_en_disco()
+                    st.success(
+                        f"Conversación `{st.session_state.sesion_id}` finalizada y guardada. Puedes retomarla cuando lo necesites desde el panel lateral o iniciar una nueva sesión."
+                    )
 
 st.caption(
     "Recordatorio de seguridad: LEXIS se encuentra en una fase de pruebas y puede cometer errores. "
