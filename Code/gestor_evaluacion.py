@@ -19,7 +19,20 @@ from dotenv import load_dotenv
 
 DIR_CODE = Path(__file__).resolve().parent
 ROOT_DIR = DIR_CODE.parent
-DIR_EVALUACION_DEFAULT = ROOT_DIR / "sesiones_evaluacion"
+
+
+def obtener_directorio_datos_persistentes() -> Path:
+    """
+    Obtiene el directorio de persistencia para sesiones y usuarios.
+    Soporta volúmenes persistentes de Railway (`LEXIS_DATA_DIR` o `RAILWAY_VOLUME_MOUNT_PATH`).
+    """
+    vol_custom = os.getenv("LEXIS_DATA_DIR") or os.getenv("RAILWAY_VOLUME_MOUNT_PATH")
+    if vol_custom and vol_custom.strip():
+        return Path(vol_custom.strip()) / "sesiones_evaluacion"
+    return ROOT_DIR / "sesiones_evaluacion"
+
+
+DIR_EVALUACION_DEFAULT = obtener_directorio_datos_persistentes()
 
 ENTORNOS_VALIDOS = ("produccion", "pruebas", "desarrollo")
 

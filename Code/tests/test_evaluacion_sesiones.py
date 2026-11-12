@@ -275,6 +275,53 @@ class TestEvaluacionYSesiones(unittest.TestCase):
             self.assertEqual(sesiones_usuario[0]["rol_usuario"], "Usuario General")
             self.assertEqual(sesiones_usuario[0]["num_respuestas_evaluadas"], 1)
 
+    def test_5_modo_ligero_railway_sin_chromadb(self) -> None:
+        """Verifica que en Railway (sin lexis_vectordb ni GPU) el motor híbrido y GraphRAG funcionen eficientemente."""
+        import os
+        from buscador import inicializar_motores, busqueda_hibrida, MODELO_NOMBRE
+        from grafo_lexis.integracion_rag import construir_contexto_graphrag, obtener_recuperador_grafo
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.environ["LEXIS_MODO_LIGERO"] = "1"
+            try:
+                (
+                    coleccion,
+                    motor_bm25,
+                    modelo_semantico,
+                    diccionario_textos,
+                    diccionario_metadatos,
+                    documentos_disponibles,
+                    _,
+                ) = inicializar_motores(str(Path(tmpdir) / "no_existe_db"), MODELO_NOMBRE)
+
+                self.assertEqual(len(documentos_disponibles), 6)
+                self.assertGreater(len(diccionario_textos), 7000)
+
+                q = "¿Cómo se tramita la revocación de la adopción cuando el adoptado es mayor de edad?"
+                hits = busqueda_hibrida(
+                    consulta=q,
+                    coleccion=coleccion,
+                    motor_bm25=motor_bm25,
+                    modelo=modelo_semantico,
+                    diccionario_textos=diccionario_textos,
+                    diccionario_metadatos=diccionario_metadatos,
+                    top_k=10,
+                    filtro_documento=None,
+                )
+                self.assertGreater(len(hits), 0)
+                articulos_top = [h.get("articulo", "") for h in hits[:5]]
+                self.assertTrue(any("1470" in a or "1466" in a for a in articulos_top))
+
+                ctx = construir_contexto_graphrag(
+                    hits,
+                    max_fragmentos_base=4,
+                    max_vecinos_grafo=4,
+                    recuperador=obtener_recuperador_grafo(),
+                )
+                self.assertIn("240-C", ctx["bloque_prompt"])
+            finally:
+                os.environ.pop("LEXIS_MODO_LIGERO", None)
+
 
 if __name__ == "__main__":
     unittest.main()

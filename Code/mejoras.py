@@ -14,8 +14,8 @@ CARPETA_DB = Path(__file__).parent.parent / "lexis_vectordb"
 CARPETA_LOGS = CARPETA_DB / "logs"
 CARPETA_CACHE = CARPETA_DB / "cache"
 
-CARPETA_LOGS.mkdir(exist_ok=True)
-CARPETA_CACHE.mkdir(exist_ok=True)
+CARPETA_LOGS.mkdir(parents=True, exist_ok=True)
+CARPETA_CACHE.mkdir(parents=True, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -357,36 +357,42 @@ def rerankear_resultados(
         total_peso = peso_rrf + peso_semantico
         peso_rrf_norm = peso_rrf / total_peso
         peso_semantico_norm = peso_semantico / total_peso
-        
-        # Obtener embedding de la consulta (una sola vez)
-        emb_consulta = modelo.encode([consulta], convert_to_numpy=True)[0]
-        
-        # Obtener embeddings de los documentos (en batch - más eficiente)
+
+        max_rrf = max((r.get('puntuacion_rrf', 0) for r in resultados), default=1.0) or 1.0
+
+        # Soporte optimizado si el modelo es MotorSemanticoTFIDF (matriz dispersa)
         textos = [r['texto'] for r in resultados]
-        emb_docs = modelo.encode(textos, convert_to_numpy=True)
-        
-        # Calcular similitud coseno para cada documento
-        normas_consulta = linalg.norm(emb_consulta)
-        
-        for i, resultado in enumerate(resultados):
-            emb_doc = emb_docs[i]
-            norma_doc = linalg.norm(emb_doc)
-            
-            # Similitud coseno
-            if normas_consulta > 0 and norma_doc > 0:
-                cos_sim = dot(emb_consulta, emb_doc) / (normas_consulta * norma_doc)
-            else:
-                cos_sim = 0
-            
-            # Normalizar puntuación RRF (simple max normalization)
-            puntuacion_rrf = resultado.get('puntuacion_rrf', 0)
-            
-            # Combinar puntuaciones
-            resultado['puntuacion_rerankeada'] = (
-                puntuacion_rrf * peso_rrf_norm +
-                cos_sim * peso_semantico_norm
-            )
-            resultado['similitud_coseno'] = cos_sim
+        q_encoded = modelo.encode([consulta], convert_to_numpy=True)
+        d_encoded = modelo.encode(textos, convert_to_numpy=True)
+
+        if hasattr(q_encoded, "matriz") and hasattr(d_encoded, "matriz"):
+            from sklearn.metrics.pairwise import linear_kernel
+            similitudes = linear_kernel(q_encoded.matriz, d_encoded.matriz).ravel()
+            for i, resultado in enumerate(resultados):
+                cos_sim = float(similitudes[i])
+                puntuacion_rrf_norm = resultado.get('puntuacion_rrf', 0) / max_rrf
+                resultado['puntuacion_rerankeada'] = (
+                    puntuacion_rrf_norm * peso_rrf_norm +
+                    cos_sim * peso_semantico_norm
+                )
+                resultado['similitud_coseno'] = cos_sim
+        else:
+            emb_consulta = q_encoded[0]
+            emb_docs = d_encoded
+            normas_consulta = linalg.norm(emb_consulta)
+            for i, resultado in enumerate(resultados):
+                emb_doc = emb_docs[i]
+                norma_doc = linalg.norm(emb_doc)
+                if normas_consulta > 0 and norma_doc > 0:
+                    cos_sim = float(dot(emb_consulta, emb_doc) / (normas_consulta * norma_doc))
+                else:
+                    cos_sim = 0.0
+                puntuacion_rrf_norm = resultado.get('puntuacion_rrf', 0) / max_rrf
+                resultado['puntuacion_rerankeada'] = (
+                    puntuacion_rrf_norm * peso_rrf_norm +
+                    cos_sim * peso_semantico_norm
+                )
+                resultado['similitud_coseno'] = cos_sim
         
         # Ordenar por puntuación re-rankeada
         resultados.sort(key=lambda x: x.get('puntuacion_rerankeada', 0), reverse=True)

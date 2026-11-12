@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import os
 import re
 import secrets
 from datetime import datetime
@@ -16,7 +17,12 @@ from typing import Any, Dict, Optional, Tuple
 
 DIR_CODE = Path(__file__).resolve().parent
 ROOT_DIR = DIR_CODE.parent
-DIR_EVALUACION_DEFAULT = ROOT_DIR / "sesiones_evaluacion"
+_VOL_PATH = os.getenv("LEXIS_DATA_DIR") or os.getenv("RAILWAY_VOLUME_MOUNT_PATH")
+DIR_EVALUACION_DEFAULT = (
+    Path(_VOL_PATH.strip()) / "sesiones_evaluacion"
+    if (_VOL_PATH and _VOL_PATH.strip())
+    else ROOT_DIR / "sesiones_evaluacion"
+)
 
 ROLES_USUARIO = (
     "Usuario General",
