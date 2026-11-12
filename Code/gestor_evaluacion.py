@@ -121,11 +121,19 @@ class GestorSesionesEvaluacion:
         dispositivo_id: str,
         entorno: str,
         nombre_evaluador: str = "",
+        usuario_id: str = "",
+        username: str = "",
+        rol_usuario: str = "Usuario General",
+        es_area_juridica_tlaxcala: bool = False,
     ) -> Dict[str, Any]:
         ahora = datetime.now().isoformat(timespec="seconds")
         return {
             "sesion_id": sesion_id,
             "dispositivo_id": dispositivo_id,
+            "usuario_id": usuario_id.strip(),
+            "username": username.strip().lower(),
+            "rol_usuario": rol_usuario.strip() if rol_usuario else "Usuario General",
+            "es_area_juridica_tlaxcala": bool(es_area_juridica_tlaxcala),
             "nombre_evaluador": nombre_evaluador.strip(),
             "entorno": entorno,
             "estado": "activa",
@@ -178,11 +186,14 @@ class GestorSesionesEvaluacion:
     def listar_sesiones(
         self,
         dispositivo_id: Optional[str] = None,
+        usuario_id: Optional[str] = None,
+        username: Optional[str] = None,
         incluir_vacias: bool = False,
     ) -> List[Dict[str, Any]]:
         """
         Lista las sesiones guardadas ordenadas de la más reciente a la más antigua.
-        Si se especifica dispositivo_id, filtra primero las de ese dispositivo.
+        Si se especifica usuario_id/username o dispositivo_id, filtra las sesiones
+        correspondientes al usuario autenticado o dispositivo.
         """
         sesiones: List[Dict[str, Any]] = []
         for archivo in self.sesiones_dir.glob("*.json"):
@@ -194,12 +205,28 @@ class GestorSesionesEvaluacion:
                     data.get("experiencia_final", {}).get("comentarios_experiencia")
                 ):
                     continue
-                if dispositivo_id and data.get("dispositivo_id") != dispositivo_id:
+                if usuario_id or username:
+                    coincide_usr = (
+                        (usuario_id and data.get("usuario_id") == usuario_id)
+                        or (username and data.get("username") == username.strip().lower())
+                        or (
+                            not data.get("usuario_id")
+                            and not data.get("username")
+                            and dispositivo_id
+                            and data.get("dispositivo_id") == dispositivo_id
+                        )
+                    )
+                    if not coincide_usr:
+                        continue
+                elif dispositivo_id and data.get("dispositivo_id") != dispositivo_id:
                     continue
                 sesiones.append(
                     {
                         "sesion_id": data.get("sesion_id", archivo.stem),
                         "dispositivo_id": data.get("dispositivo_id", ""),
+                        "usuario_id": data.get("usuario_id", ""),
+                        "username": data.get("username", ""),
+                        "rol_usuario": data.get("rol_usuario", "Usuario General"),
                         "nombre_evaluador": data.get("nombre_evaluador", ""),
                         "titulo": data.get("titulo", "Conversación sin título"),
                         "estado": data.get("estado", "activa"),
@@ -350,6 +377,12 @@ class GestorSesionesEvaluacion:
         consolidado.setdefault("sesiones", {})[datos_sesion["sesion_id"]] = {
             "sesion_id": datos_sesion["sesion_id"],
             "dispositivo_id": datos_sesion.get("dispositivo_id", ""),
+            "usuario_id": datos_sesion.get("usuario_id", ""),
+            "username": datos_sesion.get("username", ""),
+            "rol_usuario": datos_sesion.get("rol_usuario", "Usuario General"),
+            "es_area_juridica_tlaxcala": bool(
+                datos_sesion.get("es_area_juridica_tlaxcala", False)
+            ),
             "nombre_evaluador": datos_sesion.get("nombre_evaluador", ""),
             "entorno": datos_sesion.get("entorno", ""),
             "estado": datos_sesion.get("estado", "activa"),

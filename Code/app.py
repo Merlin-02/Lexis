@@ -36,6 +36,7 @@ from gestor_evaluacion import (
     generar_sesion_id,
     obtener_entorno_despliegue,
 )
+from gestor_usuarios import GestorUsuarios, ROLES_USUARIO
 
 try:
     from analizador_legal import analizar_coherencia_consulta, detectar_normativa
@@ -276,11 +277,12 @@ else:
 st.markdown(estilos_css, unsafe_allow_html=True)
 
 # =============================================================
-# GESTIÓN DE ENTORNO (.env) Y SESIONES PERSISTENTES POR DISPOSITIVO
+# GESTIÓN DE ENTORNO (.env), AUTENTICACIÓN Y SESIONES DE USUARIO
 # =============================================================
 ENTORNO_ACTUAL = obtener_entorno_despliegue()
 MODO_PRUEBAS = ENTORNO_ACTUAL == "pruebas"
 gestor_sesiones = GestorSesionesEvaluacion()
+gestor_usuarios = GestorUsuarios()
 
 
 def _detectar_dispositivo_actual() -> str:
@@ -302,8 +304,18 @@ def _detectar_dispositivo_actual() -> str:
 if "dispositivo_id" not in st.session_state:
     st.session_state.dispositivo_id = _detectar_dispositivo_actual()
 
+if "usuario_actual" not in st.session_state:
+    qp_token = st.query_params.get("token")
+    perfil_recuperado = gestor_usuarios.validar_token_sesion(str(qp_token)) if qp_token else None
+    st.session_state.usuario_actual = perfil_recuperado
+    st.session_state.auth_token = str(qp_token) if perfil_recuperado else ""
+
 if "nombre_evaluador" not in st.session_state:
-    st.session_state.nombre_evaluador = ""
+    st.session_state.nombre_evaluador = (
+        st.session_state.usuario_actual.get("nombre_completo", "")
+        if st.session_state.usuario_actual
+        else ""
+    )
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -319,13 +331,178 @@ if "experiencia_final" not in st.session_state:
 if "estado_sesion" not in st.session_state:
     st.session_state.estado_sesion = "activa"
 
+
+def renderizar_bloque_disclaimer_seguridad() -> None:
+    """Muestra el aviso de seguridad obligatorio sobre fase de pruebas y no sustitución de un experto."""
+    st.warning(
+        "**AVISO DE SEGURIDAD Y DESLINDE DE RESPONSABILIDAD LEGAL:**\n\n"
+        "1. **No sustituye a un experto:** LEXIS es una herramienta tecnológica de orientación informativa y "
+        "consulta normativa asistida por Inteligencia Artificial. Sus respuestas **no constituyen asesoría "
+        "jurídica vinculante ni sustituyen la consulta, patrocinio o dictamen de un abogado o especialista en derecho**.\n"
+        "2. **Sistema en fase de pruebas:** Esta plataforma se encuentra actualmente en **fase de pruebas**, "
+        "por lo que **puede cometer errores**, presentar omisiones o interpretar de forma inexacta algún precepto "
+        "legal. Verifique siempre la información con un profesional jurídico acreditado antes de tomar cualquier decisión."
+    )
+
+
+def renderizar_pantalla_autenticacion() -> None:
+    """Renderiza el portal de Inicio de Sesión y Creación de Cuenta antes de acceder al chat."""
+    with st.sidebar:
+        if ruta_logo.exists():
+            st.image(str(ruta_logo), width="stretch")
+        st.title("Asistente LEXIS")
+        st.caption("Sistema de Asesoría Legal Basado en RAG y Grafo de Conocimiento")
+        st.caption(f"Entorno activo (.env): **{ENTORNO_ACTUAL.upper()}**")
+        modo_sel = st.toggle("Modo Oscuro", value=st.session_state.modo_oscuro, key="toggle_dark_auth")
+        if modo_sel != st.session_state.modo_oscuro:
+            st.session_state.modo_oscuro = modo_sel
+            st.rerun()
+
+    col_izq, col_centro, col_der = st.columns([1, 3, 1])
+    with col_centro:
+        c_logo, c_tit = st.columns([1, 5], vertical_alignment="center")
+        with c_logo:
+            if ruta_logo.exists():
+                st.image(str(ruta_logo), width=85)
+        with c_tit:
+            st.title("Acceso a LEXIS")
+            st.caption("Orientación Jurídica Inteligente con Grafo de Conocimiento")
+
+        renderizar_bloque_disclaimer_seguridad()
+
+        tab_login, tab_registro = st.tabs(["Iniciar Sesión", "Crear Cuenta"])
+
+        with tab_login:
+            st.subheader("Iniciar Sesión en tu Cuenta")
+            with st.form("form_login_lexis", clear_on_submit=False):
+                identificador_in = st.text_input(
+                    "Nombre de usuario o correo electrónico:",
+                    placeholder="Ej. usuario123 o correo@dominio.com",
+                )
+                password_in = st.text_input(
+                    "Contraseña:",
+                    type="password",
+                    placeholder="Ingresa tu contraseña",
+                )
+                btn_ingresar = st.form_submit_button(
+                    "Iniciar Sesión",
+                    type="primary",
+                    use_container_width=True,
+                )
+                if btn_ingresar:
+                    ok, msg_auth, perfil = gestor_usuarios.autenticar_usuario(
+                        identificador_in, password_in
+                    )
+                    if ok and perfil:
+                        token = gestor_usuarios.crear_token_sesion(
+                            perfil["username"], st.session_state.dispositivo_id
+                        )
+                        st.session_state.usuario_actual = perfil
+                        st.session_state.auth_token = token
+                        st.session_state.nombre_evaluador = perfil["nombre_completo"]
+                        st.session_state.sesion_id = generar_sesion_id()
+                        st.session_state.messages = []
+                        st.session_state.historial_rag = []
+                        st.query_params["token"] = token
+                        st.query_params["sesion"] = st.session_state.sesion_id
+                        st.rerun()
+                    else:
+                        st.error(msg_auth)
+
+        with tab_registro:
+            st.subheader("Crear una Nueva Cuenta")
+            st.caption(
+                "Cualquier usuario puede crear una cuenta para realizar consultas legales, guardar su historial de conversaciones y calificar las respuestas del asistente."
+            )
+            with st.form("form_registro_lexis", clear_on_submit=False):
+                reg_nombre = st.text_input(
+                    "Nombre completo:",
+                    placeholder="Ej. María López Hernández",
+                )
+                col_u1, col_u2 = st.columns(2)
+                with col_u1:
+                    reg_username = st.text_input(
+                        "Nombre de usuario:",
+                        placeholder="Ej. maria_lopez",
+                    )
+                with col_u2:
+                    reg_correo = st.text_input(
+                        "Correo electrónico (opcional):",
+                        placeholder="Ej. maria@correo.com",
+                    )
+                col_p1, col_p2 = st.columns(2)
+                with col_p1:
+                    reg_pass1 = st.text_input(
+                        "Contraseña (mínimo 6 caracteres):",
+                        type="password",
+                    )
+                with col_p2:
+                    reg_pass2 = st.text_input(
+                        "Confirmar contraseña:",
+                        type="password",
+                    )
+
+                reg_es_juridico_tlaxcala = st.checkbox(
+                    "Soy abogado, estudiante de Derecho o me desempeño en un área afín en el Estado de Tlaxcala.",
+                    value=False,
+                )
+
+                reg_disclaimer = st.checkbox(
+                    "He leído y acepto que LEXIS se encuentra en fase de pruebas, puede cometer errores "
+                    "y que sus respuestas tienen carácter informativo y NO sustituyen la asesoría de un abogado o experto.",
+                    value=False,
+                )
+
+                btn_registrar = st.form_submit_button(
+                    "Crear Cuenta e Ingresar",
+                    type="primary",
+                    use_container_width=True,
+                )
+                if btn_registrar:
+                    if reg_pass1 != reg_pass2:
+                        st.error("Las contraseñas ingresadas no coinciden.")
+                    else:
+                        ok_reg, msg_reg, perfil_nuevo = gestor_usuarios.registrar_usuario(
+                            username=reg_username,
+                            password=reg_pass1,
+                            nombre_completo=reg_nombre,
+                            correo=reg_correo,
+                            acepta_disclaimer=reg_disclaimer,
+                            es_area_juridica_tlaxcala=reg_es_juridico_tlaxcala,
+                        )
+                        if ok_reg and perfil_nuevo:
+                            token = gestor_usuarios.crear_token_sesion(
+                                perfil_nuevo["username"], st.session_state.dispositivo_id
+                            )
+                            st.session_state.usuario_actual = perfil_nuevo
+                            st.session_state.auth_token = token
+                            st.session_state.nombre_evaluador = perfil_nuevo["nombre_completo"]
+                            st.session_state.sesion_id = generar_sesion_id()
+                            st.session_state.messages = []
+                            st.session_state.historial_rag = []
+                            st.query_params["token"] = token
+                            st.query_params["sesion"] = st.session_state.sesion_id
+                            st.rerun()
+                        else:
+                            st.error(msg_reg)
+
+
+if st.session_state.usuario_actual is None:
+    renderizar_pantalla_autenticacion()
+    st.stop()
+
+usuario_activo = st.session_state.usuario_actual
+st.session_state.nombre_evaluador = usuario_activo.get("nombre_completo", "")
+
 if "sesion_id" not in st.session_state:
     qp_ses = st.query_params.get("sesion")
     cargada = gestor_sesiones.cargar_sesion(qp_ses) if qp_ses else None
-    if cargada:
+    if cargada and (
+        not cargada.get("usuario_id")
+        or cargada.get("usuario_id") == usuario_activo.get("usuario_id")
+    ):
         st.session_state.sesion_id = cargada["sesion_id"]
         st.session_state.dispositivo_id = cargada.get("dispositivo_id", st.session_state.dispositivo_id)
-        st.session_state.nombre_evaluador = cargada.get("nombre_evaluador", "")
         st.session_state.messages = cargada.get("messages", [])
         st.session_state.historial_rag = [tuple(x) for x in cargada.get("historial_rag", [])]
         st.session_state.experiencia_final = cargada.get(
@@ -337,15 +514,23 @@ if "sesion_id" not in st.session_state:
 
 st.query_params["dispositivo"] = st.session_state.dispositivo_id
 st.query_params["sesion"] = st.session_state.sesion_id
+if st.session_state.get("auth_token"):
+    st.query_params["token"] = st.session_state.auth_token
 
 
 def sincronizar_sesion_en_disco() -> None:
-    """Guarda el estado completo de la sesión actual en sesiones_evaluacion/."""
+    """Guarda el estado completo de la sesión actual vinculada a la cuenta del usuario."""
     datos = gestor_sesiones.crear_estructura_sesion(
         sesion_id=st.session_state.sesion_id,
         dispositivo_id=st.session_state.dispositivo_id,
         entorno=ENTORNO_ACTUAL,
-        nombre_evaluador=st.session_state.nombre_evaluador,
+        nombre_evaluador=usuario_activo.get("nombre_completo", ""),
+        usuario_id=usuario_activo.get("usuario_id", ""),
+        username=usuario_activo.get("username", ""),
+        rol_usuario=usuario_activo.get("rol", "Usuario General"),
+        es_area_juridica_tlaxcala=bool(
+            usuario_activo.get("es_area_juridica_tlaxcala", False)
+        ),
     )
     datos["estado"] = st.session_state.estado_sesion
     datos["messages"] = st.session_state.messages
@@ -361,7 +546,6 @@ def cargar_sesion_en_estado(sesion_id_destino: str) -> bool:
         return False
     st.session_state.sesion_id = datos["sesion_id"]
     st.session_state.dispositivo_id = datos.get("dispositivo_id", st.session_state.dispositivo_id)
-    st.session_state.nombre_evaluador = datos.get("nombre_evaluador", st.session_state.nombre_evaluador)
     st.session_state.messages = datos.get("messages", [])
     st.session_state.historial_rag = [tuple(x) for x in datos.get("historial_rag", [])]
     st.session_state.experiencia_final = datos.get(
@@ -395,13 +579,30 @@ def iniciar_nueva_conversacion() -> None:
     st.query_params["sesion"] = st.session_state.sesion_id
 
 
+def cerrar_sesion_usuario() -> None:
+    """Guarda la conversación activa, revoca el token y cierra la sesión del usuario."""
+    if st.session_state.messages:
+        sincronizar_sesion_en_disco()
+    tok = st.session_state.get("auth_token", "")
+    if tok:
+        gestor_usuarios.cerrar_token_sesion(tok)
+    st.session_state.usuario_actual = None
+    st.session_state.auth_token = ""
+    st.session_state.messages = []
+    st.session_state.historial_rag = []
+    if "token" in st.query_params:
+        del st.query_params["token"]
+    if "sesion" in st.query_params:
+        del st.query_params["sesion"]
+
+
 def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
     """
-    Muestra los botones de Like y Dislike cuando LEXIS_ENV=pruebas y, tras votar,
+    Muestra para cualquier usuario los botones de Like y Dislike y, tras votar,
     despliega la calificación de 0 a 5 estrellas junto con el campo opcional de
-    corrección jurídica para validación por Licenciados en Derecho.
+    comentarios o corrección sobre la respuesta.
     """
-    if not MODO_PRUEBAS:
+    if ENTORNO_ACTUAL == "produccion":
         return
 
     if "id_mensaje" not in msg:
@@ -422,12 +623,12 @@ def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
 
     st.markdown("---")
     st.caption(
-        "Validación de respuesta (Modo Pruebas — Evaluación por Licenciados en Derecho):"
+        "Calificación de la respuesta (Evalúa con Like o Dislike y puntúa de 0 a 5 estrellas):"
     )
 
     col_like, col_dislike, col_estado = st.columns([2, 2, 4], vertical_alignment="center")
     with col_like:
-        etiqueta_like = "Like ( Seleccionado )" if voto_actual == "like" else "Like ( Respuesta adecuada )"
+        etiqueta_like = "Like ( Seleccionado )" if voto_actual == "like" else "Like ( Respuesta útil / adecuada )"
         if st.button(
             etiqueta_like,
             key=f"btn_like_{id_msg}",
@@ -462,11 +663,11 @@ def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
                 if estrellas_actuales is not None
                 else "Pendiente puntuar de 0 a 5 estrellas"
             )
-            st.caption(f"Estado de evaluación: **{voto_txt}** | **{est_txt}**")
+            st.caption(f"Estado de tu evaluación: **{voto_txt}** | **{est_txt}**")
 
-    # Después de pulsar Like o Dislike, aparecen las estrellas de 0 a 5 y la observación jurídica
+    # Después de pulsar Like o Dislike, aparecen las estrellas de 0 a 5 y el comentario opcional
     if voto_actual in ("like", "dislike"):
-        st.caption("Califica la calidad y precisión jurídica de esta respuesta (de 0 a 5 estrellas):")
+        st.caption("Puntúa la calidad, claridad y utilidad de esta respuesta (de 0 a 5 estrellas):")
         cols_estrellas = st.columns(6)
         for num_est in range(6):
             with cols_estrellas[num_est]:
@@ -484,20 +685,20 @@ def renderizar_controles_evaluacion_mensaje(msg: dict, idx: int) -> None:
                     st.rerun()
 
         with st.expander(
-            "Agregar observación o corrección jurídica para esta respuesta (opcional)",
+            "Agregar comentario, observación o sugerencia sobre esta respuesta (opcional)",
             expanded=bool(ev.get("correccion_juridica")),
         ):
             nota_actual = ev.get("correccion_juridica", "")
             nueva_nota = st.text_area(
-                "Indica qué artículo, criterio o interpretación legal debe corregirse o reforzarse:",
+                "Indica qué te pareció la respuesta o si detectaste algún artículo, dato o criterio que deba corregirse:",
                 value=nota_actual,
                 key=f"txt_corr_{id_msg}",
                 height=85,
             )
-            if st.button("Guardar observación jurídica", key=f"btn_save_corr_{id_msg}"):
+            if st.button("Guardar comentario de respuesta", key=f"btn_save_corr_{id_msg}"):
                 ev["correccion_juridica"] = nueva_nota.strip()
                 sincronizar_sesion_en_disco()
-                st.success("Observación jurídica guardada en el registro de evaluación.")
+                st.success("Comentario guardado en el registro de evaluación.")
 
 
 with st.sidebar:
@@ -506,6 +707,15 @@ with st.sidebar:
     st.title("Asistente LEXIS")
     st.caption("Sistema de Asesoría Legal Basado en RAG y Grafo de Conocimiento")
     st.caption(f"Entorno activo (.env): **{ENTORNO_ACTUAL.upper()}** | Sesión: `{st.session_state.sesion_id}`")
+
+    with st.container(border=True):
+        st.markdown(f"**Cuenta activa:** {usuario_activo['nombre_completo']}")
+        st.caption(
+            f"Usuario: `{usuario_activo['username']}` | Perfil: **{usuario_activo.get('rol', 'Usuario General')}**"
+        )
+        if st.button("Cerrar sesión", use_container_width=True):
+            cerrar_sesion_usuario()
+            st.rerun()
     
     modo_seleccionado = st.toggle("Modo Oscuro", value=st.session_state.modo_oscuro)
     if modo_seleccionado != st.session_state.modo_oscuro:
@@ -522,23 +732,22 @@ with st.sidebar:
         max_nodos_cerebro = st.slider("Nodos a mostrar en el grafo:", min_value=60, max_value=300, value=160, step=20)
     
     st.markdown("---")
-    st.subheader("Sesiones del Dispositivo")
-    nuevo_evaluador = st.text_input(
-        "Nombre del Evaluador / Lic. en Derecho:",
-        value=st.session_state.nombre_evaluador,
-        placeholder="Ej. Lic. Juan Pérez",
-    )
-    if nuevo_evaluador != st.session_state.nombre_evaluador:
-        st.session_state.nombre_evaluador = nuevo_evaluador
-        if st.session_state.messages:
-            sincronizar_sesion_en_disco()
+    st.subheader("Mis Conversaciones Guardadas")
 
     ver_todas_sesiones = st.checkbox(
-        "Mostrar sesiones de todos los dispositivos",
+        "Mostrar sesiones de este dispositivo sin cuenta",
         value=False,
     )
-    filtro_disp = None if ver_todas_sesiones else st.session_state.dispositivo_id
-    sesiones_guardadas = gestor_sesiones.listar_sesiones(dispositivo_id=filtro_disp)
+    if ver_todas_sesiones:
+        sesiones_guardadas = gestor_sesiones.listar_sesiones(
+            dispositivo_id=st.session_state.dispositivo_id
+        )
+    else:
+        sesiones_guardadas = gestor_sesiones.listar_sesiones(
+            dispositivo_id=st.session_state.dispositivo_id,
+            usuario_id=usuario_activo.get("usuario_id"),
+            username=usuario_activo.get("username"),
+        )
 
     if sesiones_guardadas:
         opciones_sesiones = ["(Seleccionar conversación guardada...)"] + [
@@ -556,7 +765,7 @@ with st.sidebar:
                     if cargar_sesion_en_estado(id_elegido):
                         st.rerun()
     else:
-        st.caption("Aún no hay conversaciones previas guardadas para este dispositivo.")
+        st.caption("Aún no tienes conversaciones previas guardadas en tu cuenta.")
 
     col_nueva, col_limpiar = st.columns(2)
     with col_nueva:
@@ -583,6 +792,8 @@ st.markdown(
     "Describe tu situación legal. Lexis analiza la consulta, recupera los artículos "
     "aplicables en la base de datos y genera una orientación fundamentada."
 )
+
+renderizar_bloque_disclaimer_seguridad()
 
 if mostrar_cerebro_global and GRAPHRAG_DISPONIBLE:
     with st.container(border=True):
@@ -778,11 +989,11 @@ if prompt := st.chat_input("Escribe tu consulta legal aquí..."):
 if st.session_state.messages:
     st.markdown("---")
     with st.expander(
-        "Comentarios sobre la Experiencia y Cierre de Conversación",
+        "Puntuación General del Chat, Comentarios sobre la Experiencia y Cierre de Conversación",
         expanded=(st.session_state.estado_sesion == "finalizada"),
     ):
         st.caption(
-            "Antes de concluir tu sesión, registra tus comentarios sobre la experiencia, la calidad jurídica de las respuestas y cualquier recomendación para futuras mejoras del modelo."
+            "Antes de concluir tu sesión, registra tu puntuación general del chat (de 0 a 5 estrellas), tus comentarios con respecto a la experiencia y cualquier sugerencia para mejorar las respuestas del modelo."
         )
         exp_actual = st.session_state.experiencia_final
 
@@ -795,7 +1006,7 @@ if st.session_state.messages:
         )
 
         calif_global = st.selectbox(
-            "Calificación general de la sesión (0 a 5 estrellas):",
+            "Calificación general del chat (0 a 5 estrellas):",
             options=opciones_estrellas_global,
             index=idx_global,
             format_func=lambda x: f"{x}/5 estrellas ({'★' * x})" if x > 0 else "0/5 estrellas (0 ★)",
@@ -811,9 +1022,9 @@ if st.session_state.messages:
         )
 
         sugerencias_futuras = st.text_area(
-            "Observaciones jurídicas generales para corrección futura de respuestas (Licenciados en Derecho):",
+            "Observaciones o correcciones sugeridas para mejorar las respuestas del modelo (opcional):",
             value=exp_actual.get("sugerencias_correccion_futura", ""),
-            placeholder="Indica criterios jurisprudenciales, artículos omitidos o ajustes recomendados para el modelo...",
+            placeholder="Indica si alguna respuesta omitió información relevante, artículos aplicables o si tienes sugerencias de mejora...",
             height=90,
             key="txt_sugerencias_futuras",
         )
@@ -847,3 +1058,8 @@ if st.session_state.messages:
                 st.success(
                     f"Conversación `{st.session_state.sesion_id}` finalizada y guardada. Puedes retomarla cuando lo necesites desde el panel lateral o iniciar una nueva sesión."
                 )
+
+st.caption(
+    "Recordatorio de seguridad: LEXIS se encuentra en una fase de pruebas y puede cometer errores. "
+    "La orientación proporcionada es de carácter informativo y no sustituye la asesoría de un abogado o experto legal."
+)
