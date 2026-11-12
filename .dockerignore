@@ -1,0 +1,17 @@
+.git
+.gitignore
+.vs
+.claude
+.agents
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.sqlite3
+lexis_vectordb/
+knowledge_chunks/
+knowledge_structured/
+Code/.env
+.env
+sesiones_evaluacion/usuarios.json
+sesiones_evaluacion/tokens_sesion.json

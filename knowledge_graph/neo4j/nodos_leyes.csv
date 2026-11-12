@@ -1,0 +1,7 @@
+id,clave,nombre_oficial,nombre_corto,tipo_norma,ambito,materia
+ley:cc_tlax,CC-TLAX,Código Civil para el Estado Libre y Soberano de Tlaxcala,Código Civil de Tlaxcala,codigo,estatal,civil
+ley:cp_tlax,CP-TLAX,Código Penal para el Estado Libre y Soberano de Tlaxcala,Código Penal de Tlaxcala,codigo,estatal,penal
+ley:cpeum,CPEUM,Constitución Política de los Estados Unidos Mexicanos,Constitución Federal (CPEUM),constitucion,federal,constitucional
+ley:lft,LFT,Ley Federal del Trabajo,Ley Federal del Trabajo,ley,federal,laboral
+ley:cpc_tlax,CPC-TLAX,Código de Procedimientos Civiles para el Estado Libre y Soberano de Tlaxcala,Código de Procedimientos Civiles de Tlaxcala,codigo,estatal,procesal_civil
+ley:cpp_tlax,CPP-TLAX,Código de Procedimientos Penales para el Estado Libre y Soberano de Tlaxcala,Código de Procedimientos Penales de Tlaxcala,codigo,estatal,procesal_penal

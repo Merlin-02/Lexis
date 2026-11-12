@@ -1,0 +1,85 @@
+{
+  "sesiones": {
+    "ses_20261030_143221_233ff0": {
+      "sesion_id": "ses_20261030_143221_233ff0",
+      "dispositivo_id": "disp_e9cb9fbec3",
+      "nombre_evaluador": "",
+      "entorno": "pruebas",
+      "estado": "activa",
+      "titulo": "Nueva conversación",
+      "actualizada_en": "2026-10-30T14:32:26",
+      "experiencia_final": {
+        "calificacion_global_estrellas": null,
+        "comentarios_experiencia": "",
+        "sugerencias_correccion_futura": "",
+        "guardado_en": null
+      },
+      "respuestas_evaluadas": []
+    },
+    "ses_20261030_143227_d8ab80": {
+      "sesion_id": "ses_20261030_143227_d8ab80",
+      "dispositivo_id": "disp_e9cb9fbec3",
+      "nombre_evaluador": "Merlin",
+      "entorno": "pruebas",
+      "estado": "activa",
+      "titulo": "hola que tal como puedo saber los motivos fundamentados de despid...",
+      "actualizada_en": "2026-10-30T14:32:53",
+      "experiencia_final": {
+        "calificacion_global_estrellas": null,
+        "comentarios_experiencia": "",
+        "sugerencias_correccion_futura": "",
+        "guardado_en": null
+      },
+      "respuestas_evaluadas": []
+    },
+    "ses_20261111_160306_892dca": {
+      "sesion_id": "ses_20261111_160306_892dca",
+      "dispositivo_id": "disp_7a873aa44c",
+      "nombre_evaluador": "",
+      "entorno": "pruebas",
+      "estado": "activa",
+      "titulo": "hola",
+      "actualizada_en": "2026-11-11T16:21:40",
+      "experiencia_final": {
+        "calificacion_global_estrellas": null,
+        "comentarios_experiencia": "",
+        "sugerencias_correccion_futura": "",
+        "guardado_en": null
+      },
+      "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0009_37081b",
+          "consulta_origen": "pero ese niño del que me piden manutencion solo tiene mi apellido ",
+          "respuesta_modelo": "Entiendo que te preocupa la situación de la manutención del niño que solo lleva tu apellido. Vamos a ver qué indica la ley que tenemos a mano y qué pasos podrías seguir.\n\n---\n\n### 1. ¿Qué dice la ley que tenemos?\n\n**Artículo 199 del Código Civil de Tlaxcala**  \n> “Los padres pueden reconocer a un hijo conjunta o separadamente.”\n\nEse artículo nos indica que, para que exista una relación de paternidad reconocida, el padre puede reconocer al hijo de forma conjunta (con la madre) o por separado. Cuando el niño lleva tu apellido, es muy probable que ya haya sido reconocido como tu hijo, lo que implica que tienes la patria potestad y, en consecuencia, la responsabilidad de su cuidado y manutención.\n\nSin embargo, los fragmentos que tenemos no incluyen un artículo que establezca específicamente la obligación de pagar manutención ni los criterios para determinarla. Por eso, no podemos decir con certeza cuál sería la cantidad o el procedimiento exacto para cumplir con esa obligación.\n\n---\n\n### 2. ¿Cómo se aplica a tu caso?\n\n- **Reconocimiento de paternidad**: Si el niño lleva tu apellido, es probable que ya haya sido reconocido como tu hijo. Eso significa que, según la ley, tienes la obligación de",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 199.-",
+              "jerarquia": "Capitulo III"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 339.-",
+              "jerarquia": "Capitulo VI"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 466.-",
+              "jerarquia": "Titulo"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cc_tlax:199",
+            "articulo:cc_tlax:339",
+            "articulo:cc_tlax:466"
+          ],
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "",
+          "evaluado_en": null
+        }
+      ]
+    }
+  }
+}

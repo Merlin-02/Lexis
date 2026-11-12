@@ -1,0 +1,333 @@
+{
+  "nodos": {
+    "total": 7239,
+    "por_tipo": {
+      "Ley": 6,
+      "Articulo": 7221,
+      "NormaExterna": 12
+    }
+  },
+  "aristas": {
+    "total": 10135,
+    "por_tipo": {
+      "CONTIENE": 7221,
+      "REFIERE_A": 2900,
+      "MENCIONA_NORMA": 14
+    },
+    "refiere_a_por_clase": {
+      "relativa": 922,
+      "directa": 940,
+      "lista": 321,
+      "rango": 564,
+      "explicita_otra_ley": 153
+    },
+    "refiere_a_por_relacion": {
+      "misma_ley": 2646,
+      "entre_leyes": 254
+    }
+  },
+  "leyes_mas_referenciadas": {
+    "pares_entre_leyes_distintas": [
+      {
+        "ley_origen_id": "ley:cpc_tlax",
+        "ley_origen_nombre": "Código de Procedimientos Civiles de Tlaxcala",
+        "ley_destino_id": "ley:cc_tlax",
+        "ley_destino_nombre": "Código Civil de Tlaxcala",
+        "total_referencias": 157
+      },
+      {
+        "ley_origen_id": "ley:cpc_tlax",
+        "ley_origen_nombre": "Código de Procedimientos Civiles de Tlaxcala",
+        "ley_destino_id": "ley:cpp_tlax",
+        "ley_destino_nombre": "Código de Procedimientos Penales de Tlaxcala",
+        "total_referencias": 36
+      },
+      {
+        "ley_origen_id": "ley:lft",
+        "ley_origen_nombre": "Ley Federal del Trabajo",
+        "ley_destino_id": "ley:cpeum",
+        "ley_destino_nombre": "Constitución Federal (CPEUM)",
+        "total_referencias": 21
+      },
+      {
+        "ley_origen_id": "ley:cp_tlax",
+        "ley_origen_nombre": "Código Penal de Tlaxcala",
+        "ley_destino_id": "ley:cpeum",
+        "ley_destino_nombre": "Constitución Federal (CPEUM)",
+        "total_referencias": 13
+      },
+      {
+        "ley_origen_id": "ley:cpp_tlax",
+        "ley_origen_nombre": "Código de Procedimientos Penales de Tlaxcala",
+        "ley_destino_id": "ley:cp_tlax",
+        "ley_destino_nombre": "Código Penal de Tlaxcala",
+        "total_referencias": 12
+      },
+      {
+        "ley_origen_id": "ley:cpp_tlax",
+        "ley_origen_nombre": "Código de Procedimientos Penales de Tlaxcala",
+        "ley_destino_id": "ley:cpeum",
+        "ley_destino_nombre": "Constitución Federal (CPEUM)",
+        "total_referencias": 9
+      },
+      {
+        "ley_origen_id": "ley:cc_tlax",
+        "ley_origen_nombre": "Código Civil de Tlaxcala",
+        "ley_destino_id": "ley:cpeum",
+        "ley_destino_nombre": "Constitución Federal (CPEUM)",
+        "total_referencias": 5
+      },
+      {
+        "ley_origen_id": "ley:cpc_tlax",
+        "ley_origen_nombre": "Código de Procedimientos Civiles de Tlaxcala",
+        "ley_destino_id": "ley:cpeum",
+        "ley_destino_nombre": "Constitución Federal (CPEUM)",
+        "total_referencias": 1
+      }
+    ],
+    "ranking_leyes_mas_citadas_por_otras": [
+      {
+        "ley_id": "ley:cc_tlax",
+        "nombre_corto": "Código Civil de Tlaxcala",
+        "citas_recibidas_de_otras_leyes": 157
+      },
+      {
+        "ley_id": "ley:cpeum",
+        "nombre_corto": "Constitución Federal (CPEUM)",
+        "citas_recibidas_de_otras_leyes": 49
+      },
+      {
+        "ley_id": "ley:cpp_tlax",
+        "nombre_corto": "Código de Procedimientos Penales de Tlaxcala",
+        "citas_recibidas_de_otras_leyes": 36
+      },
+      {
+        "ley_id": "ley:cp_tlax",
+        "nombre_corto": "Código Penal de Tlaxcala",
+        "citas_recibidas_de_otras_leyes": 12
+      }
+    ],
+    "citas_emitidas_hacia_otras_leyes": {
+      "ley:cpc_tlax": 194,
+      "ley:lft": 21,
+      "ley:cpp_tlax": 21,
+      "ley:cp_tlax": 13,
+      "ley:cc_tlax": 5
+    },
+    "citas_internas_entre_articulos": {
+      "ley:cc_tlax": 829,
+      "ley:lft": 519,
+      "ley:cpc_tlax": 516,
+      "ley:cpp_tlax": 171,
+      "ley:cp_tlax": 143,
+      "ley:cpeum": 125
+    },
+    "citas_relativas_a_propia_ley": {
+      "ley:lft": 130,
+      "ley:cpeum": 98,
+      "ley:cc_tlax": 68,
+      "ley:cp_tlax": 20,
+      "ley:cpc_tlax": 16,
+      "ley:cpp_tlax": 11
+    },
+    "normas_externas_mas_citadas": [
+      {
+        "norma_externa_id": "norma_externa:ley_notariado_estado",
+        "nombre": "Ley del Notariado para el Estado",
+        "total_menciones": 2
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_seguro_social",
+        "nombre": "Ley del Seguro Social",
+        "total_menciones": 2
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_general_derechos_ninas_ninos_adolescentes",
+        "nombre": "Ley General de los Derechos de Niñas, Niños y Adolescentes",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_prevencion",
+        "nombre": "Ley para la Prevención",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:codigo_comercio",
+        "nombre": "Código de Comercio",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:constitucion_politica_estado_libre_soberano_tlaxcala",
+        "nombre": "Constitución Política del Estado Libre y Soberano de Tlaxcala",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_general_salud",
+        "nombre": "Ley General de Salud",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_mercado_valores",
+        "nombre": "Ley del Mercado de Valores",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_general_educacion",
+        "nombre": "Ley General de Educación",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_general_transparencia_acceso_a_informacion_publica",
+        "nombre": "Ley General de Transparencia y Acceso a la Información Pública",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:ley_federal_entidades_paraestatales",
+        "nombre": "Ley Federal de Entidades Paraestatales",
+        "total_menciones": 1
+      },
+      {
+        "norma_externa_id": "norma_externa:codigo_civil_distrito_federal",
+        "nombre": "Código Civil para el Distrito Federal",
+        "total_menciones": 1
+      }
+    ]
+  },
+  "top_15_articulos_mas_citados": [
+    {
+      "articulo_id": "articulo:cpeum:123",
+      "etiqueta": "Artículo 123",
+      "ley_id": "ley:cpeum",
+      "jerarquia": "Titulo",
+      "total_citas_recibidas": 18,
+      "citas_desde_otras_leyes": 12,
+      "citas_misma_ley": 6
+    },
+    {
+      "articulo_id": "articulo:lft:450",
+      "etiqueta": "Artículo 450",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo II",
+      "total_citas_recibidas": 10,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 10
+    },
+    {
+      "articulo_id": "articulo:cpeum:96",
+      "etiqueta": "Artículo 96",
+      "ley_id": "ley:cpeum",
+      "jerarquia": "Capitulo IV",
+      "total_citas_recibidas": 9,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 9
+    },
+    {
+      "articulo_id": "articulo:lft:920",
+      "etiqueta": "Artículo 920",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo",
+      "total_citas_recibidas": 9,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 9
+    },
+    {
+      "articulo_id": "articulo:lft:48",
+      "etiqueta": "Artículo 48",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo IV",
+      "total_citas_recibidas": 8,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 8
+    },
+    {
+      "articulo_id": "articulo:lft:50",
+      "etiqueta": "Artículo 50",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo IV",
+      "total_citas_recibidas": 8,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 8
+    },
+    {
+      "articulo_id": "articulo:lft:390-TER",
+      "etiqueta": "Artículo 390 TER",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo III",
+      "total_citas_recibidas": 8,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 8
+    },
+    {
+      "articulo_id": "articulo:cc_tlax:43",
+      "etiqueta": "Artículo 43",
+      "ley_id": "ley:cc_tlax",
+      "jerarquia": "Capitulo II",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 7
+    },
+    {
+      "articulo_id": "articulo:cc_tlax:369",
+      "etiqueta": "Artículo 369",
+      "ley_id": "ley:cc_tlax",
+      "jerarquia": "Capitulo IX",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 2,
+      "citas_misma_ley": 5
+    },
+    {
+      "articulo_id": "articulo:cpeum:27",
+      "etiqueta": "Artículo 27",
+      "ley_id": "ley:cpeum",
+      "jerarquia": "Capitulo I",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 3,
+      "citas_misma_ley": 4
+    },
+    {
+      "articulo_id": "articulo:cc_tlax:2976",
+      "etiqueta": "Artículo 2976",
+      "ley_id": "ley:cc_tlax",
+      "jerarquia": "Capitulo V",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 6,
+      "citas_misma_ley": 1
+    },
+    {
+      "articulo_id": "articulo:cpeum:16",
+      "etiqueta": "Artículo 16",
+      "ley_id": "ley:cpeum",
+      "jerarquia": "Capitulo I",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 6,
+      "citas_misma_ley": 1
+    },
+    {
+      "articulo_id": "articulo:lft:390-BIS",
+      "etiqueta": "Artículo 390 BIS",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo III",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 7
+    },
+    {
+      "articulo_id": "articulo:lft:897",
+      "etiqueta": "Artículo 897",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo",
+      "total_citas_recibidas": 7,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 7
+    },
+    {
+      "articulo_id": "articulo:cpeum:6",
+      "etiqueta": "Artículo 6",
+      "ley_id": "ley:cpeum",
+      "jerarquia": "Capitulo I",
+      "total_citas_recibidas": 6,
+      "citas_desde_otras_leyes": 1,
+      "citas_misma_ley": 5
+    }
+  ]
+}

@@ -80,17 +80,33 @@ def cargar_system_prompt(ruta: str = "../knowledge/Prompt.txt") -> str:
         print(f"Error al leer {ruta}: {e}")
         sys.exit(1)
 
+try:
+    from grafo_lexis.integracion_rag import construir_contexto_graphrag
+    GRAPHRAG_DISPONIBLE = True
+except ImportError:
+    GRAPHRAG_DISPONIBLE = False
+
 # ============================================================
-# CONSTRUCCIÓN DEL BLOQUE DE LEYES RECUPERADAS
+# CONSTRUCCIÓN DEL BLOQUE DE LEYES RECUPERADAS (RAG + GraphRAG)
 # ============================================================
-def construir_bloque_leyes(hits: List[Dict[str, Any]]) -> str:
-    """Toma los hits más relevantes (ordenados de mayor a menor puntuación) y construye el bloque."""
+def construir_bloque_leyes(hits: List[Dict[str, Any]], usar_grafo: bool = True) -> str:
+    """Toma los hits más relevantes y construye el bloque enriquecido con el Grafo de Conocimiento."""
     if not hits:
         return "No se encontraron fragmentos legales relevantes para esta consulta."
-    
-    # hits ya viene ordenado de mayor a menor relevancia (tras arreglo en buscador.py)
+    if usar_grafo and GRAPHRAG_DISPONIBLE:
+        try:
+            ctx = construir_contexto_graphrag(
+                hits,
+                max_fragmentos_base=MAX_FRAGMENTOS,
+                max_vecinos_grafo=3,
+                max_len_fragmento=MAX_LEN_FRAGMENTO,
+            )
+            return ctx["bloque_prompt"]
+        except Exception:
+            pass
+
+    # Fallback clásico si se desactiva usar_grafo
     hits_top = hits[:MAX_FRAGMENTOS] if len(hits) > MAX_FRAGMENTOS else hits
-    
     bloque = ""
     for i, hit in enumerate(hits_top, 1):
         fuente = f"{hit['documento']} - {hit['articulo']} (Jerarquía: {hit['jerarquia']})"
@@ -303,13 +319,12 @@ def main():
             elif any('vaga' in s.lower() for s in sugerencias):
                 print(f"  💡 {sugerencias[0]}")
         
-        # --- DETECCIÓN AUTOMÁTICA DE FILTRO (si no hay filtro manual) ---
+        # --- DETECCIÓN DE FILTRO (búsqueda multi-ley por defecto si no hay filtro manual) ---
         filtro_a_usar = filtro_doc_actual
         if filtro_a_usar is None:
             sugerida = detectar_ley_sugerida(consulta_limpia, documentos_disponibles)
             if sugerida:
-                print(f"  🔍 Detecté que tu consulta se relaciona con '{sugerida}'. Aplicando filtro automático.")
-                filtro_a_usar = sugerida
+                print(f"  [INFO] Área sugerida: '{sugerida}' (búsqueda global multi-ley activa).")
         
         # Búsqueda RAG
         print("\n🔍 Buscando leyes que apliquen a tu caso...")
