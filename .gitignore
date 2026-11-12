@@ -15,3 +15,7 @@ Code/.vs/
 .agents/
 sesiones_evaluacion/usuarios.json
 sesiones_evaluacion/tokens_sesion.json
+
+# Configuración local de agentes
+.agents/
+.claude/
