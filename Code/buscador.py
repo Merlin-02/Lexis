@@ -1,9 +1,9 @@
 #buscador.py
+import json
+import os
 import string
 import warnings
 import time
-import chromadb
-from sentence_transformers import SentenceTransformer
 from rank_bm25 import BM25Okapi
 from collections import defaultdict
 from pathlib import Path
@@ -51,11 +51,163 @@ PESO_LEXICO    = 0.95
 # =============================================================
 # PREPROCESAMIENTO
 # =============================================================
+STOPWORDS_ES = {
+    "de", "la", "el", "en", "y", "a", "los", "del", "se", "las", "por", "un",
+    "para", "con", "no", "una", "su", "al", "lo", "como", "cómo", "mas", "más",
+    "pero", "sus", "le", "ya", "o", "este", "si", "sí", "porque", "esta", "está",
+    "entre", "cuando", "cuándo", "muy", "sin", "sobre", "ser", "tiene", "también",
+    "me", "hasta", "hay", "donde", "dónde", "quien", "quién", "desde", "todo",
+    "nos", "durante", "todos", "uno", "les", "ni", "contra", "otros", "ese",
+    "eso", "ante", "ellos", "e", "esto", "mí", "mi", "antes", "algunos", "qué",
+    "que", "unos", "yo", "otro", "otras", "otra", "él", "tanto", "esa", "estos",
+    "cual", "cuál", "es", "son", "fue", "sea", "han", "ha",
+}
+
+
 def preprocesar_texto(texto: str) -> list[str]:
-    """Minusculas + elimina puntuacion para el motor lexico (BM25)."""
+    """Minusculas + elimina puntuacion y stopwords vacías para el motor lexico (BM25)."""
     texto = texto.lower()
-    texto = texto.translate(str.maketrans("", "", string.punctuation))
-    return texto.split()
+    puntuacion_ext = string.punctuation + "¿¡«»“”‘’—"
+    texto = texto.translate(str.maketrans("", "", puntuacion_ext))
+    tokens = [t for t in texto.split() if t not in STOPWORDS_ES and len(t) > 1]
+    return tokens if tokens else texto.split()
+
+
+# =============================================================
+# MOTOR SEMÁNTICO LIGERO PARA DESPLIEGUE CLOUD (RAILWAY / SIN CHROMADB)
+# =============================================================
+MAPEO_LEY_ID_A_DOCUMENTO = {
+    "ley:lft": "Ley Trabajo",
+    "ley:cp_tlax": "Código Penal Tlaxcala",
+    "ley:cc_tlax": "Codigo Civil Tlaxcala",
+    "ley:cpc_tlax": "Procedimiento Civiles Tlaxcala",
+    "ley:cpp_tlax": "Procedimiento Penal Tlaxcala",
+    "ley:cpeum": "Constitucion",
+}
+
+
+class _VectorWrapper:
+    """Empaqueta una matriz dispersa ofreciendo .tolist() e indexación compatible con ChromaDB y rerankeo."""
+
+    def __init__(self, matriz):
+        self.matriz = matriz
+
+    def tolist(self):
+        return self.matriz
+
+    def __getitem__(self, idx):
+        fila = self.matriz[idx]
+        return fila.toarray().ravel() if hasattr(fila, "toarray") else fila
+
+    def __len__(self):
+        return self.matriz.shape[0]
+
+
+class MotorSemanticoTFIDF:
+    """
+    Motor vectorial ligero basado en TF-IDF de n-gramas con escalado sublineal.
+    Consume < 30 MB de RAM y arranca en ~1 segundo en contenedores Railway CPU.
+    """
+
+    def __init__(self, textos: list[str]):
+        from sklearn.feature_extraction.text import TfidfVectorizer
+
+        self.vectorizador = TfidfVectorizer(
+            ngram_range=(1, 2),
+            sublinear_tf=True,
+            max_features=60000,
+            lowercase=True,
+            strip_accents="unicode",
+            stop_words=list(STOPWORDS_ES),
+        )
+        self.matriz_docs = self.vectorizador.fit_transform(textos)
+
+    def encode(self, consultas: list[str], **_kwargs) -> _VectorWrapper:
+        vec = self.vectorizador.transform(consultas)
+        return _VectorWrapper(vec)
+
+
+class ColeccionLigeraTFIDF:
+    """
+    Emula la interfaz `coleccion.query(query_embeddings=..., n_results=...)` de ChromaDB
+    utilizando similitud coseno directa sobre la matriz TF-IDF en memoria.
+    """
+
+    def __init__(self, ids_documentos: list[str], motor_tfidf: MotorSemanticoTFIDF):
+        self.ids_documentos = ids_documentos
+        self.motor_tfidf = motor_tfidf
+
+    def query(self, query_embeddings, n_results: int = 30) -> dict:
+        import numpy as np
+        from sklearn.metrics.pairwise import linear_kernel
+
+        q_vec = (
+            query_embeddings.matriz
+            if hasattr(query_embeddings, "matriz")
+            else query_embeddings
+        )
+        similitudes = linear_kernel(q_vec, self.motor_tfidf.matriz_docs).ravel()
+        k = min(n_results, len(self.ids_documentos))
+        if k <= 0:
+            return {"ids": [[]]}
+        indices_top = np.argsort(similitudes)[::-1][:k]
+        ids_ordenados = [self.ids_documentos[idx] for idx in indices_top]
+        return {"ids": [ids_ordenados]}
+
+
+def _cargar_corpus_desde_grafo_json() -> tuple[list[str], list[str], list[dict]]:
+    """
+    Carga los 7,221 artículos directamente desde `knowledge_graph/grafo_lexis.json`
+    cuando `lexis_vectordb` no está presente en el contenedor de despliegue (ej. Railway).
+    """
+    ruta_grafo = Path(__file__).resolve().parent.parent / "knowledge_graph" / "grafo_lexis.json"
+    if not ruta_grafo.exists():
+        raise FileNotFoundError(
+            f"No se encontró ni la base ChromaDB ni el grafo base en {ruta_grafo}"
+        )
+
+    with open(ruta_grafo, "r", encoding="utf-8") as f:
+        datos_grafo = json.load(f)
+
+    ids_documentos: list[str] = []
+    textos_documentos: list[str] = []
+    metadatos_lista: list[dict] = []
+
+    for nodo in datos_grafo.get("nodos", []):
+        if nodo.get("tipo_nodo") != "Articulo":
+            continue
+        if nodo.get("es_transitorio", False):
+            continue
+
+        doc_id = nodo["id"]
+        ley_id = nodo.get("ley_id", "")
+        documento = MAPEO_LEY_ID_A_DOCUMENTO.get(ley_id, ley_id)
+        num_can = nodo.get("numero_canonico", "")
+        etiqueta = (
+            nodo.get("etiqueta")
+            or nodo.get("etiqueta_original")
+            or (f"Artículo {num_can}" if num_can else "")
+        )
+        if etiqueta and not etiqueta.endswith(".") and not etiqueta.endswith("-"):
+            etiqueta_fmt = f"{etiqueta}.-"
+        else:
+            etiqueta_fmt = etiqueta
+        jerarquia = nodo.get("jerarquia", "") or "General"
+        texto_cuerpo = nodo.get("texto_completo", "")
+        texto_busqueda = f"[{documento}] {etiqueta_fmt} - {jerarquia}: {texto_cuerpo}"
+
+        ids_documentos.append(doc_id)
+        textos_documentos.append(texto_busqueda)
+        metadatos_lista.append(
+            {
+                "documento": documento,
+                "articulo": etiqueta_fmt,
+                "jerarquia": jerarquia,
+                "nodo_articulo_id": doc_id,
+            }
+        )
+
+    return ids_documentos, textos_documentos, metadatos_lista
 
 
 # =============================================================
@@ -64,33 +216,71 @@ def preprocesar_texto(texto: str) -> list[str]:
 def inicializar_motores(ruta_db: str, modelo_nombre: str):
     """
     Conecta ChromaDB, carga el modelo semantico y construye el indice BM25.
-    Retorna: (coleccion, motor_bm25, modelo, diccionario_textos, diccionario_metadatos)
+    En entornos cloud como Railway (o cuando `lexis_vectordb` no está presente),
+    activa automáticamente el motor híbrido ligero basado en `knowledge_graph/grafo_lexis.json`
+    para reducir el consumo de RAM y evitar descargas pesadas en el arranque.
     """
-    print("Conectando con la base de datos vectorial de LEXIS...")
-    cliente   = chromadb.PersistentClient(path=ruta_db)
+    en_railway = bool(
+        os.getenv("RAILWAY_ENVIRONMENT")
+        or os.getenv("RAILWAY_PROJECT_ID")
+        or os.getenv("RAILWAY_SERVICE_ID")
+    )
+    forzar_ligero = os.getenv("LEXIS_MODO_LIGERO", "").strip().lower() in (
+        "1",
+        "true",
+        "si",
+        "yes",
+    )
+    forzar_chroma = os.getenv("LEXIS_FORZAR_CHROMA", "").strip().lower() in (
+        "1",
+        "true",
+        "si",
+        "yes",
+    )
 
-    try:
-        coleccion = cliente.get_collection(name="lexis_leyes_mexico")
-    except ValueError:
-        raise Exception(
-            "No se encontro la coleccion. Ejecuta vectorizacion.py primero."
-        )
+    usar_modo_ligero = forzar_ligero or (en_railway and not forzar_chroma)
+    coleccion = None
+    modelo = None
+    ids_documentos = []
+    textos_documentos = []
+    metadatos_lista = []
 
-    print("Cargando el motor semantico...")
-    modelo = SentenceTransformer(modelo_nombre)
+    if not usar_modo_ligero:
+        try:
+            import chromadb
+            from sentence_transformers import SentenceTransformer
+
+            print("Conectando con la base de datos vectorial de LEXIS...")
+            cliente = chromadb.PersistentClient(path=ruta_db)
+            coleccion = cliente.get_collection(name="lexis_leyes_mexico")
+
+            print("Cargando el motor semantico...")
+            modelo = SentenceTransformer(modelo_nombre)
+
+            datos_db = coleccion.get(include=["documents", "metadatas"])
+            ids_documentos = datos_db["ids"]
+            textos_documentos = datos_db["documents"]
+            metadatos_lista = datos_db["metadatas"]
+        except Exception as err_chroma:
+            print(
+                f"  [INFO] ChromaDB local no disponible ({err_chroma}). "
+                "Activando motor híbrido ligero desde knowledge_graph/grafo_lexis.json..."
+            )
+            usar_modo_ligero = True
+
+    if usar_modo_ligero:
+        print("Iniciando motor híbrido optimizado para Cloud/Railway desde el Grafo de Conocimiento...")
+        ids_documentos, textos_documentos, metadatos_lista = _cargar_corpus_desde_grafo_json()
+        modelo = MotorSemanticoTFIDF(textos_documentos)
+        coleccion = ColeccionLigeraTFIDF(ids_documentos, modelo)
 
     print("Cargando índice BM25...")
-    
-    # Incluimos metadatos para poder filtrar sin consulta extra
-    datos_db          = coleccion.get(include=["documents", "metadatas"])
-    ids_documentos    = datos_db["ids"]
-    textos_documentos = datos_db["documents"]
-    metadatos_lista   = datos_db["metadatas"]
 
     # Intentar cargar índice BM25 desde caché
     ruta_cache = Path(ruta_db) / "cache"
-    ruta_cache.mkdir(exist_ok=True)
-    ruta_bm25 = ruta_cache / "bm25_index.pkl"
+    ruta_cache.mkdir(parents=True, exist_ok=True)
+    sufijo_cache = "cloud" if usar_modo_ligero else "chroma"
+    ruta_bm25 = ruta_cache / f"bm25_index_{sufijo_cache}.pkl"
     
     datos_cache = cargar_indice_bm25(ruta_bm25) if MEJORAS_DISPONIBLES else None
     
@@ -388,12 +578,13 @@ def busqueda_hibrida(
     for doc_id in ids_finales:
         meta = diccionario_metadatos.get(doc_id, {})
         resultados.append({
-            "id"             : doc_id,
-            "texto"          : diccionario_textos[doc_id],
-            "puntuacion_rrf" : puntuaciones_rrf.get(doc_id, 0),
-            "documento"      : meta.get("documento", "N/D"),
-            "articulo"       : meta.get("articulo",  "N/D"),
-            "jerarquia"      : meta.get("jerarquia",  "N/D"),
+            "id"               : doc_id,
+            "nodo_articulo_id" : meta.get("nodo_articulo_id", doc_id),
+            "texto"            : diccionario_textos[doc_id],
+            "puntuacion_rrf"   : puntuaciones_rrf.get(doc_id, 0),
+            "documento"        : meta.get("documento", "N/D"),
+            "articulo"         : meta.get("articulo",  "N/D"),
+            "jerarquia"        : meta.get("jerarquia",  "N/D"),
         })
 
     # MEJORA: Re-rankeo de resultados

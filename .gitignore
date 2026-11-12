@@ -13,3 +13,5 @@ Code/__pycache__/
 Code/.vs/
 .claude/
 .agents/
+sesiones_evaluacion/usuarios.json
+sesiones_evaluacion/tokens_sesion.json

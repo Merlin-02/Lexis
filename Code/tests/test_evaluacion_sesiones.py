@@ -20,6 +20,7 @@ from gestor_evaluacion import (
     generar_sesion_id,
     obtener_entorno_despliegue,
 )
+from gestor_usuarios import GestorUsuarios
 
 
 class TestEvaluacionYSesiones(unittest.TestCase):
@@ -171,6 +172,155 @@ class TestEvaluacionYSesiones(unittest.TestCase):
             self.assertEqual(len(evals), 1)
             self.assertEqual(evals[0]["voto"], "like")
             self.assertEqual(evals[0]["estrellas_0_a_5"], 5)
+
+    def test_4_registro_login_y_evaluacion_usuario_general(self) -> None:
+        """Verifica creación de cuenta, exigencia de disclaimer, inicio de sesión y evaluación por usuario general."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            base = Path(tmpdir)
+            gestor_usr = GestorUsuarios(base_dir=base)
+            gestor_ses = GestorSesionesEvaluacion(base_dir=base)
+
+            # 1. Rechazar registro si no acepta el disclaimer de seguridad y fase de pruebas
+            ok_no_disc, msg_no_disc, _ = gestor_usr.registrar_usuario(
+                username="ciudadano_1",
+                password="mipassword123",
+                nombre_completo="Juan Ciudadano",
+                rol="Usuario General",
+                acepta_disclaimer=False,
+            )
+            self.assertFalse(ok_no_disc)
+            self.assertIn("aviso de seguridad", msg_no_disc)
+
+            # 2. Registro válido aceptando el disclaimer (usuario general y especialista de Tlaxcala)
+            ok_reg, _, perfil = gestor_usr.registrar_usuario(
+                username="ciudadano_1",
+                password="mipassword123",
+                nombre_completo="Juan Ciudadano",
+                correo="juan@ejemplo.com",
+                acepta_disclaimer=True,
+                es_area_juridica_tlaxcala=False,
+            )
+            self.assertTrue(ok_reg)
+            self.assertIsNotNone(perfil)
+            self.assertEqual(perfil["username"], "ciudadano_1")
+            self.assertFalse(perfil["es_area_juridica_tlaxcala"])
+            self.assertEqual(perfil["rol"], "Usuario General")
+            self.assertNotIn("password_hash", perfil)
+
+            ok_tlax, _, perfil_tlax = gestor_usr.registrar_usuario(
+                username="abogado_tlax",
+                password="mipassword123",
+                nombre_completo="Lic. Elena Morales",
+                acepta_disclaimer=True,
+                es_area_juridica_tlaxcala=True,
+            )
+            self.assertTrue(ok_tlax)
+            self.assertTrue(perfil_tlax["es_area_juridica_tlaxcala"])
+            self.assertIn("Tlaxcala", perfil_tlax["rol"])
+
+            # 3. Autenticación con nombre de usuario y con correo
+            ok_login, _, perfil_login = gestor_usr.autenticar_usuario(
+                "ciudadano_1", "mipassword123"
+            )
+            self.assertTrue(ok_login)
+            self.assertEqual(perfil_login["usuario_id"], perfil["usuario_id"])
+
+            ok_correo, _, _ = gestor_usr.autenticar_usuario(
+                "juan@ejemplo.com", "mipassword123"
+            )
+            self.assertTrue(ok_correo)
+
+            ok_bad, _, _ = gestor_usr.autenticar_usuario("ciudadano_1", "clave_erronea")
+            self.assertFalse(ok_bad)
+
+            # 4. Token de sesión y cierre de sesión
+            token = gestor_usr.crear_token_sesion("ciudadano_1", "disp_123")
+            self.assertIsNotNone(gestor_usr.validar_token_sesion(token))
+            gestor_usr.cerrar_token_sesion(token)
+            self.assertIsNone(gestor_usr.validar_token_sesion(token))
+
+            # 5. Guardar sesión y puntuación de chat para usuario general
+            ses_id = generar_sesion_id()
+            datos_ses = gestor_ses.crear_estructura_sesion(
+                sesion_id=ses_id,
+                dispositivo_id="disp_123",
+                entorno="pruebas",
+                nombre_evaluador=perfil["nombre_completo"],
+                usuario_id=perfil["usuario_id"],
+                username=perfil["username"],
+                rol_usuario=perfil["rol"],
+            )
+            datos_ses["messages"] = [
+                {"role": "user", "content": "¿Qué hago si me despidieron hoy?"},
+                {
+                    "id_mensaje": "msg_usr_1",
+                    "role": "assistant",
+                    "content": "Orientación sobre despido conforme a la LFT...",
+                    "consulta_origen": "¿Qué hago si me despidieron hoy?",
+                },
+            ]
+            gestor_ses.guardar_sesion(datos_ses)
+            gestor_ses.registrar_voto_mensaje(datos_ses, "msg_usr_1", "like")
+            gestor_ses.registrar_estrellas_mensaje(
+                datos_ses,
+                "msg_usr_1",
+                4,
+                correccion_juridica="Muy clara la explicación para un usuario general.",
+            )
+
+            sesiones_usuario = gestor_ses.listar_sesiones(
+                usuario_id=perfil["usuario_id"]
+            )
+            self.assertEqual(len(sesiones_usuario), 1)
+            self.assertEqual(sesiones_usuario[0]["rol_usuario"], "Usuario General")
+            self.assertEqual(sesiones_usuario[0]["num_respuestas_evaluadas"], 1)
+
+    def test_5_modo_ligero_railway_sin_chromadb(self) -> None:
+        """Verifica que en Railway (sin lexis_vectordb ni GPU) el motor híbrido y GraphRAG funcionen eficientemente."""
+        import os
+        from buscador import inicializar_motores, busqueda_hibrida, MODELO_NOMBRE
+        from grafo_lexis.integracion_rag import construir_contexto_graphrag, obtener_recuperador_grafo
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            os.environ["LEXIS_MODO_LIGERO"] = "1"
+            try:
+                (
+                    coleccion,
+                    motor_bm25,
+                    modelo_semantico,
+                    diccionario_textos,
+                    diccionario_metadatos,
+                    documentos_disponibles,
+                    _,
+                ) = inicializar_motores(str(Path(tmpdir) / "no_existe_db"), MODELO_NOMBRE)
+
+                self.assertEqual(len(documentos_disponibles), 6)
+                self.assertGreater(len(diccionario_textos), 7000)
+
+                q = "¿Cómo se tramita la revocación de la adopción cuando el adoptado es mayor de edad?"
+                hits = busqueda_hibrida(
+                    consulta=q,
+                    coleccion=coleccion,
+                    motor_bm25=motor_bm25,
+                    modelo=modelo_semantico,
+                    diccionario_textos=diccionario_textos,
+                    diccionario_metadatos=diccionario_metadatos,
+                    top_k=10,
+                    filtro_documento=None,
+                )
+                self.assertGreater(len(hits), 0)
+                articulos_top = [h.get("articulo", "") for h in hits[:5]]
+                self.assertTrue(any("1470" in a or "1466" in a for a in articulos_top))
+
+                ctx = construir_contexto_graphrag(
+                    hits,
+                    max_fragmentos_base=4,
+                    max_vecinos_grafo=4,
+                    recuperador=obtener_recuperador_grafo(),
+                )
+                self.assertIn("240-C", ctx["bloque_prompt"])
+            finally:
+                os.environ.pop("LEXIS_MODO_LIGERO", None)
 
 
 if __name__ == "__main__":
