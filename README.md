@@ -45,7 +45,7 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 | **Memoria conversacional** y seguimiento de contexto | 100% | Completado |
 | **Sistema de fallback** con índice temático (`indice_tematico.py` auditado al 100% contra `grafo_lexis.json`) | 100% | Completado |
 | **Optimizaciones** (caché BM25, sinónimos, logging JSONL, pesos dinámicos) | 100% | Completado |
-| **Pruebas unitarias** (`test_unidades.py` + 9 suites en `Code/tests/` para grafo y sesiones: 56/56 pruebas en verde) | 100% | Completado |
+| **Pruebas unitarias** (`test_unidades.py` + 9 suites en `Code/tests/` para grafo y sesiones: 57/57 pruebas en verde) | 100% | Completado |
 | **Interfaz de usuario en terminal** (`interaccion.py` y `grafo_lexis/cli.py`) | 100% | Completado |
 | **Interfaz visual/web en Streamlit** (`app.py` + login + visualizador Obsidian + descarga `.md` de orientación) | 100% | Completado |
 | **Infraestructura de evaluación de sesiones y usuarios** (`gestor_evaluacion.py`, `gestor_usuarios.py` con escritura atómica y locks) | 100% | Completado |
@@ -98,7 +98,7 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 │      (Code/grafo_lexis/ — GraphRAG sobre NetworkX)     │
 │                                                        │
 │  • 7,239 nodos (6 Leyes, 7,221 Artículos, 12 Externas) │
-│  • 10,135 aristas (CONTIENE, REFIERE_A, MENCIONA_NORMA)│
+│  • 10,239 aristas (CONTIENE, REFIERE_A, MENCIONA_NORMA)│
 │  • Expansión 1-hop de artículos citados (salientes y   │
 │    entrantes) e inyección de contexto normativo conexo │
 └───────────────────────────┬────────────────────────────┘
@@ -119,16 +119,16 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 
 ## Normativas Indexadas
 
-Actualmente el sistema integra **6 cuerpos normativos** tanto en formato de fragmentos vectoriales (**10,825 chunks** en ChromaDB) como en el Grafo de Conocimiento Legal (**7,221 nodos de artículos** —7,179 principales y 42 transitorios— y **2,900 relaciones de citación `REFIERE_A`**):
+Actualmente el sistema integra **6 cuerpos normativos** tanto en formato de fragmentos vectoriales (**10,825 chunks** en ChromaDB sincronizados con `articulo_id`) como en el Grafo de Conocimiento Legal (**7,221 nodos de artículos** —7,179 principales y 42 transitorios— y **3,004 relaciones de citación `REFIERE_A`**):
 
 | Clave | Normativa | Chunks (ChromaDB) | Artículos (Grafo) | Ámbito | Cobertura |
 |:-----:|-----------|:-----------------:|:-----------------:|:------:|-----------|
 | **LFT** | Ley Federal del Trabajo | 3,191 | 1,098 (1,091 + 7 trans.) | Federal | Laboral |
-| **CCT** | Código Civil para el Estado Libre y Soberano de Tlaxcala | 3,311 | 3,192 (3,191 + 1 trans.) | Estatal (Tlaxcala) | Civil |
-| **CPT** | Código Penal para el Estado Libre y Soberano de Tlaxcala | 1,050 | 1,727 (1,722 + 5 trans.) | Estatal (Tlaxcala) | Penal |
+| **CC-TLAX** | Código Civil para el Estado Libre y Soberano de Tlaxcala | 3,311 | 3,192 (3,191 + 1 trans.) | Estatal (Tlaxcala) | Civil |
+| **CP-TLAX** | Código Penal para el Estado Libre y Soberano de Tlaxcala | 1,050 | 495 (490 + 5 trans.) | Estatal (Tlaxcala) | Penal |
 | **CPEUM** | Constitución Política de los Estados Unidos Mexicanos | 997 | 156 (136 + 20 trans.) | Federal | Constitucional |
-| **CFPC** | Código Federal de Procedimientos Civiles | 1,649 | 553 (549 + 4 trans.) | Federal | Procesal Civil |
-| **CNPP** | Código Nacional de Procedimientos Penales | 627 | 495 (490 + 5 trans.) | Federal | Procesal Penal |
+| **CPC-TLAX** | Código de Procedimientos Civiles para el Estado de Tlaxcala | 1,649 | 1,727 (1,722 + 5 trans.) | Estatal (Tlaxcala) | Procesal Civil |
+| **CPP-TLAX** | Código de Procedimientos Penales para el Estado de Tlaxcala | 627 | 553 (549 + 4 trans.) | Estatal (Tlaxcala) | Procesal Penal |
 
 ---
 
@@ -199,10 +199,10 @@ Lexis/
 ├── knowledge_structured/                # 6 archivos JSON con la jerarquía normativa extraída
 ├── knowledge_chunks/                    # 6 archivos JSON con los 10,825 chunks segmentados
 ├── knowledge_graph/                     # Artefactos compilados del Grafo Legal
-│   ├── grafo_lexis.json                 # Grafo serializado (7,239 nodos, 10,135 aristas)
+│   ├── grafo_lexis.json                 # Grafo serializado (7,239 nodos, 10,239 aristas)
 │   ├── grafo_lexis.graphml              # Grafo para Gephi / Cytoscape
 │   ├── estadisticas_grafo.json          # Métricas estructurales y top artículos citados
-│   ├── reporte_referencias_rotas.json   # Registro auditable de 82 referencias no resueltas
+│   ├── reporte_referencias_rotas.json   # Registro auditable de 85 referencias no resueltas
 │   └── neo4j/                           # CSVs de nodos/aristas y script import_neo4j.cypher
 │
 ├── lexis_vectordb/                      # Base vectorial ChromaDB, caché BM25 y logs JSONL
@@ -294,7 +294,7 @@ python -m grafo_lexis.cli graphrag "me despidieron sin justificación" --llm
 
 ### Grafo de Conocimiento Legal (GraphRAG)
 - **7,239 nodos tipados**: 6 nodos `Ley`, 7,221 nodos `Articulo` (principales y transitorios) y 12 nodos `NormaExterna`
-- **10,135 aristas dirigidas**: 7,221 relaciones jerárquicas `CONTIENE`, 2,900 relaciones de citación artículo-a-artículo `REFIERE_A` y 14 menciones a normas externas `MENCIONA_NORMA`
+- **10,239 aristas dirigidas**: 7,221 relaciones jerárquicas `CONTIENE`, 3,004 relaciones de citación artículo-a-artículo `REFIERE_A` y 14 menciones a normas externas `MENCIONA_NORMA`
 - **Detección determinista de referencias**: soporta citas simples, listas, rangos (`del artículo X al Y`), referencias inter-ley y referencias relativas (`artículo anterior`, `artículo siguiente`)
 - **Expansión contextual 1-hop**: al recuperar artículos por búsqueda híbrida, el sistema incorpora automáticamente los artículos citados de forma saliente y entrante antes de construir el prompt para el LLM
 - **Exportación multi-formato**: JSON, GraphML, CSVs + script Cypher para Neo4j y reporte auditable de referencias rotas
