@@ -316,16 +316,16 @@ El proyecto cuenta con pruebas unitarias tanto para el motor de búsqueda base c
 
 | Suite de Pruebas | Archivo | Cobertura Principal | Estado |
 |------------------|---------|---------------------|:------:|
-| Motor Base y Mejoras | `Code/test_unidades.py` | Clasificador legal, normalización, coherencia, sinónimos, caché y errores | ✅ |
-| Cargador del Grafo | `Code/tests/test_cargador.py` | Saneamiento de etiquetas (`153-` → `153_A`), transitorios y unicidad de IDs | ✅ |
-| Citas Internas Directas | `Code/tests/test_referencias_directas.py` | Detección regex de artículos simples, listas, `bis`/`ter` y fracciones | ✅ |
-| Referencias Inter-Ley | `Code/tests/test_referencias_ley.py` | Resolución de citas hacia otras leyes del corpus y normas externas | ✅ |
-| Expansión de Rangos | `Code/tests/test_rangos.py` | Expansión controlada de rangos (`del artículo X al Y`) y límites de seguridad | ✅ |
-| Referencias Relativas | `Code/tests/test_referencias_relativas.py` | Resolución contextual de `artículo anterior`, `siguiente` y `este artículo` | ✅ |
-| Consultas de Grafo | `Code/tests/test_consultas.py` | Vecindarios, caminos más cortos, citas entrantes/salientes y ranking | ✅ |
-| Exportación y Reportes | `Code/tests/test_exportador.py` | Generación de JSON, GraphML, CSVs Neo4j y reporte de referencias rotas | ✅ |
-| Integración GraphRAG | `Code/tests/test_graphrag.py` | Mapeo de hits híbridos a nodos del grafo y expansión de contexto para LLM | ✅ |
-| Evaluación de Sesiones | `Code/tests/test_evaluacion_sesiones.py` | Ciclo de vida de sesiones, bloqueo por evaluación pendiente y consolidado | ✅ |
+| Motor Base y Mejoras | `Code/test_unidades.py` | Clasificador legal, normalización, coherencia, sinónimos, caché y errores | OK |
+| Cargador del Grafo | `Code/tests/test_cargador.py` | Saneamiento de etiquetas (`153-` → `153_A`), transitorios y unicidad de IDs | OK |
+| Citas Internas Directas | `Code/tests/test_referencias_directas.py` | Detección regex de artículos simples, listas, `bis`/`ter` y fracciones | OK |
+| Referencias Inter-Ley | `Code/tests/test_referencias_ley.py` | Resolución de citas hacia otras leyes del corpus y normas externas | OK |
+| Expansión de Rangos | `Code/tests/test_rangos.py` | Expansión controlada de rangos (`del artículo X al Y`) y límites de seguridad | OK |
+| Referencias Relativas | `Code/tests/test_referencias_relativas.py` | Resolución contextual de `artículo anterior`, `siguiente` y `este artículo` | OK |
+| Consultas de Grafo | `Code/tests/test_consultas.py` | Vecindarios, caminos más cortos, citas entrantes/salientes y ranking | OK |
+| Exportación y Reportes | `Code/tests/test_exportador.py` | Generación de JSON, GraphML, CSVs Neo4j y reporte de referencias rotas | OK |
+| Integración GraphRAG | `Code/tests/test_graphrag.py` | Mapeo de hits híbridos a nodos del grafo y expansión de contexto para LLM | OK |
+| Evaluación de Sesiones | `Code/tests/test_evaluacion_sesiones.py` | Ciclo de vida de sesiones, bloqueo por evaluación pendiente y consolidado | OK |
 
 Ejecutar todas las suites con:
 ```bash
