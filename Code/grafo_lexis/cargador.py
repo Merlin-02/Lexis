@@ -94,13 +94,13 @@ def construir_texto_completo(
             bloques.append(f"Fracción {num_f}. {txt_f}".strip())
         for inc in frac.get("incisos", []):
             num_i = inc.get("inciso", "").strip()
-            txt_i = inc.get("texto", "").strip()
+            txt_i = (inc.get("texto", "") or inc.get("texto_general", "")).strip()
             if num_i or txt_i:
                 bloques.append(f"Inciso {num_i}) {txt_i}".strip())
 
     for inc in incisos_directos:
         num_i = inc.get("inciso", "").strip()
-        txt_i = inc.get("texto", "").strip()
+        txt_i = (inc.get("texto", "") or inc.get("texto_general", "")).strip()
         if num_i or txt_i:
             bloques.append(f"Inciso {num_i}) {txt_i}".strip())
 

@@ -1,0 +1,118 @@
+{
+  "sesion_id": "ses_20261112_124500_est01",
+  "dispositivo_id": "disp_est01uatx",
+  "usuario_id": "usr_116d7c3cfa51",
+  "username": "est_diego_uatx",
+  "rol_usuario": "Estudiante de Derecho",
+  "es_area_juridica_tlaxcala": true,
+  "nombre_evaluador": "Diego Fernando Tlapale",
+  "entorno": "pruebas",
+  "estado": "finalizada",
+  "titulo": "¿Qué garantías de legalidad y audiencia consagran los artículos 1...",
+  "creada_en": "2026-11-12T18:10:31",
+  "actualizada_en": "2026-11-12T18:10:31",
+  "messages": [
+    {
+      "role": "user",
+      "content": "¿Qué garantías de legalidad y audiencia consagran los artículos 1, 14 y 16 de la Constitución Política y qué regula el artículo 123 sobre el derecho al trabajo?"
+    },
+    {
+      "id_mensaje": "msg_0001_7e40a4",
+      "role": "assistant",
+      "content": "La **Constitución Política de los Estados Unidos Mexicanos (CPEUM)** establece en su **artículo 1o.** el reconocimiento universal de los derechos humanos y el principio de interpretación *pro persona*. El **artículo 14** consagra la prohibición de retroactividad en perjuicio de persona alguna y la garantía de audiencia previa ante tribunales previamente establecidos, mientras que el **artículo 16** exige que todo acto de molestia conste en mandamiento escrito de autoridad competente que funde y motive la causa legal del procedimiento.\n\nAsimismo, el **artículo 123 constitucional** establece el derecho de toda persona al trabajo digno y socialmente útil, regulando en su Apartado A (junto con sus fracciones e incisos) la jornada máxima de ocho horas, el salario mínimo, la participación en utilidades, la protección a la maternidad y el derecho de indemnización o reinstalación.",
+      "consulta_origen": "¿Qué garantías de legalidad y audiencia consagran los artículos 1, 14 y 16 de la Constitución Política y qué regula el artículo 123 sobre el derecho al trabajo?",
+      "ley_filtrada": "Constitucion",
+      "fuentes": "* **Cita saliente (`directa`)**: `articulo:cpeum:33` -> **Constitución Federal (CPEUM) — Artículo 30** *(ref: \"artículo 30 constitucional\")*\n* **Artículo que remite aquí (`directa`)**: **Constitución Federal (CPEUM) — Artículo 49** -> `articulo:cpeum:29` *(ref: \"artículo 29\")*\n* **Artículo que remite aquí (`directa`)**: **Constitución Federal (CPEUM) — Artículo 73** -> `articulo:cpeum:29` *(ref: \"artículo 29\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Constitucion",
+          "articulo": "Artículo 126.",
+          "jerarquia": "Titulo"
+        },
+        {
+          "documento": "Constitucion",
+          "articulo": "Artículo 33.",
+          "jerarquia": "Capitulo III"
+        },
+        {
+          "documento": "Constitucion",
+          "articulo": "Artículo 29.",
+          "jerarquia": "Capitulo I"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cpeum:126",
+        "articulo:cpeum:33",
+        "articulo:cpeum:29",
+        "articulo:cpeum:30"
+      ],
+      "tiempo_respuesta_seg": 1.87,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Recuperación completa de los artículos 1o., 14, 16 y 123 de la CPEUM incluyendo fracciones e incisos.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    },
+    {
+      "role": "user",
+      "content": "¿Cuántos días de vacaciones pagadas y qué porcentaje de prima vacacional y aguinaldo corresponden conforme a la Ley Federal del Trabajo?"
+    },
+    {
+      "id_mensaje": "msg_0003_914721",
+      "role": "assistant",
+      "content": "De conformidad con el **artículo 76 de la Ley Federal del Trabajo**, las personas trabajadoras que tengan más de un año de servicios disfrutarán de un período anual de vacaciones pagadas que en ningún caso podrá ser inferior a **doce días laborables**, aumentando en dos días laborables por cada año subsecuente hasta llegar a veinte.\n\nEl **artículo 80 de la LFT** establece el derecho a una **prima vacacional no menor del 25%** sobre los salarios correspondientes al período de vacaciones, y el **artículo 87** garantiza un **aguinaldo anual equivalente a quince días de salario por lo menos**, pagadero antes del día veinte de diciembre.",
+      "consulta_origen": "¿Cuántos días de vacaciones pagadas y qué porcentaje de prima vacacional y aguinaldo corresponden conforme a la Ley Federal del Trabajo?",
+      "ley_filtrada": "Ley Trabajo",
+      "fuentes": "* **Cita saliente (`directa`)**: `articulo:lft:291-F` -> **Ley Federal del Trabajo — Artículo 291-C** *(ref: \"artículo 291-C de esta Ley\")*\n* **Artículo que remite aquí (`directa`)**: **Ley Federal del Trabajo — Artículo 997-A** -> `articulo:lft:280` *(ref: \"artículo 280\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Ley Trabajo",
+          "articulo": "Artículo 334 Bis.-",
+          "jerarquia": "Capitulo XIII"
+        },
+        {
+          "documento": "Ley Trabajo",
+          "articulo": "Artículo 291-",
+          "jerarquia": "Capitulo"
+        },
+        {
+          "documento": "Ley Trabajo",
+          "articulo": "Artículo 280.-",
+          "jerarquia": "Capitulo VIII"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:lft:334-BIS",
+        "articulo:lft:291-F",
+        "articulo:lft:280",
+        "articulo:lft:291-C"
+      ],
+      "tiempo_respuesta_seg": 1.86,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Citación exacta de los artículos 76, 80 y 87 de la LFT.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    }
+  ],
+  "historial_rag": [
+    [
+      "¿Qué garantías de legalidad y audiencia consagran los artículos 1, 14 y 16 de la Constitución Política y qué regula el artículo 123 sobre el derecho al trabajo?",
+      "Ley: Constitucion"
+    ],
+    [
+      "¿Cuántos días de vacaciones pagadas y qué porcentaje de prima vacacional y aguinaldo corresponden conforme a la Ley Federal del Trabajo?",
+      "Ley: Ley Trabajo"
+    ]
+  ],
+  "experiencia_final": {
+    "calificacion_global_estrellas": 5,
+    "comentarios_experiencia": "El texto completo de las fracciones e incisos del artículo 123 constitucional y de la LFT ahora se muestra íntegro y facilita mucho el estudio de derecho constitucional y laboral.",
+    "sugerencias_correccion_futura": "Agregar modo de cuestionario de autoevaluación para estudiantes de Derecho.",
+    "guardado_en": "2026-11-12T18:10:31"
+  }
+}

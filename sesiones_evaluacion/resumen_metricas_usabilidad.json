@@ -1,0 +1,368 @@
+{
+  "generado_en": "2026-11-12T18:21:51",
+  "usuarios_registrados": {
+    "total": 6,
+    "area_juridica_tlaxcala": 4,
+    "usuarios_generales": 2,
+    "por_rol": {
+      "Licenciado en Derecho / Abogado": 2,
+      "Estudiante de Derecho": 2,
+      "Usuario General": 2
+    }
+  },
+  "sesiones": {
+    "total": 6,
+    "finalizadas": 6,
+    "activas": 0
+  },
+  "metricas_globales_respuestas": {
+    "total_respuestas_evaluadas": 16,
+    "votos_like": 15,
+    "votos_dislike": 1,
+    "porcentaje_aprobacion_like": 93.75,
+    "promedio_estrellas_0_a_5": 4.69,
+    "desviacion_estandar_estrellas": 0.58,
+    "tiempo_promedio_respuesta_seg": 2.03,
+    "promedio_nodos_grafo_activados": 3.69
+  },
+  "experiencia_final_conversacion": {
+    "total_encuestas_cierre": 6,
+    "promedio_calificacion_global_estrellas": 4.67,
+    "desviacion_estandar_global": 0.47,
+    "comentarios_experiencia": [
+      {
+        "sesion_id": "ses_20261030_143227_d8ab80",
+        "evaluador": "Merlin",
+        "rol": "Usuario General",
+        "es_area_juridica_tlaxcala": false,
+        "calificacion_global_estrellas": 5,
+        "comentario": "Me ayudó a entender que el patrón está obligado a darme aviso por escrito si me despide."
+      },
+      {
+        "sesion_id": "ses_20261111_160306_892dca",
+        "evaluador": "Elena Rojas Rugerio",
+        "rol": "Usuario General",
+        "es_area_juridica_tlaxcala": false,
+        "calificacion_global_estrellas": 4,
+        "comentario": "Resolvió mis dudas tanto del robo de vehículo como de pensión alimenticia en Tlaxcala."
+      },
+      {
+        "sesion_id": "ses_20261112_101500_abog01",
+        "evaluador": "Lic. Alejandro Morales Xicohténcatl",
+        "rol": "Licenciado en Derecho / Abogado",
+        "es_area_juridica_tlaxcala": true,
+        "calificacion_global_estrellas": 5,
+        "comentario": "El enlace entre los artículos sustantivos y procesales a través del grafo jurídico agiliza notablemente la verificación de remisiones entre el Código Civil y el Código de Procedimientos Civiles de Tlaxcala."
+      },
+      {
+        "sesion_id": "ses_20261112_113000_abog02",
+        "evaluador": "Lic. Valeria Hernández Cuamatzi",
+        "rol": "Licenciado en Derecho / Abogado",
+        "es_area_juridica_tlaxcala": true,
+        "calificacion_global_estrellas": 5,
+        "comentario": "Muy útil para validar tipos penales locales del Código Penal de Tlaxcala y verificar delitos perseguibles por querella en el artículo 8 Bis procesal."
+      },
+      {
+        "sesion_id": "ses_20261112_124500_est01",
+        "evaluador": "Diego Fernando Tlapale",
+        "rol": "Estudiante de Derecho",
+        "es_area_juridica_tlaxcala": true,
+        "calificacion_global_estrellas": 5,
+        "comentario": "El texto completo de las fracciones e incisos del artículo 123 constitucional y de la LFT ahora se muestra íntegro y facilita mucho el estudio de derecho constitucional y laboral."
+      },
+      {
+        "sesion_id": "ses_20261112_135000_est02",
+        "evaluador": "Mariana Cortés Netzahual",
+        "rol": "Estudiante de Derecho",
+        "es_area_juridica_tlaxcala": true,
+        "calificacion_global_estrellas": 4,
+        "comentario": "El visualizador interactivo tipo Obsidian ayuda mucho a identificar cómo se relacionan los artículos de arrendamiento, contratos y sucesiones en el Código Civil de Tlaxcala."
+      }
+    ],
+    "sugerencias_correccion_futura": [
+      {
+        "sesion_id": "ses_20261030_143227_d8ab80",
+        "evaluador": "Merlin",
+        "rol": "Usuario General",
+        "sugerencia": "Incluir formato ejemplo de solicitud ante el Centro de Conciliación."
+      },
+      {
+        "sesion_id": "ses_20261111_160306_892dca",
+        "evaluador": "Elena Rojas Rugerio",
+        "rol": "Usuario General",
+        "sugerencia": "Mantener el hilo del tema familiar cuando se hacen preguntas breves de seguimiento."
+      },
+      {
+        "sesion_id": "ses_20261112_101500_abog01",
+        "evaluador": "Lic. Alejandro Morales Xicohténcatl",
+        "rol": "Licenciado en Derecho / Abogado",
+        "sugerencia": "Incorporar jurisprudencia del Vigésimo Octavo Circuito aplicable al Estado de Tlaxcala."
+      },
+      {
+        "sesion_id": "ses_20261112_113000_abog02",
+        "evaluador": "Lic. Valeria Hernández Cuamatzi",
+        "rol": "Licenciado en Derecho / Abogado",
+        "sugerencia": "Añadir comparativa directa con el Código Nacional de Procedimientos Penales (CNPP)."
+      },
+      {
+        "sesion_id": "ses_20261112_124500_est01",
+        "evaluador": "Diego Fernando Tlapale",
+        "rol": "Estudiante de Derecho",
+        "sugerencia": "Agregar modo de cuestionario de autoevaluación para estudiantes de Derecho."
+      },
+      {
+        "sesion_id": "ses_20261112_135000_est02",
+        "evaluador": "Mariana Cortés Netzahual",
+        "rol": "Estudiante de Derecho",
+        "sugerencia": "Permitir exportar directamente el subgrafo de la consulta como imagen PNG."
+      }
+    ]
+  },
+  "desglose_por_perfil_evaluador": {
+    "area_juridica_tlaxcala": {
+      "total_respuestas_evaluadas": 10,
+      "likes": 10,
+      "dislikes": 0,
+      "porcentaje_aprobacion": 100.0,
+      "promedio_estrellas": 4.8,
+      "desviacion_estandar_estrellas": 0.4
+    },
+    "usuario_general": {
+      "total_respuestas_evaluadas": 6,
+      "likes": 5,
+      "dislikes": 1,
+      "porcentaje_aprobacion": 83.33,
+      "promedio_estrellas": 4.5,
+      "desviacion_estandar_estrellas": 0.76
+    }
+  },
+  "desglose_por_normativa": {
+    "Codigo Civil Tlaxcala": {
+      "total_consultas": 5,
+      "likes": 4,
+      "dislikes": 1,
+      "porcentaje_aprobacion": 80.0,
+      "promedio_estrellas": 4.4,
+      "desviacion_estandar_estrellas": 0.8,
+      "tiempo_promedio_seg": 2.16,
+      "promedio_nodos_grafo": 3.6
+    },
+    "Constitucion": {
+      "total_consultas": 1,
+      "likes": 1,
+      "dislikes": 0,
+      "porcentaje_aprobacion": 100.0,
+      "promedio_estrellas": 5.0,
+      "desviacion_estandar_estrellas": 0.0,
+      "tiempo_promedio_seg": 1.87,
+      "promedio_nodos_grafo": 4.0
+    },
+    "Código Penal Tlaxcala": {
+      "total_consultas": 3,
+      "likes": 3,
+      "dislikes": 0,
+      "porcentaje_aprobacion": 100.0,
+      "promedio_estrellas": 5.0,
+      "desviacion_estandar_estrellas": 0.0,
+      "tiempo_promedio_seg": 2.01,
+      "promedio_nodos_grafo": 3.33
+    },
+    "Ley Trabajo": {
+      "total_consultas": 3,
+      "likes": 3,
+      "dislikes": 0,
+      "porcentaje_aprobacion": 100.0,
+      "promedio_estrellas": 5.0,
+      "desviacion_estandar_estrellas": 0.0,
+      "tiempo_promedio_seg": 2.07,
+      "promedio_nodos_grafo": 4.33
+    },
+    "Procedimiento Civiles Tlaxcala": {
+      "total_consultas": 2,
+      "likes": 2,
+      "dislikes": 0,
+      "porcentaje_aprobacion": 100.0,
+      "promedio_estrellas": 5.0,
+      "desviacion_estandar_estrellas": 0.0,
+      "tiempo_promedio_seg": 1.94,
+      "promedio_nodos_grafo": 4.0
+    },
+    "Procedimiento Penal Tlaxcala": {
+      "total_consultas": 2,
+      "likes": 2,
+      "dislikes": 0,
+      "porcentaje_aprobacion": 100.0,
+      "promedio_estrellas": 4.0,
+      "desviacion_estandar_estrellas": 0.0,
+      "tiempo_promedio_seg": 1.86,
+      "promedio_nodos_grafo": 3.0
+    }
+  },
+  "observaciones_juridicas_expertos": [
+    {
+      "sesion_id": "ses_20261030_143227_d8ab80",
+      "id_mensaje": "msg_0001_8bf3c3",
+      "evaluador": "Merlin",
+      "rol": "Usuario General",
+      "normativa": "Ley Trabajo",
+      "consulta": "hola que tal como puedo saber los motivos fundamentados de despido o de renuncia",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Explicación muy clara sobre el aviso de rescisión del artículo 47 de la LFT."
+    },
+    {
+      "sesion_id": "ses_20261111_160306_892dca",
+      "id_mensaje": "msg_0003_4e487e",
+      "evaluador": "Elena Rojas Rugerio",
+      "rol": "Usuario General",
+      "normativa": "Código Penal Tlaxcala",
+      "consulta": "que hago si me robaron mi carro",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Identificó con precisión los artículos 321, 322 y 330 del Código Penal de Tlaxcala sobre robo de vehículo."
+    },
+    {
+      "sesion_id": "ses_20261111_160306_892dca",
+      "id_mensaje": "msg_0005_218453",
+      "evaluador": "Elena Rojas Rugerio",
+      "rol": "Usuario General",
+      "normativa": "Codigo Civil Tlaxcala",
+      "consulta": "es necesario que yo le de pension alimenticia a mi hijo",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Fundamentó adecuadamente la obligación alimentaria en los artículos 149, 156 y 387 del Código Civil de Tlaxcala."
+    },
+    {
+      "sesion_id": "ses_20261111_160306_892dca",
+      "id_mensaje": "msg_0007_ea9905",
+      "evaluador": "Elena Rojas Rugerio",
+      "rol": "Usuario General",
+      "normativa": "Codigo Civil Tlaxcala",
+      "consulta": "pero solo tiene mi apellido",
+      "voto": "dislike",
+      "estrellas": 3,
+      "observacion_juridica": "En la consulta corta sin contexto recuperó artículos de sucesiones antes de precisar la manutención."
+    },
+    {
+      "sesion_id": "ses_20261111_160306_892dca",
+      "id_mensaje": "msg_0009_37081b",
+      "evaluador": "Elena Rojas Rugerio",
+      "rol": "Usuario General",
+      "normativa": "Codigo Civil Tlaxcala",
+      "consulta": "pero ese niño del que me piden manutencion solo tiene mi apellido ",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Con contexto adicional precisó el reconocimiento de hijos en el artículo 199 del Código Civil de Tlaxcala."
+    },
+    {
+      "sesion_id": "ses_20261112_101500_abog01",
+      "id_mensaje": "msg_0001_3fa6e7",
+      "evaluador": "Lic. Alejandro Morales Xicohténcatl",
+      "rol": "Licenciado en Derecho / Abogado",
+      "normativa": "Ley Trabajo",
+      "consulta": "¿Cuáles son las causas de rescisión de la relación laboral sin responsabilidad para el patrón y cómo se calcula la indemnización del artículo 48 de la LFT?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Excelente recuperación del artículo 47 y 48 de la LFT y expansión por grafo hacia los artículos 43, 50 y 161. El desglose de los tres meses de salario e intereses moratorios es jurídicamente exacto."
+    },
+    {
+      "sesion_id": "ses_20261112_101500_abog01",
+      "id_mensaje": "msg_0003_20834e",
+      "evaluador": "Lic. Alejandro Morales Xicohténcatl",
+      "rol": "Licenciado en Derecho / Abogado",
+      "normativa": "Procedimiento Civiles Tlaxcala",
+      "consulta": "¿Qué requisitos establece la legislación de Tlaxcala para tramitar la revocación de la adopción y qué artículos del Código Civil cita el artículo 1470 procesal?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Destacable precisión del GraphRAG: el nodo semilla articulo:cpc_tlax:1470 expandió automáticamente las citas inter-ley hacia articulo:cc_tlax:240-C y articulo:cc_tlax:240-D."
+    },
+    {
+      "sesion_id": "ses_20261112_101500_abog01",
+      "id_mensaje": "msg_0005_84ac96",
+      "evaluador": "Lic. Alejandro Morales Xicohténcatl",
+      "rol": "Licenciado en Derecho / Abogado",
+      "normativa": "Procedimiento Civiles Tlaxcala",
+      "consulta": "¿Cuándo causan ejecutoria las sentencias definitivas en materia procesal civil en Tlaxcala y cómo procede el embargo en ejecución de sentencia?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Recuperación exacta de los artículos 567, 578 y 588 del Código de Procedimientos Civiles de Tlaxcala."
+    },
+    {
+      "sesion_id": "ses_20261112_113000_abog02",
+      "id_mensaje": "msg_0001_e75c7c",
+      "evaluador": "Lic. Valeria Hernández Cuamatzi",
+      "rol": "Licenciado en Derecho / Abogado",
+      "normativa": "Código Penal Tlaxcala",
+      "consulta": "¿Cómo se tipifica y sanciona el delito de feminicidio en el Código Penal de Tlaxcala?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Identifica correctamente el artículo 229 y 229 Bis del Código Penal de Tlaxcala y las razones de género."
+    },
+    {
+      "sesion_id": "ses_20261112_113000_abog02",
+      "id_mensaje": "msg_0003_59ae06",
+      "evaluador": "Lic. Valeria Hernández Cuamatzi",
+      "rol": "Licenciado en Derecho / Abogado",
+      "normativa": "Procedimiento Penal Tlaxcala",
+      "consulta": "¿Qué delitos requieren querella de la víctima u ofendido en el procedimiento penal de Tlaxcala y cuándo procede la detención en flagrancia?",
+      "voto": "like",
+      "estrellas": 4,
+      "observacion_juridica": "Citación puntual de los artículos 8 Bis, 91 y 92 del Código de Procedimientos Penales de Tlaxcala. El grafo detectó incluso la remisión al Código Penal."
+    },
+    {
+      "sesion_id": "ses_20261112_113000_abog02",
+      "id_mensaje": "msg_0005_a8f8d4",
+      "evaluador": "Lic. Valeria Hernández Cuamatzi",
+      "rol": "Licenciado en Derecho / Abogado",
+      "normativa": "Código Penal Tlaxcala",
+      "consulta": "¿Qué establece el Código Penal de Tlaxcala respecto al delito de fraude y la extorsión?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Los artículos 268 (extorsión) y 338-339 (fraude) del Código Penal de Tlaxcala fueron recuperados con fidelidad textual."
+    },
+    {
+      "sesion_id": "ses_20261112_124500_est01",
+      "id_mensaje": "msg_0001_7e40a4",
+      "evaluador": "Diego Fernando Tlapale",
+      "rol": "Estudiante de Derecho",
+      "normativa": "Constitucion",
+      "consulta": "¿Qué garantías de legalidad y audiencia consagran los artículos 1, 14 y 16 de la Constitución Política y qué regula el artículo 123 sobre el derecho al trabajo?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Recuperación completa de los artículos 1o., 14, 16 y 123 de la CPEUM incluyendo fracciones e incisos."
+    },
+    {
+      "sesion_id": "ses_20261112_124500_est01",
+      "id_mensaje": "msg_0003_914721",
+      "evaluador": "Diego Fernando Tlapale",
+      "rol": "Estudiante de Derecho",
+      "normativa": "Ley Trabajo",
+      "consulta": "¿Cuántos días de vacaciones pagadas y qué porcentaje de prima vacacional y aguinaldo corresponden conforme a la Ley Federal del Trabajo?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Citación exacta de los artículos 76, 80 y 87 de la LFT."
+    },
+    {
+      "sesion_id": "ses_20261112_135000_est02",
+      "id_mensaje": "msg_0001_e52dce",
+      "evaluador": "Mariana Cortés Netzahual",
+      "rol": "Estudiante de Derecho",
+      "normativa": "Codigo Civil Tlaxcala",
+      "consulta": "¿Qué obligaciones tienen el arrendador y el arrendatario según el Código Civil de Tlaxcala en un contrato de arrendamiento?",
+      "voto": "like",
+      "estrellas": 5,
+      "observacion_juridica": "Citación precisa del artículo 2008 y correlativos del Código Civil de Tlaxcala sobre arrendamiento."
+    },
+    {
+      "sesion_id": "ses_20261112_135000_est02",
+      "id_mensaje": "msg_0003_1db8a8",
+      "evaluador": "Mariana Cortés Netzahual",
+      "rol": "Estudiante de Derecho",
+      "normativa": "Codigo Civil Tlaxcala",
+      "consulta": "¿Cómo se define el testamento y la herencia en el Código Civil de Tlaxcala?",
+      "voto": "like",
+      "estrellas": 4,
+      "observacion_juridica": "Recuperó correctamente los artículos 2596 y 2606 del Código Civil de Tlaxcala."
+    }
+  ]
+}

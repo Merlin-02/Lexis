@@ -11,6 +11,7 @@ import sys
 import os
 import time
 import threading
+import unicodedata
 from dotenv import load_dotenv
 from groq import Groq
 from typing import List, Dict, Any
@@ -48,7 +49,7 @@ if not GROQ_API_KEY:
     print("Error: No se encontró GROQ_API_KEY en el archivo .env")
     sys.exit(1)
 
-MODELO_GROQ = "openai/gpt-oss-20b"   # verificar disponibilidad en Groq
+MODELO_GROQ = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")   # parametrizado vía entorno
 TEMPERATURA = 0.2
 MAX_TOKENS = 800
 TOP_P = 0.9
@@ -166,9 +167,9 @@ def animar_mensaje(parar_evento):
 # LLAMADA A GROQ (con animación y timeout)
 # ============================================================
 def llamar_groq(system_prompt: str, user_prompt: str) -> str:
-    # Sanitizar entradas
-    user_prompt = user_prompt.encode('ascii', errors='ignore').decode('ascii')
-    system_prompt = system_prompt.encode('ascii', errors='ignore').decode('ascii')
+    # Normalizar entradas preservando tildes y signos en español (UTF-8 NFC)
+    user_prompt = unicodedata.normalize("NFC", user_prompt)
+    system_prompt = unicodedata.normalize("NFC", system_prompt)
     
     # Truncar si exceden límites
     if len(system_prompt) > MAX_SYSTEM_CHARS:
@@ -290,8 +291,8 @@ def main():
                 print("  Formato no reconocido.")
             continue
         
-        # Sanitizar consulta (eliminar caracteres raros)
-        consulta_limpia = consulta_raw.encode('ascii', errors='ignore').decode('ascii')
+        # Normalizar consulta preservando caracteres en español (UTF-8 NFC)
+        consulta_limpia = unicodedata.normalize("NFC", consulta_raw).strip()
         
         # Detectar nombre del usuario en la consulta
         import re

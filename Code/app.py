@@ -1,5 +1,7 @@
 import sys
 import os
+import time
+from datetime import datetime
 from pathlib import Path
 
 os.environ["ANONYMIZED_TELEMETRY"] = "False"
@@ -832,41 +834,46 @@ with st.sidebar:
 
     st.markdown("---")
     with st.expander("Exportar Evaluaciones y Usuarios (Admin)"):
-        clave_admin_esperada = os.getenv("LEXIS_ADMIN_KEY", "lexis_admin_2026")
-        clave_admin_in = st.text_input(
-            "Clave de administrador:",
-            type="password",
-            key="input_admin_export_key",
-        )
-        if clave_admin_in and clave_admin_in == clave_admin_esperada:
-            if gestor_sesiones.archivo_consolidado.exists():
-                bytes_eval = gestor_sesiones.archivo_consolidado.read_bytes()
-                st.download_button(
-                    "Descargar evaluaciones_consolidado.json",
-                    data=bytes_eval,
-                    file_name="evaluaciones_consolidado.json",
-                    mime="application/json",
-                    use_container_width=True,
-                )
-            else:
-                st.caption("Aún no existe evaluaciones_consolidado.json.")
+        clave_admin_esperada = os.getenv("LEXIS_ADMIN_KEY", "").strip()
+        if not clave_admin_esperada:
+            st.caption(
+                "Panel deshabilitado: defina la variable de entorno LEXIS_ADMIN_KEY para habilitar la exportación."
+            )
+        else:
+            clave_admin_in = st.text_input(
+                "Clave de administrador:",
+                type="password",
+                key="input_admin_export_key",
+            )
+            if clave_admin_in and clave_admin_in == clave_admin_esperada:
+                if gestor_sesiones.archivo_consolidado.exists():
+                    bytes_eval = gestor_sesiones.archivo_consolidado.read_bytes()
+                    st.download_button(
+                        "Descargar evaluaciones_consolidado.json",
+                        data=bytes_eval,
+                        file_name="evaluaciones_consolidado.json",
+                        mime="application/json",
+                        use_container_width=True,
+                    )
+                else:
+                    st.caption("Aún no existe evaluaciones_consolidado.json.")
 
-            if gestor_usuarios.archivo_usuarios.exists():
-                import json as _json
+                if gestor_usuarios.archivo_usuarios.exists():
+                    import json as _json
 
-                raw_usrs = gestor_usuarios._cargar_usuarios()
-                usrs_limpios = {
-                    u: gestor_usuarios._sanitizar_perfil(d) for u, d in raw_usrs.items()
-                }
-                st.download_button(
-                    "Descargar usuarios_registrados.json",
-                    data=_json.dumps(usrs_limpios, ensure_ascii=False, indent=2).encode("utf-8"),
-                    file_name="usuarios_registrados.json",
-                    mime="application/json",
-                    use_container_width=True,
-                )
-        elif clave_admin_in:
-            st.error("Clave de administrador incorrecta.")
+                    raw_usrs = gestor_usuarios._cargar_usuarios()
+                    usrs_limpios = {
+                        u: gestor_usuarios._sanitizar_perfil(d) for u, d in raw_usrs.items()
+                    }
+                    st.download_button(
+                        "Descargar usuarios_registrados.json",
+                        data=_json.dumps(usrs_limpios, ensure_ascii=False, indent=2).encode("utf-8"),
+                        file_name="usuarios_registrados.json",
+                        mime="application/json",
+                        use_container_width=True,
+                    )
+            elif clave_admin_in:
+                st.error("Clave de administrador incorrecta.")
 
 col_logo, col_titulo = st.columns([1, 6], vertical_alignment="center")
 
@@ -940,6 +947,7 @@ if prompt := st.chat_input(
                 st.info(f"Sugerencia: {sugerencias[0]}")
 
         with st.spinner("Buscando leyes aplicables y redactando asesoría..."):
+            t_inicio_consulta = time.time()
             # En modo "Automático", buscamos en todas las leyes simultáneamente (ChromaDB + BM25 + Grafo)
             # para permitir consultas inter-ley (ej. Código Civil + Procedimientos Civiles).
             filtro_doc = None if ley_seleccionada == "Automático" else ley_seleccionada
@@ -969,16 +977,43 @@ if prompt := st.chat_input(
                 res_tematicos = buscar_por_concepto(prompt, doc_sugerido)
                 if res_tematicos:
                     hits_fallback = []
+                    rec_fb = obtener_recuperador_grafo() if GRAPHRAG_DISPONIBLE else None
                     for rt in res_tematicos[:10]:
+                        doc_rt = rt.get("documento", "")
+                        art_rt = rt.get("articulo", "")
+                        art_id_rt = rt.get("articulo_id", "")
+                        texto_real = ""
+                        jerarquia_real = rt.get("tema", "General")
+
+                        if rec_fb is not None:
+                            nodo_fb = art_id_rt if (art_id_rt and art_id_rt in rec_fb.grafo) else rec_fb.mapear_hit_a_nodo_articulo(rt)
+                            if nodo_fb and nodo_fb in rec_fb.grafo:
+                                datos_nodo = rec_fb.grafo.nodes[nodo_fb]
+                                texto_real = datos_nodo.get("texto_completo", "").strip()
+                                jerarquia_real = datos_nodo.get("jerarquia") or jerarquia_real
+                                art_id_rt = nodo_fb
+
+                        if not texto_real and diccionario_metadatos and diccionario_textos:
+                            for cid, meta in diccionario_metadatos.items():
+                                if meta.get("documento") == doc_rt and meta.get("articulo") == art_rt:
+                                    texto_real = diccionario_textos.get(cid, "").strip()
+                                    jerarquia_real = meta.get("jerarquia") or jerarquia_real
+                                    break
+
+                        if not texto_real:
+                            continue
+
                         hits_fallback.append({
-                            "documento": rt.get("documento", ""),
-                            "articulo": rt.get("articulo", ""),
-                            "jerarquia": rt.get("tema", "General"),
-                            "texto": f"Fundamento legal temático sobre {rt.get('tema')}: {rt.get('articulo')}",
+                            "documento": doc_rt,
+                            "articulo": art_rt,
+                            "articulo_id": art_id_rt,
+                            "jerarquia": jerarquia_real,
+                            "texto": texto_real,
                             "origen": "tematico",
                             "tema": rt.get("tema", "")
                         })
-                    hits = hits_fallback
+                    if hits_fallback:
+                        hits = hits_fallback
 
             nodos_grafo_usados = []
             articulos_recuperados_meta = []
@@ -1004,9 +1039,9 @@ if prompt := st.chat_input(
                         resumen_grafo_md = ctx_grafo["resumen_grafo_md"]
                         exp_info = ctx_grafo.get("expansion", {})
                         nodos_grafo_usados = list(exp_info.get("nodos_semilla", [])) + [
-                            v.get("nodo_id")
+                            v.get("articulo_id") or v.get("nodo_id")
                             for v in exp_info.get("vecinos_citados_salientes", [])
-                            if v.get("nodo_id")
+                            if v.get("articulo_id") or v.get("nodo_id")
                         ]
                         datos_subgrafo = extraer_datos_subgrafo_consulta(
                             rec.grafo, exp_info, incluir_nodos_ley=True
@@ -1067,6 +1102,7 @@ if prompt := st.chat_input(
                 st.session_state.historial_rag.append((prompt, f"Ley: {filtro_doc or 'General'}"))
 
         nuevo_idx = len(st.session_state.messages)
+        tiempo_resp_seg = round(time.time() - t_inicio_consulta, 2)
         nuevo_mensaje = {
             "id_mensaje": generar_mensaje_id(nuevo_idx),
             "role": "assistant",
@@ -1076,6 +1112,7 @@ if prompt := st.chat_input(
             "fuentes": fuentes_md,
             "articulos_recuperados": articulos_recuperados_meta,
             "nodos_grafo": nodos_grafo_usados,
+            "tiempo_respuesta_seg": tiempo_resp_seg,
             "grafo_html": grafo_html_consulta,
             "evaluacion": {
                 "voto": None,
@@ -1088,11 +1125,76 @@ if prompt := st.chat_input(
         sincronizar_sesion_en_disco()
         st.rerun()
 
+
+def generar_orientacion_legal_markdown(
+    messages: list[dict],
+    sesion_id: str,
+    usuario: dict,
+) -> str:
+    """Construye un documento Markdown descargable con el historial de consultas, artículos citados y aviso legal."""
+    lineas = [
+        "# LEXIS — Reporte de Orientación Jurídica Preliminar",
+        "",
+        f"- **Sesión:** `{sesion_id}`",
+        f"- **Usuario:** {usuario.get('nombre_completo', 'N/D')} (`@{usuario.get('username', 'N/D')}`)",
+        f"- **Perfil:** {usuario.get('rol', 'Usuario General')}",
+        f"- **Fecha de exportación:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        "",
+        "> **AVISO DE SEGURIDAD Y LIMITACIÓN DE RESPONSABILIDAD:**",
+        "> Este documento constituye únicamente una orientación jurídica preliminar de carácter informativo y académico generada mediante recuperación aumentada por grafos (GraphRAG). **NO sustituye la asesoría, dictamen ni representación legal de un Licenciado en Derecho o profesional jurídico certificado.** El sistema se encuentra en fase de pruebas y puede cometer omisiones o imprecisiones interpretativas.",
+        "",
+        "---",
+        "",
+    ]
+
+    turno = 0
+    for msg in messages:
+        if msg.get("role") == "user":
+            turno += 1
+            lineas.append(f"## Consulta {turno}")
+            lineas.append("")
+            lineas.append(msg.get("content", "").strip())
+            lineas.append("")
+        elif msg.get("role") == "assistant":
+            lineas.append("### Orientación Generada por LEXIS")
+            lineas.append("")
+            lineas.append(msg.get("content", "").strip())
+            lineas.append("")
+            arts = msg.get("articulos_recuperados", [])
+            if arts:
+                lineas.append("#### Fundamentos Normativos Consultados")
+                for a in arts:
+                    lineas.append(
+                        f"- **{a.get('documento', 'N/D')}** — *{a.get('articulo', 'N/D')}* ({a.get('jerarquia', 'General')})"
+                    )
+                lineas.append("")
+            nodos = msg.get("nodos_grafo", [])
+            if nodos:
+                lineas.append(f"- **Nodos del Grafo Jurídico activados:** `{', '.join(nodos)}`")
+                lineas.append("")
+            lineas.append("---")
+            lineas.append("")
+
+    return "\n".join(lineas)
+
+
 # =============================================================
 # APARTADO ANTES DE TERMINAR LA CONVERSACIÓN: COMENTARIOS DE EXPERIENCIA
 # =============================================================
 if st.session_state.messages:
     st.markdown("---")
+    md_export_orientacion = generar_orientacion_legal_markdown(
+        st.session_state.messages,
+        st.session_state.sesion_id,
+        usuario_activo,
+    )
+    st.download_button(
+        label="Descargar orientación legal (.md)",
+        data=md_export_orientacion.encode("utf-8"),
+        file_name=f"orientacion_lexis_{st.session_state.sesion_id}.md",
+        mime="text/markdown",
+        use_container_width=True,
+    )
     with st.expander(
         "Puntuación General del Chat, Comentarios sobre la Experiencia y Cierre de Conversación",
         expanded=(st.session_state.estado_sesion == "finalizada"),

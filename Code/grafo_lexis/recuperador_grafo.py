@@ -56,9 +56,9 @@ class RecuperadorGrafoLexis:
             return self._mapa_doc_a_slug[norm]
 
         # Coincidencia parcial por palabras clave de los nombres de archivos en ChromaDB
-        if "procedimientos" in norm and "civiles" in norm:
+        if ("procedimiento" in norm or "procesal" in norm) and "civil" in norm:
             return "cpc_tlax"
-        if "procedimientos" in norm and "penales" in norm:
+        if ("procedimiento" in norm or "procesal" in norm) and "penal" in norm:
             return "cpp_tlax"
         if "civil" in norm:
             return "cc_tlax"
@@ -72,11 +72,19 @@ class RecuperadorGrafoLexis:
 
     def mapear_hit_a_nodo_articulo(self, hit: Dict[str, Any]) -> Optional[str]:
         """
-        Resuelve un diccionario `hit` (con llaves `documento`, `articulo`, `texto`)
-        al ID canónico del nodo `Articulo` en el grafo (`articulo:<ley_slug>:<num>`).
+        Resuelve un diccionario `hit` (con llaves `articulo_id`, `documento`, `articulo`, `texto`)
+        al ID canónico del nodo `Articulo` en el grafo (`articulo:<ley_slug>:<num>`) en O(1)
+        cuando `articulo_id` está presente en el hit o en sus metadatos.
         """
-        if "nodo_articulo_id" in hit and self.grafo.has_node(hit["nodo_articulo_id"]):
-            return hit["nodo_articulo_id"]
+        meta = hit.get("metadatos") if isinstance(hit.get("metadatos"), dict) else {}
+        for cand_directo in (
+            hit.get("articulo_id"),
+            meta.get("articulo_id"),
+            hit.get("nodo_articulo_id"),
+            meta.get("nodo_articulo_id"),
+        ):
+            if cand_directo and self.grafo.has_node(cand_directo):
+                return str(cand_directo)
 
         doc_str = str(hit.get("documento", ""))
         art_str = str(hit.get("articulo", ""))

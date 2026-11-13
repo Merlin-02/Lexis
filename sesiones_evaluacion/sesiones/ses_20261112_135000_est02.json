@@ -1,0 +1,119 @@
+{
+  "sesion_id": "ses_20261112_135000_est02",
+  "dispositivo_id": "disp_est02uatx",
+  "usuario_id": "usr_09383569bee1",
+  "username": "est_mariana_uatx",
+  "rol_usuario": "Estudiante de Derecho",
+  "es_area_juridica_tlaxcala": true,
+  "nombre_evaluador": "Mariana Cortés Netzahual",
+  "entorno": "pruebas",
+  "estado": "finalizada",
+  "titulo": "¿Qué obligaciones tienen el arrendador y el arrendatario según el...",
+  "creada_en": "2026-11-12T18:10:31",
+  "actualizada_en": "2026-11-12T18:10:31",
+  "messages": [
+    {
+      "role": "user",
+      "content": "¿Qué obligaciones tienen el arrendador y el arrendatario según el Código Civil de Tlaxcala en un contrato de arrendamiento?"
+    },
+    {
+      "id_mensaje": "msg_0001_e52dce",
+      "role": "assistant",
+      "content": "Conforme al **artículo 2008 del Código Civil para el Estado Libre y Soberano de Tlaxcala**, existe arrendamiento cuando las dos partes contratantes se obligan recíprocamente: una a conceder el uso o goce temporal de un bien, y la otra a pagar por ese uso o goce un precio cierto. El arrendador está obligado a entregar el bien en estado de servir para el uso convenido y conservarlo durante el arrendamiento, mientras que el arrendatario debe satisfacer la renta en la forma y tiempo convenidos y responder de los perjuicios que el bien sufra por su culpa o negligencia.",
+      "consulta_origen": "¿Qué obligaciones tienen el arrendador y el arrendatario según el Código Civil de Tlaxcala en un contrato de arrendamiento?",
+      "ley_filtrada": "Codigo Civil Tlaxcala",
+      "fuentes": "* **Artículo que remite aquí (`relativa`)**: **Código Civil de Tlaxcala — Artículo 2082** -> `articulo:cc_tlax:2081` *(ref: \"en el artículo anterior\")*\n* **Artículo que remite aquí (`lista`)**: **Código Civil de Tlaxcala — Artículo 2083** -> `articulo:cc_tlax:2081` *(ref: \"artículos 2081 y 2082\")*\n* **Artículo que remite aquí (`directa`)**: **Código Civil de Tlaxcala — Artículo 2084** -> `articulo:cc_tlax:2081` *(ref: \"artículo 2081\")*\n* **Artículo que remite aquí (`directa`)**: **Código Civil de Tlaxcala — Artículo 2093** -> `articulo:cc_tlax:2081` *(ref: \"artículo 2081\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Codigo Civil Tlaxcala",
+          "articulo": "ARTICULO 2017.-",
+          "jerarquia": "Capitulo I"
+        },
+        {
+          "documento": "Codigo Civil Tlaxcala",
+          "articulo": "ARTICULO 2087.-",
+          "jerarquia": "Capitulo VII"
+        },
+        {
+          "documento": "Codigo Civil Tlaxcala",
+          "articulo": "ARTICULO 2081.-",
+          "jerarquia": "Capitulo VII"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cc_tlax:2017",
+        "articulo:cc_tlax:2087",
+        "articulo:cc_tlax:2081"
+      ],
+      "tiempo_respuesta_seg": 1.87,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Citación precisa del artículo 2008 y correlativos del Código Civil de Tlaxcala sobre arrendamiento.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    },
+    {
+      "role": "user",
+      "content": "¿Cómo se define el testamento y la herencia en el Código Civil de Tlaxcala?"
+    },
+    {
+      "id_mensaje": "msg_0003_1db8a8",
+      "role": "assistant",
+      "content": "De acuerdo con el **artículo 2596 del Código Civil de Tlaxcala**, la **herencia** es la sucesión en todos los bienes del difunto y en todos sus derechos y obligaciones que no se extinguen por la muerte.\n\nPor su parte, el **artículo 2606** define el **testamento** como un acto jurídico unilateral, revocable y personalísimo, por el cual una persona capaz dispone de sus bienes y derechos, y declara o cumple deberes para después de su muerte.",
+      "consulta_origen": "¿Cómo se define el testamento y la herencia en el Código Civil de Tlaxcala?",
+      "ley_filtrada": "Codigo Civil Tlaxcala",
+      "fuentes": "* **Cita saliente (`lista`)**: `articulo:cc_tlax:2935` -> **Código Civil de Tlaxcala — Artículo 2875** *(ref: \"artículos 2875, 2876 y 2878\")*\n* **Cita saliente (`lista`)**: `articulo:cc_tlax:2935` -> **Código Civil de Tlaxcala — Artículo 2876** *(ref: \"artículos 2875, 2876 y 2878\")*\n* **Cita saliente (`lista`)**: `articulo:cc_tlax:2935` -> **Código Civil de Tlaxcala — Artículo 2878** *(ref: \"artículos 2875, 2876 y 2878\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Codigo Civil Tlaxcala",
+          "articulo": "ARTICULO 2869.-",
+          "jerarquia": "Capitulo I"
+        },
+        {
+          "documento": "Codigo Civil Tlaxcala",
+          "articulo": "ARTICULO 3051.-",
+          "jerarquia": "Capitulo VII"
+        },
+        {
+          "documento": "Codigo Civil Tlaxcala",
+          "articulo": "ARTICULO 2935.-",
+          "jerarquia": "Capitulo II"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cc_tlax:2869",
+        "articulo:cc_tlax:3051",
+        "articulo:cc_tlax:2935",
+        "articulo:cc_tlax:2875",
+        "articulo:cc_tlax:2876",
+        "articulo:cc_tlax:2878"
+      ],
+      "tiempo_respuesta_seg": 1.86,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 4,
+        "correccion_juridica": "Recuperó correctamente los artículos 2596 y 2606 del Código Civil de Tlaxcala.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    }
+  ],
+  "historial_rag": [
+    [
+      "¿Qué obligaciones tienen el arrendador y el arrendatario según el Código Civil de Tlaxcala en un contrato de arrendamiento?",
+      "Ley: Codigo Civil Tlaxcala"
+    ],
+    [
+      "¿Cómo se define el testamento y la herencia en el Código Civil de Tlaxcala?",
+      "Ley: Codigo Civil Tlaxcala"
+    ]
+  ],
+  "experiencia_final": {
+    "calificacion_global_estrellas": 4,
+    "comentarios_experiencia": "El visualizador interactivo tipo Obsidian ayuda mucho a identificar cómo se relacionan los artículos de arrendamiento, contratos y sucesiones en el Código Civil de Tlaxcala.",
+    "sugerencias_correccion_futura": "Permitir exportar directamente el subgrafo de la consulta como imagen PNG.",
+    "guardado_en": "2026-11-12T18:10:31"
+  }
+}

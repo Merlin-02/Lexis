@@ -8,21 +8,21 @@
     }
   },
   "aristas": {
-    "total": 10135,
+    "total": 10239,
     "por_tipo": {
       "CONTIENE": 7221,
-      "REFIERE_A": 2900,
+      "REFIERE_A": 3004,
       "MENCIONA_NORMA": 14
     },
     "refiere_a_por_clase": {
-      "relativa": 922,
-      "directa": 940,
-      "lista": 321,
-      "rango": 564,
+      "relativa": 943,
+      "directa": 973,
+      "lista": 338,
+      "rango": 597,
       "explicita_otra_ley": 153
     },
     "refiere_a_por_relacion": {
-      "misma_ley": 2646,
+      "misma_ley": 2750,
       "entre_leyes": 254
     }
   },
@@ -115,17 +115,17 @@
       "ley:cc_tlax": 5
     },
     "citas_internas_entre_articulos": {
-      "ley:cc_tlax": 829,
-      "ley:lft": 519,
-      "ley:cpc_tlax": 516,
-      "ley:cpp_tlax": 171,
-      "ley:cp_tlax": 143,
-      "ley:cpeum": 125
+      "ley:cc_tlax": 831,
+      "ley:lft": 528,
+      "ley:cpc_tlax": 517,
+      "ley:cpp_tlax": 227,
+      "ley:cp_tlax": 144,
+      "ley:cpeum": 139
     },
     "citas_relativas_a_propia_ley": {
-      "ley:lft": 130,
-      "ley:cpeum": 98,
-      "ley:cc_tlax": 68,
+      "ley:lft": 136,
+      "ley:cpeum": 111,
+      "ley:cc_tlax": 70,
       "ley:cp_tlax": 20,
       "ley:cpc_tlax": 16,
       "ley:cpp_tlax": 11
@@ -231,6 +231,15 @@
       "citas_misma_ley": 9
     },
     {
+      "articulo_id": "articulo:cpeum:27",
+      "etiqueta": "Artículo 27",
+      "ley_id": "ley:cpeum",
+      "jerarquia": "Capitulo I",
+      "total_citas_recibidas": 8,
+      "citas_desde_otras_leyes": 3,
+      "citas_misma_ley": 5
+    },
+    {
       "articulo_id": "articulo:lft:48",
       "etiqueta": "Artículo 48",
       "ley_id": "ley:lft",
@@ -244,6 +253,15 @@
       "etiqueta": "Artículo 50",
       "ley_id": "ley:lft",
       "jerarquia": "Capitulo IV",
+      "total_citas_recibidas": 8,
+      "citas_desde_otras_leyes": 0,
+      "citas_misma_ley": 8
+    },
+    {
+      "articulo_id": "articulo:lft:390-BIS",
+      "etiqueta": "Artículo 390 BIS",
+      "ley_id": "ley:lft",
+      "jerarquia": "Capitulo III",
       "total_citas_recibidas": 8,
       "citas_desde_otras_leyes": 0,
       "citas_misma_ley": 8
@@ -276,15 +294,6 @@
       "citas_misma_ley": 5
     },
     {
-      "articulo_id": "articulo:cpeum:27",
-      "etiqueta": "Artículo 27",
-      "ley_id": "ley:cpeum",
-      "jerarquia": "Capitulo I",
-      "total_citas_recibidas": 7,
-      "citas_desde_otras_leyes": 3,
-      "citas_misma_ley": 4
-    },
-    {
       "articulo_id": "articulo:cc_tlax:2976",
       "etiqueta": "Artículo 2976",
       "ley_id": "ley:cc_tlax",
@@ -301,15 +310,6 @@
       "total_citas_recibidas": 7,
       "citas_desde_otras_leyes": 6,
       "citas_misma_ley": 1
-    },
-    {
-      "articulo_id": "articulo:lft:390-BIS",
-      "etiqueta": "Artículo 390 BIS",
-      "ley_id": "ley:lft",
-      "jerarquia": "Capitulo III",
-      "total_citas_recibidas": 7,
-      "citas_desde_otras_leyes": 0,
-      "citas_misma_ley": 7
     },
     {
       "articulo_id": "articulo:lft:897",

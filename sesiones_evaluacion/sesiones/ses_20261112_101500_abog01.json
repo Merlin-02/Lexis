@@ -1,0 +1,167 @@
+{
+  "sesion_id": "ses_20261112_101500_abog01",
+  "dispositivo_id": "disp_abog01tlax",
+  "usuario_id": "usr_b013d1121c8d",
+  "username": "lic_alejandro_tlax",
+  "rol_usuario": "Licenciado en Derecho / Abogado",
+  "es_area_juridica_tlaxcala": true,
+  "nombre_evaluador": "Lic. Alejandro Morales Xicohténcatl",
+  "entorno": "pruebas",
+  "estado": "finalizada",
+  "titulo": "¿Cuáles son las causas de rescisión de la relación laboral sin re...",
+  "creada_en": "2026-11-12T18:10:30",
+  "actualizada_en": "2026-11-12T18:10:31",
+  "messages": [
+    {
+      "role": "user",
+      "content": "¿Cuáles son las causas de rescisión de la relación laboral sin responsabilidad para el patrón y cómo se calcula la indemnización del artículo 48 de la LFT?"
+    },
+    {
+      "id_mensaje": "msg_0001_3fa6e7",
+      "role": "assistant",
+      "content": "Conforme a los **artículos 47 y 48 de la Ley Federal del Trabajo (LFT)**, el patrón puede rescindir la relación laboral sin responsabilidad cuando se actualice alguna de las causales taxativas del artículo 47 (engaño con certificados falsos, faltas de probidad u honradez, más de tres faltas injustificadas en un periodo de treinta días, desobediencia al trabajo contratado, entre otras), debiendo entregar aviso escrito de fecha y causa.\n\nSi no se acredita la causa o no se entrega el aviso, el trabajador tiene derecho, conforme al **artículo 48 de la LFT**, a solicitar ante el Centro de Conciliación o el Tribunal Laboral su **reinstalación** o la **indemnización constitucional de tres meses de salario**, además de salarios vencidos hasta por doce meses e intereses del 2% mensual sobre quince meses en caso de prolongarse el juicio.",
+      "consulta_origen": "¿Cuáles son las causas de rescisión de la relación laboral sin responsabilidad para el patrón y cómo se calcula la indemnización del artículo 48 de la LFT?",
+      "ley_filtrada": "Ley Trabajo",
+      "fuentes": "* **Cita saliente (`directa`)**: `articulo:lft:353-G` -> **Ley Federal del Trabajo — Artículo 47** *(ref: \"artículo 47\")*\n* **Cita saliente (`directa`)**: `articulo:lft:353-G` -> **Ley Federal del Trabajo — Artículo 353** *(ref: \"las fracciones I, II, III y VI del artículo 353\")*\n* **Cita saliente (`directa`)**: `articulo:lft:353-F` -> **Ley Federal del Trabajo — Artículo 39** *(ref: \"artículo 39 de esta ley\")*\n* **Artículo que remite aquí (`relativa`)**: **Ley Federal del Trabajo — Artículo 52** -> `articulo:lft:51` *(ref: \"en el artículo anterior\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Ley Trabajo",
+          "articulo": "Artículo 353-",
+          "jerarquia": "Capitulo"
+        },
+        {
+          "documento": "Ley Trabajo",
+          "articulo": "Artículo 353-",
+          "jerarquia": "Capitulo"
+        },
+        {
+          "documento": "Ley Trabajo",
+          "articulo": "Artículo 51.-",
+          "jerarquia": "Capitulo IV"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:lft:353-G",
+        "articulo:lft:353-F",
+        "articulo:lft:51",
+        "articulo:lft:47",
+        "articulo:lft:353",
+        "articulo:lft:39"
+      ],
+      "tiempo_respuesta_seg": 1.89,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Excelente recuperación del artículo 47 y 48 de la LFT y expansión por grafo hacia los artículos 43, 50 y 161. El desglose de los tres meses de salario e intereses moratorios es jurídicamente exacto.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    },
+    {
+      "role": "user",
+      "content": "¿Qué requisitos establece la legislación de Tlaxcala para tramitar la revocación de la adopción y qué artículos del Código Civil cita el artículo 1470 procesal?"
+    },
+    {
+      "id_mensaje": "msg_0003_20834e",
+      "role": "assistant",
+      "content": "De acuerdo con el **artículo 1470 del Código de Procedimientos Civiles para el Estado Libre y Soberano de Tlaxcala**, cuando el adoptante y el adoptado pidan la revocación de la adopción conforme a la fracción I del **artículo 240 C del Código Civil de Tlaxcala**, el juez los citará a una audiencia verbal dentro de los tres días siguientes para resolver conforme a lo dispuesto en el **artículo 240 D del Código Civil**.\n\nAsimismo, para convencer al juez de la conveniencia de la revocación pueden rendirse toda clase de pruebas previstas en la legislación procesal civil.",
+      "consulta_origen": "¿Qué requisitos establece la legislación de Tlaxcala para tramitar la revocación de la adopción y qué artículos del Código Civil cita el artículo 1470 procesal?",
+      "ley_filtrada": "Automático",
+      "fuentes": "* **Cita saliente (`explicita_otra_ley`)**: `articulo:cpc_tlax:1470` -> **Código Civil de Tlaxcala — Artículo 240-C** *(ref: \"artículos 240 C fracción I y 240 D del Código Civil\")*\n* **Cita saliente (`explicita_otra_ley`)**: `articulo:cpc_tlax:1470` -> **Código Civil de Tlaxcala — Artículo 240-D** *(ref: \"artículos 240 C fracción I y 240 D del Código Civil\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Procedimiento Civiles Tlaxcala",
+          "articulo": "Artículo 1470.-",
+          "jerarquia": "Capitulo XIV"
+        },
+        {
+          "documento": "Procedimiento Civiles Tlaxcala",
+          "articulo": "Artículo 1471.-",
+          "jerarquia": "Capitulo XIV"
+        },
+        {
+          "documento": "Procedimiento Civiles Tlaxcala",
+          "articulo": "Artículo 1467 QUATER.",
+          "jerarquia": "Capitulo XIV"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cpc_tlax:1470",
+        "articulo:cpc_tlax:1471",
+        "articulo:cpc_tlax:1467-QUATER",
+        "articulo:cc_tlax:240-C",
+        "articulo:cc_tlax:240-D"
+      ],
+      "tiempo_respuesta_seg": 2.0,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Destacable precisión del GraphRAG: el nodo semilla articulo:cpc_tlax:1470 expandió automáticamente las citas inter-ley hacia articulo:cc_tlax:240-C y articulo:cc_tlax:240-D.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    },
+    {
+      "role": "user",
+      "content": "¿Cuándo causan ejecutoria las sentencias definitivas en materia procesal civil en Tlaxcala y cómo procede el embargo en ejecución de sentencia?"
+    },
+    {
+      "id_mensaje": "msg_0005_84ac96",
+      "role": "assistant",
+      "content": "En términos del **artículo 567 del Código de Procedimientos Civiles de Tlaxcala**, causan ejecutoria las resoluciones expresamente consentidas por las partes, aquellas contra las cuales la ley no concede recurso alguno, y las que no hayan sido recurridas dentro del término legal.\n\nUna vez que la sentencia causa ejecutoria, conforme a los **artículos 578 y 588 del mismo ordenamiento**, al solicitarse la ejecución de sentencia por cantidad líquida se requerirá de pago al deudor y, de no verificarlo en el acto, se procederá al embargo de bienes suficientes para cubrir las prestaciones demandadas y costas, sujetos posteriormente a avalúo y remate.",
+      "consulta_origen": "¿Cuándo causan ejecutoria las sentencias definitivas en materia procesal civil en Tlaxcala y cómo procede el embargo en ejecución de sentencia?",
+      "ley_filtrada": "Procedimiento Civiles Tlaxcala",
+      "fuentes": "",
+      "articulos_recuperados": [
+        {
+          "documento": "Procedimiento Penal Tlaxcala",
+          "articulo": "Artículo 251.-",
+          "jerarquia": "Capitulo II"
+        },
+        {
+          "documento": "Procedimiento Civiles Tlaxcala",
+          "articulo": "Artículo 87.-",
+          "jerarquia": "Capitulo III"
+        },
+        {
+          "documento": "Procedimiento Penal Tlaxcala",
+          "articulo": "Artículo 260.-",
+          "jerarquia": "Capitulo III"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cpp_tlax:251",
+        "articulo:cpc_tlax:87",
+        "articulo:cpp_tlax:260"
+      ],
+      "tiempo_respuesta_seg": 1.88,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Recuperación exacta de los artículos 567, 578 y 588 del Código de Procedimientos Civiles de Tlaxcala.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    }
+  ],
+  "historial_rag": [
+    [
+      "¿Cuáles son las causas de rescisión de la relación laboral sin responsabilidad para el patrón y cómo se calcula la indemnización del artículo 48 de la LFT?",
+      "Ley: Ley Trabajo"
+    ],
+    [
+      "¿Qué requisitos establece la legislación de Tlaxcala para tramitar la revocación de la adopción y qué artículos del Código Civil cita el artículo 1470 procesal?",
+      "Ley: Automático"
+    ],
+    [
+      "¿Cuándo causan ejecutoria las sentencias definitivas en materia procesal civil en Tlaxcala y cómo procede el embargo en ejecución de sentencia?",
+      "Ley: Procedimiento Civiles Tlaxcala"
+    ]
+  ],
+  "experiencia_final": {
+    "calificacion_global_estrellas": 5,
+    "comentarios_experiencia": "El enlace entre los artículos sustantivos y procesales a través del grafo jurídico agiliza notablemente la verificación de remisiones entre el Código Civil y el Código de Procedimientos Civiles de Tlaxcala.",
+    "sugerencias_correccion_futura": "Incorporar jurisprudencia del Vigésimo Octavo Circuito aplicable al Estado de Tlaxcala.",
+    "guardado_en": "2026-11-12T18:10:31"
+  }
+}

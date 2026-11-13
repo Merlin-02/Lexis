@@ -1,24 +1,24 @@
 {
   "resumen": {
-    "total_registradas": 82,
-    "total_rotas_estrictas_en_corpus": 1,
+    "total_registradas": 85,
+    "total_rotas_estrictas_en_corpus": 3,
     "total_hacia_leyes_externas": 14,
-    "total_ambiguas_o_indeterminadas": 67,
+    "total_ambiguas_o_indeterminadas": 68,
     "por_motivo": {
       "ley_no_cargada": 14,
-      "relativa_ambigua": 67,
-      "articulo_inexistente": 1
+      "relativa_ambigua": 68,
+      "articulo_inexistente": 3
     },
     "por_ley_origen": {
       "ley:cc_tlax": 33,
       "ley:cp_tlax": 15,
-      "ley:lft": 12,
+      "ley:lft": 13,
       "ley:cpc_tlax": 18,
-      "ley:cpp_tlax": 4
+      "ley:cpp_tlax": 6
     },
     "por_confianza": {
-      "alta": 15,
-      "baja": 67
+      "alta": 17,
+      "baja": 68
     }
   },
   "rotas_estrictas_en_corpus": [
@@ -33,6 +33,30 @@
       "span_fin": 940,
       "confianza": "alta",
       "sugerencia": null
+    },
+    {
+      "origen_id": "articulo:cpp_tlax:93",
+      "ley_origen": "ley:cpp_tlax",
+      "texto_referencia": "artículos 229 y 229 bis y 229 ter",
+      "destino_mencionado": "articulo:cpp_tlax:229-BIS",
+      "motivo": "articulo_inexistente",
+      "snippet": "Aborto contenido en el párrafo tercero del artículo 242; Feminicidio previsto en los artículos 229 y 229 bis y 229 ter; Extorsión previsto en los artículos 268 al 270; Robo Calificado previsto en los art",
+      "span_inicio": 2036,
+      "span_fin": 2069,
+      "confianza": "alta",
+      "sugerencia": "Existen subartículos: articulo:cpp_tlax:229"
+    },
+    {
+      "origen_id": "articulo:cpp_tlax:93",
+      "ley_origen": "ley:cpp_tlax",
+      "texto_referencia": "artículos 229 y 229 bis y 229 ter",
+      "destino_mencionado": "articulo:cpp_tlax:229-TER",
+      "motivo": "articulo_inexistente",
+      "snippet": "Aborto contenido en el párrafo tercero del artículo 242; Feminicidio previsto en los artículos 229 y 229 bis y 229 ter; Extorsión previsto en los artículos 268 al 270; Robo Calificado previsto en los art",
+      "span_inicio": 2036,
+      "span_fin": 2069,
+      "confianza": "alta",
+      "sugerencia": "Existen subartículos: articulo:cpp_tlax:229"
     }
   ],
   "hacia_leyes_externas": [
@@ -707,6 +731,18 @@
       "snippet": "tos o de la reducción definitiva de sus trabajos, se sujetará a las disposiciones de los artículos siguientes.",
       "span_inicio": 189,
       "span_fin": 213,
+      "confianza": "baja",
+      "sugerencia": "Plural relativo sin cantidad explícita ('los artículos anteriores/siguientes')"
+    },
+    {
+      "origen_id": "articulo:lft:513",
+      "ley_origen": "ley:lft",
+      "texto_referencia": "los artículos siguientes",
+      "destino_mencionado": "los artículos siguientes",
+      "motivo": "relativa_ambigua",
+      "snippet": "ón del campo visual uni o bilateral con agudeza visual normal o disminuida aplicando los artículos siguientes: Deficiencia visual por déficit del campo visual binocular Deficiencia visual por dé",
+      "span_inicio": 242055,
+      "span_fin": 242079,
       "confianza": "baja",
       "sugerencia": "Plural relativo sin cantidad explícita ('los artículos anteriores/siguientes')"
     },
@@ -1688,6 +1724,18 @@
         "sugerencia": "Plural relativo sin cantidad explícita ('los artículos anteriores/siguientes')"
       },
       {
+        "origen_id": "articulo:lft:513",
+        "ley_origen": "ley:lft",
+        "texto_referencia": "los artículos siguientes",
+        "destino_mencionado": "los artículos siguientes",
+        "motivo": "relativa_ambigua",
+        "snippet": "ón del campo visual uni o bilateral con agudeza visual normal o disminuida aplicando los artículos siguientes: Deficiencia visual por déficit del campo visual binocular Deficiencia visual por dé",
+        "span_inicio": 242055,
+        "span_fin": 242079,
+        "confianza": "baja",
+        "sugerencia": "Plural relativo sin cantidad explícita ('los artículos anteriores/siguientes')"
+      },
+      {
         "origen_id": "articulo:lft:516",
         "ley_origen": "ley:lft",
         "texto_referencia": "en los artículos siguientes",
@@ -2000,6 +2048,30 @@
         "span_fin": 940,
         "confianza": "alta",
         "sugerencia": null
+      },
+      {
+        "origen_id": "articulo:cpp_tlax:93",
+        "ley_origen": "ley:cpp_tlax",
+        "texto_referencia": "artículos 229 y 229 bis y 229 ter",
+        "destino_mencionado": "articulo:cpp_tlax:229-BIS",
+        "motivo": "articulo_inexistente",
+        "snippet": "Aborto contenido en el párrafo tercero del artículo 242; Feminicidio previsto en los artículos 229 y 229 bis y 229 ter; Extorsión previsto en los artículos 268 al 270; Robo Calificado previsto en los art",
+        "span_inicio": 2036,
+        "span_fin": 2069,
+        "confianza": "alta",
+        "sugerencia": "Existen subartículos: articulo:cpp_tlax:229"
+      },
+      {
+        "origen_id": "articulo:cpp_tlax:93",
+        "ley_origen": "ley:cpp_tlax",
+        "texto_referencia": "artículos 229 y 229 bis y 229 ter",
+        "destino_mencionado": "articulo:cpp_tlax:229-TER",
+        "motivo": "articulo_inexistente",
+        "snippet": "Aborto contenido en el párrafo tercero del artículo 242; Feminicidio previsto en los artículos 229 y 229 bis y 229 ter; Extorsión previsto en los artículos 268 al 270; Robo Calificado previsto en los art",
+        "span_inicio": 2036,
+        "span_fin": 2069,
+        "confianza": "alta",
+        "sugerencia": "Existen subartículos: articulo:cpp_tlax:229"
       }
     ]
   }

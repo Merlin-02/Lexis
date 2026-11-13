@@ -11,9 +11,57 @@ import json
 import os
 import re
 import secrets
+import tempfile
+import threading
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
+
+try:
+    import fcntl
+except ImportError:
+    fcntl = None  # type: ignore
+
+_LOCK_USUARIOS = threading.RLock()
+
+
+@contextmanager
+def _bloqueo_archivo(ruta_lock: Path):
+    """Bloqueo concurrente a nivel de hilo (RLock) y de proceso (fcntl.flock si está disponible)."""
+    with _LOCK_USUARIOS:
+        ruta_lock.parent.mkdir(parents=True, exist_ok=True)
+        with open(ruta_lock, "a+", encoding="utf-8") as lf:
+            if fcntl is not None:
+                fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                if fcntl is not None:
+                    fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
+
+
+def _escribir_json_atomico(ruta_destino: Path, datos: Any) -> None:
+    """Escribe un archivo JSON de forma atómica usando archivo temporal en el mismo directorio y os.replace()."""
+    ruta_destino.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(
+        dir=str(ruta_destino.parent),
+        prefix=f".{ruta_destino.name}.",
+        suffix=".tmp",
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(datos, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, ruta_destino)
+    except Exception:
+        if os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+        raise
 
 DIR_CODE = Path(__file__).resolve().parent
 ROOT_DIR = DIR_CODE.parent
@@ -60,29 +108,31 @@ class GestorUsuarios:
         if not self.archivo_usuarios.exists():
             return {}
         try:
-            with open(self.archivo_usuarios, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                return data if isinstance(data, dict) else {}
+            with _bloqueo_archivo(self.base_dir / ".usuarios.lock"):
+                with open(self.archivo_usuarios, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return data if isinstance(data, dict) else {}
         except Exception:
             return {}
 
     def _guardar_usuarios(self, usuarios: Dict[str, Dict[str, Any]]) -> None:
-        with open(self.archivo_usuarios, "w", encoding="utf-8") as f:
-            json.dump(usuarios, f, ensure_ascii=False, indent=2)
+        with _bloqueo_archivo(self.base_dir / ".usuarios.lock"):
+            _escribir_json_atomico(self.archivo_usuarios, usuarios)
 
     def _cargar_tokens(self) -> Dict[str, Dict[str, Any]]:
         if not self.archivo_tokens.exists():
             return {}
         try:
-            with open(self.archivo_tokens, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                return data if isinstance(data, dict) else {}
+            with _bloqueo_archivo(self.base_dir / ".tokens.lock"):
+                with open(self.archivo_tokens, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    return data if isinstance(data, dict) else {}
         except Exception:
             return {}
 
     def _guardar_tokens(self, tokens: Dict[str, Dict[str, Any]]) -> None:
-        with open(self.archivo_tokens, "w", encoding="utf-8") as f:
-            json.dump(tokens, f, ensure_ascii=False, indent=2)
+        with _bloqueo_archivo(self.base_dir / ".tokens.lock"):
+            _escribir_json_atomico(self.archivo_tokens, tokens)
 
     @staticmethod
     def _sanitizar_perfil(datos_usuario: Dict[str, Any]) -> Dict[str, Any]:

@@ -1,52 +1,210 @@
 {
   "sesiones": {
-    "ses_20261030_143221_233ff0": {
-      "sesion_id": "ses_20261030_143221_233ff0",
-      "dispositivo_id": "disp_e9cb9fbec3",
-      "nombre_evaluador": "",
-      "entorno": "pruebas",
-      "estado": "activa",
-      "titulo": "Nueva conversación",
-      "actualizada_en": "2026-10-30T14:32:26",
-      "experiencia_final": {
-        "calificacion_global_estrellas": null,
-        "comentarios_experiencia": "",
-        "sugerencias_correccion_futura": "",
-        "guardado_en": null
-      },
-      "respuestas_evaluadas": []
-    },
     "ses_20261030_143227_d8ab80": {
       "sesion_id": "ses_20261030_143227_d8ab80",
       "dispositivo_id": "disp_e9cb9fbec3",
+      "usuario_id": "usr_b7f43c92fe6a",
+      "username": "merlin_ciudadano",
+      "rol_usuario": "Usuario General",
+      "es_area_juridica_tlaxcala": false,
       "nombre_evaluador": "Merlin",
       "entorno": "pruebas",
-      "estado": "activa",
+      "estado": "finalizada",
       "titulo": "hola que tal como puedo saber los motivos fundamentados de despid...",
-      "actualizada_en": "2026-10-30T14:32:53",
+      "actualizada_en": "2026-11-12T18:10:25",
       "experiencia_final": {
-        "calificacion_global_estrellas": null,
-        "comentarios_experiencia": "",
-        "sugerencias_correccion_futura": "",
-        "guardado_en": null
+        "calificacion_global_estrellas": 5,
+        "comentarios_experiencia": "Me ayudó a entender que el patrón está obligado a darme aviso por escrito si me despide.",
+        "sugerencias_correccion_futura": "Incluir formato ejemplo de solicitud ante el Centro de Conciliación.",
+        "guardado_en": "2026-11-12T18:10:25"
       },
-      "respuestas_evaluadas": []
+      "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0001_8bf3c3",
+          "consulta_origen": "hola que tal como puedo saber los motivos fundamentados de despido o de renuncia",
+          "respuesta_modelo": "¡Hola! Entiendo que quieres saber cómo conocer los motivos que justifican un despido o una renuncia. Vamos a ver lo que la ley dice y qué puedes hacer.\n\n---\n\n### 1. ¿Qué dice la ley sobre los motivos de despido?\n\nEl **Artículo 47 de la Ley del Trabajo** establece que cuando un patrón decide rescindir la relación laboral, **debe entregar al trabajador un aviso escrito** en el que:\n\n- **Indique claramente la conducta o conductas** que motivan la rescisión.\n- **Especifique la fecha o fechas** en que se cometieron esas conductas.\n\nEl aviso debe entregarse **personalmente al trabajador en el momento mismo del despido** o, si no es posible, comunicarse al Tribunal competente **dentro de los cinco días hábiles siguientes**. En ese caso, el patrón debe proporcionar el último domicilio registrado del trabajador para que la autoridad lo notifique personalmente.\n\n> **En palabras sencillas:** Si te despiden, la empresa tiene la obligación de decirte *por qué* lo hace, y debe hacerlo por escrito y de forma clara.\n\n---\n\n### 2. ¿Qué dice la ley sobre la renuncia?\n\nEl **Artículo 668 de la Ley del Trabajo** menciona que la Secretaría del Trabajo y Previsión Social conoce de las renuncias de los representantes, aceptándolas o desechándolas previa calificación de la causa. En la práctica, esto significa que:\n\n- **La renuncia debe ser voluntaria** y, en la mayoría de los contratos, se exige un preaviso (por ejemplo, 15 días) que suele estar estipulado en el contrato o en la ley aplicable.\n- Si la renuncia se presenta sin una causa justificada (por ejemplo, si la empresa te obliga a renunciar), la ley puede considerarla **despido** y aplicar las mismas reglas del Art. 47.\n\n---\n\n### 3. ¿Cómo puedes saber los motivos concretos?\n\n1. **Pide el aviso escrito**: Si te han despedido, solicita al patrón el documento que contiene la causa. La ley lo exige.\n2. **Revisa el contenido**: Compara lo que dice el aviso con las causas previstas en el Art. 47 (por ejemplo, falta de puntualidad, incumplimiento de tareas, mala conducta, etc.). Si la causa no se ajusta a ninguna de las previstas, podrías tener argumentos para impugnar el despido.\n3. **Para la renuncia**",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 668.-",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2981.-",
+              "jerarquia": "Capitulo V"
+            },
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 47.-",
+              "jerarquia": "Capitulo IV - Fraccion XV"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:lft:668",
+            "articulo:cc_tlax:2981",
+            "articulo:lft:47"
+          ],
+          "tiempo_respuesta_seg": 2.45,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Explicación muy clara sobre el aviso de rescisión del artículo 47 de la LFT.",
+          "evaluado_en": "2026-11-12T18:10:25"
+        }
+      ]
     },
     "ses_20261111_160306_892dca": {
       "sesion_id": "ses_20261111_160306_892dca",
       "dispositivo_id": "disp_7a873aa44c",
-      "nombre_evaluador": "",
+      "usuario_id": "usr_b4f90f0fcf2f",
+      "username": "ciudadana_elena",
+      "rol_usuario": "Usuario General",
+      "es_area_juridica_tlaxcala": false,
+      "nombre_evaluador": "Elena Rojas Rugerio",
       "entorno": "pruebas",
-      "estado": "activa",
+      "estado": "finalizada",
       "titulo": "hola",
-      "actualizada_en": "2026-11-11T16:21:40",
+      "actualizada_en": "2026-11-12T18:10:25",
       "experiencia_final": {
-        "calificacion_global_estrellas": null,
-        "comentarios_experiencia": "",
-        "sugerencias_correccion_futura": "",
-        "guardado_en": null
+        "calificacion_global_estrellas": 4,
+        "comentarios_experiencia": "Resolvió mis dudas tanto del robo de vehículo como de pensión alimenticia en Tlaxcala.",
+        "sugerencias_correccion_futura": "Mantener el hilo del tema familiar cuando se hacen preguntas breves de seguimiento.",
+        "guardado_en": "2026-11-12T18:10:25"
       },
       "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0001_feca10",
+          "consulta_origen": "hola",
+          "respuesta_modelo": "¡Hola! ¿En qué puedo ayudarte hoy? Si tienes alguna duda sobre el procedimiento penal en Tlaxcala o cualquier tema legal, dime y con gusto te explico lo que la ley establece.",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 125.-",
+              "jerarquia": "Capitulo III"
+            },
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 164.-",
+              "jerarquia": "Capitulo V"
+            },
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 1",
+              "jerarquia": "Capitulo I"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cp_tlax:125",
+            "articulo:cp_tlax:164",
+            "articulo:cp_tlax:1"
+          ],
+          "tiempo_respuesta_seg": 1.85,
+          "voto": "like",
+          "estrellas_0_a_5": 4,
+          "correccion_juridica": "",
+          "evaluado_en": "2026-11-12T18:10:25"
+        },
+        {
+          "id_mensaje": "msg_0003_4e487e",
+          "consulta_origen": "que hago si me robaron mi carro",
+          "respuesta_modelo": "Entiendo que te han robado el carro y eso es muy frustrante.  \nVamos a ver qué dice la ley de Tlaxcala sobre este hecho.\n\n**Qué dice la ley**  \n- **Artículo 321 del Código Penal de Tlaxcala** define el robo: “Comete el delito de robo el que sin consentimiento de quien legalmente pueda otorgarlo, se apodere de una cosa mueble ajena.”  \n  En palabras sencillas, si alguien se lleva tu carro sin tu permiso, está cometiendo robo.  \n- **Artículo 322** señala que el robo se considera consumado cuando el autor tiene la cosa en su poder, aunque luego la abandone.  \n  Eso significa que, una vez que el ladrón se lleva el vehículo, el delito ya está concluido.  \n- **Artículo 330** establece que quien posea un vehículo robado, sin haber participado en el robo, puede ser castigado con prisión y multa.  \n  Si alguien encuentra tu carro y lo detiene, esa persona también puede ser sancionada.\n\n**Cómo se aplica a tu caso**  \n- El hecho de que te hayan robado el carro constituye un delito de robo según el Art. 321.  \n- El robo ya está consumado cuando el ladrón se quedó con el vehículo (Art. 322).  \n- Si alguien más se encuentra con tu carro y lo detiene, esa persona puede ser sancionada (Art. 330).\n\n**Consejo práctico**  \n- Lo primero que debes hacer es acudir a la policía y presentar una denuncia formal.  \n- Guarda cualquier prueba que tengas (fotos, videos, testigos, número de placa, etc.) para respaldar tu reclamo.\n\n**Siguiente paso concreto**  \n- Presenta la denuncia ante la autoridad competente (",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 321.",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 322.",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 330.",
+              "jerarquia": "Capitulo I - Fraccion VI"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cp_tlax:321",
+            "articulo:cp_tlax:322",
+            "articulo:cp_tlax:330"
+          ],
+          "tiempo_respuesta_seg": 2.31,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Identificó con precisión los artículos 321, 322 y 330 del Código Penal de Tlaxcala sobre robo de vehículo.",
+          "evaluado_en": "2026-11-12T18:10:25"
+        },
+        {
+          "id_mensaje": "msg_0005_218453",
+          "consulta_origen": "es necesario que yo le de pension alimenticia a mi hijo",
+          "respuesta_modelo": "Entiendo que te estás preguntando si tienes la obligación de pagar pensión alimenticia a tu hijo.  \nVamos a ver lo que dice la ley de Tlaxcala al respecto.\n\n---\n\n### ¿Qué dice la ley?\n\n**Artículo 156 del Código Civil de Tlaxcala**  \n> “El obligado a dar alimentos cumple la obligación asignando una pensión competente al acreedor alimentario, o incorporándolo a su familia, siempre que tenga hogar propio y si en ello no hubiere grave inconveniente a juicio del juez.”\n\nEn palabras sencillas:  \n- **Sí, tienes la obligación** de proporcionar alimentos a tu hijo.  \n- Puedes hacerlo **de dos maneras**:  \n  1. **Asignar una pensión** (una cantidad mensual que cubra sus necesidades).  \n  2. **Incorporar al hijo a tu familia** (si vives con él y tienes un hogar propio, y el juez no ve un problema grave).\n\n**Artículo 387 del Código Civil de Tlaxcala**  \n> “Los gastos de alimentación y educación del menor deben regularse de manera que nada necesario le falte según su condición y posibilidad económica.”\n\nEsto refuerza que la pensión debe cubrir las necesidades básicas y educativas del menor, ajustándose a tu capacidad económica.\n\n---\n\n### ¿Cómo se aplica a tu situación?\n\nSupongamos que vives con tu hijo y tienes un hogar propio.  \n- **Opción 1**: Puedes decidir que él viva contigo y que tú le proporciones todo lo que necesita (comida, ropa, educación, etc.).  \n- **Opción 2**: Si no es posible que él viva contigo (por ejemplo, si vive con la otra madre), deberás fijar una cantidad mensual que cubra sus necesidades. Esa cantidad debe ser razonable y proporcional a tu ingreso.\n\n---\n\n### Consejos prácticos\n\n1. **Haz un inventario de sus necesidades**: alimentación, educación, salud, vivienda, etc.  \n2. **Calcula una cantidad mensual** que cubra esas necesidades y que sea sostenible para ti.  \n3. **Documenta** la cantidad y la forma de pago (transferencia bancaria, cheques, etc.) para evitar malentendidos.\n\n---\n\n### Próximo paso\n\n- **Solicita una orden de pensión alimenticia** ante el juzgado de familia de Tlaxcala.  \n- Lleva contigo los comprobantes de tus ingresos y los gastos estimados del menor.  \n- Si ya existe un acuerdo, revisa que esté actualizado y sea justo para ambas partes.\n\n---\n\n### Aviso final\n\nRecuerda: esto es una orientación basada en los artículos que tengo. Para un caso concreto, lo mejor es consultar a un abogado especializado en derecho familiar con todos tus documentos y la situación específica. ¡Éxitos!",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 156.-",
+              "jerarquia": "Capitulo II"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 387.-",
+              "jerarquia": "Capitulo X"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 149.-",
+              "jerarquia": "Capitulo II"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cc_tlax:156",
+            "articulo:cc_tlax:387",
+            "articulo:cc_tlax:149"
+          ],
+          "tiempo_respuesta_seg": 2.64,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Fundamentó adecuadamente la obligación alimentaria en los artículos 149, 156 y 387 del Código Civil de Tlaxcala.",
+          "evaluado_en": "2026-11-12T18:10:25"
+        },
+        {
+          "id_mensaje": "msg_0007_ea9905",
+          "consulta_origen": "pero solo tiene mi apellido",
+          "respuesta_modelo": "",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2700.-",
+              "jerarquia": "Capitulo V"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 585.-",
+              "jerarquia": "Capitulo II"
+            },
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 175.-",
+              "jerarquia": "Capitulo VI"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cc_tlax:2700",
+            "articulo:cc_tlax:585",
+            "articulo:cp_tlax:175"
+          ],
+          "tiempo_respuesta_seg": 1.92,
+          "voto": "dislike",
+          "estrellas_0_a_5": 3,
+          "correccion_juridica": "En la consulta corta sin contexto recuperó artículos de sucesiones antes de precisar la manutención.",
+          "evaluado_en": "2026-11-12T18:10:25"
+        },
         {
           "id_mensaje": "msg_0009_37081b",
           "consulta_origen": "pero ese niño del que me piden manutencion solo tiene mi apellido ",
@@ -74,10 +232,436 @@
             "articulo:cc_tlax:339",
             "articulo:cc_tlax:466"
           ],
+          "tiempo_respuesta_seg": 2.5,
           "voto": "like",
           "estrellas_0_a_5": 5,
-          "correccion_juridica": "",
-          "evaluado_en": null
+          "correccion_juridica": "Con contexto adicional precisó el reconocimiento de hijos en el artículo 199 del Código Civil de Tlaxcala.",
+          "evaluado_en": "2026-11-12T18:10:25"
+        }
+      ]
+    },
+    "ses_20261112_101500_abog01": {
+      "sesion_id": "ses_20261112_101500_abog01",
+      "dispositivo_id": "disp_abog01tlax",
+      "usuario_id": "usr_b013d1121c8d",
+      "username": "lic_alejandro_tlax",
+      "rol_usuario": "Licenciado en Derecho / Abogado",
+      "es_area_juridica_tlaxcala": true,
+      "nombre_evaluador": "Lic. Alejandro Morales Xicohténcatl",
+      "entorno": "pruebas",
+      "estado": "finalizada",
+      "titulo": "¿Cuáles son las causas de rescisión de la relación laboral sin re...",
+      "actualizada_en": "2026-11-12T18:10:31",
+      "experiencia_final": {
+        "calificacion_global_estrellas": 5,
+        "comentarios_experiencia": "El enlace entre los artículos sustantivos y procesales a través del grafo jurídico agiliza notablemente la verificación de remisiones entre el Código Civil y el Código de Procedimientos Civiles de Tlaxcala.",
+        "sugerencias_correccion_futura": "Incorporar jurisprudencia del Vigésimo Octavo Circuito aplicable al Estado de Tlaxcala.",
+        "guardado_en": "2026-11-12T18:10:31"
+      },
+      "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0001_3fa6e7",
+          "consulta_origen": "¿Cuáles son las causas de rescisión de la relación laboral sin responsabilidad para el patrón y cómo se calcula la indemnización del artículo 48 de la LFT?",
+          "respuesta_modelo": "Conforme a los **artículos 47 y 48 de la Ley Federal del Trabajo (LFT)**, el patrón puede rescindir la relación laboral sin responsabilidad cuando se actualice alguna de las causales taxativas del artículo 47 (engaño con certificados falsos, faltas de probidad u honradez, más de tres faltas injustificadas en un periodo de treinta días, desobediencia al trabajo contratado, entre otras), debiendo entregar aviso escrito de fecha y causa.\n\nSi no se acredita la causa o no se entrega el aviso, el trabajador tiene derecho, conforme al **artículo 48 de la LFT**, a solicitar ante el Centro de Conciliación o el Tribunal Laboral su **reinstalación** o la **indemnización constitucional de tres meses de salario**, además de salarios vencidos hasta por doce meses e intereses del 2% mensual sobre quince meses en caso de prolongarse el juicio.",
+          "ley_filtrada": "Ley Trabajo",
+          "articulos_recuperados": [
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 353-",
+              "jerarquia": "Capitulo"
+            },
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 353-",
+              "jerarquia": "Capitulo"
+            },
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 51.-",
+              "jerarquia": "Capitulo IV"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:lft:353-G",
+            "articulo:lft:353-F",
+            "articulo:lft:51",
+            "articulo:lft:47",
+            "articulo:lft:353",
+            "articulo:lft:39"
+          ],
+          "tiempo_respuesta_seg": 1.89,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Excelente recuperación del artículo 47 y 48 de la LFT y expansión por grafo hacia los artículos 43, 50 y 161. El desglose de los tres meses de salario e intereses moratorios es jurídicamente exacto.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        },
+        {
+          "id_mensaje": "msg_0003_20834e",
+          "consulta_origen": "¿Qué requisitos establece la legislación de Tlaxcala para tramitar la revocación de la adopción y qué artículos del Código Civil cita el artículo 1470 procesal?",
+          "respuesta_modelo": "De acuerdo con el **artículo 1470 del Código de Procedimientos Civiles para el Estado Libre y Soberano de Tlaxcala**, cuando el adoptante y el adoptado pidan la revocación de la adopción conforme a la fracción I del **artículo 240 C del Código Civil de Tlaxcala**, el juez los citará a una audiencia verbal dentro de los tres días siguientes para resolver conforme a lo dispuesto en el **artículo 240 D del Código Civil**.\n\nAsimismo, para convencer al juez de la conveniencia de la revocación pueden rendirse toda clase de pruebas previstas en la legislación procesal civil.",
+          "ley_filtrada": "Automático",
+          "articulos_recuperados": [
+            {
+              "documento": "Procedimiento Civiles Tlaxcala",
+              "articulo": "Artículo 1470.-",
+              "jerarquia": "Capitulo XIV"
+            },
+            {
+              "documento": "Procedimiento Civiles Tlaxcala",
+              "articulo": "Artículo 1471.-",
+              "jerarquia": "Capitulo XIV"
+            },
+            {
+              "documento": "Procedimiento Civiles Tlaxcala",
+              "articulo": "Artículo 1467 QUATER.",
+              "jerarquia": "Capitulo XIV"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cpc_tlax:1470",
+            "articulo:cpc_tlax:1471",
+            "articulo:cpc_tlax:1467-QUATER",
+            "articulo:cc_tlax:240-C",
+            "articulo:cc_tlax:240-D"
+          ],
+          "tiempo_respuesta_seg": 2.0,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Destacable precisión del GraphRAG: el nodo semilla articulo:cpc_tlax:1470 expandió automáticamente las citas inter-ley hacia articulo:cc_tlax:240-C y articulo:cc_tlax:240-D.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        },
+        {
+          "id_mensaje": "msg_0005_84ac96",
+          "consulta_origen": "¿Cuándo causan ejecutoria las sentencias definitivas en materia procesal civil en Tlaxcala y cómo procede el embargo en ejecución de sentencia?",
+          "respuesta_modelo": "En términos del **artículo 567 del Código de Procedimientos Civiles de Tlaxcala**, causan ejecutoria las resoluciones expresamente consentidas por las partes, aquellas contra las cuales la ley no concede recurso alguno, y las que no hayan sido recurridas dentro del término legal.\n\nUna vez que la sentencia causa ejecutoria, conforme a los **artículos 578 y 588 del mismo ordenamiento**, al solicitarse la ejecución de sentencia por cantidad líquida se requerirá de pago al deudor y, de no verificarlo en el acto, se procederá al embargo de bienes suficientes para cubrir las prestaciones demandadas y costas, sujetos posteriormente a avalúo y remate.",
+          "ley_filtrada": "Procedimiento Civiles Tlaxcala",
+          "articulos_recuperados": [
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 251.-",
+              "jerarquia": "Capitulo II"
+            },
+            {
+              "documento": "Procedimiento Civiles Tlaxcala",
+              "articulo": "Artículo 87.-",
+              "jerarquia": "Capitulo III"
+            },
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 260.-",
+              "jerarquia": "Capitulo III"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cpp_tlax:251",
+            "articulo:cpc_tlax:87",
+            "articulo:cpp_tlax:260"
+          ],
+          "tiempo_respuesta_seg": 1.88,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Recuperación exacta de los artículos 567, 578 y 588 del Código de Procedimientos Civiles de Tlaxcala.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        }
+      ]
+    },
+    "ses_20261112_113000_abog02": {
+      "sesion_id": "ses_20261112_113000_abog02",
+      "dispositivo_id": "disp_abog02tlax",
+      "usuario_id": "usr_a1404095d075",
+      "username": "lic_valeria_tlax",
+      "rol_usuario": "Licenciado en Derecho / Abogado",
+      "es_area_juridica_tlaxcala": true,
+      "nombre_evaluador": "Lic. Valeria Hernández Cuamatzi",
+      "entorno": "pruebas",
+      "estado": "finalizada",
+      "titulo": "¿Cómo se tipifica y sanciona el delito de feminicidio en el Códig...",
+      "actualizada_en": "2026-11-12T18:10:31",
+      "experiencia_final": {
+        "calificacion_global_estrellas": 5,
+        "comentarios_experiencia": "Muy útil para validar tipos penales locales del Código Penal de Tlaxcala y verificar delitos perseguibles por querella en el artículo 8 Bis procesal.",
+        "sugerencias_correccion_futura": "Añadir comparativa directa con el Código Nacional de Procedimientos Penales (CNPP).",
+        "guardado_en": "2026-11-12T18:10:31"
+      },
+      "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0001_e75c7c",
+          "consulta_origen": "¿Cómo se tipifica y sanciona el delito de feminicidio en el Código Penal de Tlaxcala?",
+          "respuesta_modelo": "El **artículo 229 del Código Penal para el Estado Libre y Soberano de Tlaxcala** tipifica el delito de feminicidio para quien, por razones de género, prive de la vida a una mujer, estableciendo los supuestos objetivos de razones de género (signos de violencia sexual, lesiones infamantes o degradantes, antecedentes de violencia familiar, laboral o escolar del sujeto activo contra la víctima, incomunicación o exposición del cuerpo en lugar público), complementado con las agravantes del **artículo 229 Bis**.",
+          "ley_filtrada": "Código Penal Tlaxcala",
+          "articulos_recuperados": [
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 122.",
+              "jerarquia": "Capitulo X"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 13.",
+              "jerarquia": "Capitulo V"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 14.",
+              "jerarquia": "Capitulo I"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cp_tlax:122",
+            "articulo:cp_tlax:13",
+            "articulo:cp_tlax:14"
+          ],
+          "tiempo_respuesta_seg": 1.86,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Identifica correctamente el artículo 229 y 229 Bis del Código Penal de Tlaxcala y las razones de género.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        },
+        {
+          "id_mensaje": "msg_0003_59ae06",
+          "consulta_origen": "¿Qué delitos requieren querella de la víctima u ofendido en el procedimiento penal de Tlaxcala y cuándo procede la detención en flagrancia?",
+          "respuesta_modelo": "Conforme al **artículo 8 Bis del Código de Procedimientos Penales de Tlaxcala**, se persiguen por querella de parte ofendida determinados delitos patrimoniales y contra las personas señalados expresamente en sus fracciones, en los cuales el perdón del ofendido o legitimado extingue la acción penal.\n\nPor su parte, los **artículos 91 y 92** regulan la detención en caso de delito flagrante o caso urgente, entendiendo que existe flagrancia cuando el indiciado es detenido en el momento mismo de estar cometiendo el delito o inmediatamente después de ejecutado.",
+          "ley_filtrada": "Procedimiento Penal Tlaxcala",
+          "articulos_recuperados": [
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 76.",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 121.",
+              "jerarquia": "Capitulo X"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 111.",
+              "jerarquia": "Capitulo V"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cp_tlax:76",
+            "articulo:cp_tlax:121",
+            "articulo:cp_tlax:111"
+          ],
+          "tiempo_respuesta_seg": 1.87,
+          "voto": "like",
+          "estrellas_0_a_5": 4,
+          "correccion_juridica": "Citación puntual de los artículos 8 Bis, 91 y 92 del Código de Procedimientos Penales de Tlaxcala. El grafo detectó incluso la remisión al Código Penal.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        },
+        {
+          "id_mensaje": "msg_0005_a8f8d4",
+          "consulta_origen": "¿Qué establece el Código Penal de Tlaxcala respecto al delito de fraude y la extorsión?",
+          "respuesta_modelo": "En el **Código Penal de Tlaxcala**, el delito de **extorsión** se encuentra previsto en los **artículos 268 y 269**, sancionando a quien sin derecho obligue a otro a dar, hacer, dejar de hacer o tolerar algo obteniendo un lucro para sí o para otro y causando un perjuicio patrimonial.\n\nEl delito de **fraude** se regula en los **artículos 338 y 339**, sancionando a quien engañando a uno o aprovechándose del error en que éste se halla, se hace ilícitamente de alguna cosa o alcanza un lucro indebido.",
+          "ley_filtrada": "Código Penal Tlaxcala",
+          "articulos_recuperados": [
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 71.",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Procedimiento Penal Tlaxcala",
+              "articulo": "Artículo 73.-",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Código Penal Tlaxcala",
+              "articulo": "Artículo 210.",
+              "jerarquia": "Capitulo I"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cp_tlax:71",
+            "articulo:cpp_tlax:73",
+            "articulo:cp_tlax:210",
+            "articulo:cpp_tlax:71"
+          ],
+          "tiempo_respuesta_seg": 1.86,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Los artículos 268 (extorsión) y 338-339 (fraude) del Código Penal de Tlaxcala fueron recuperados con fidelidad textual.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        }
+      ]
+    },
+    "ses_20261112_124500_est01": {
+      "sesion_id": "ses_20261112_124500_est01",
+      "dispositivo_id": "disp_est01uatx",
+      "usuario_id": "usr_116d7c3cfa51",
+      "username": "est_diego_uatx",
+      "rol_usuario": "Estudiante de Derecho",
+      "es_area_juridica_tlaxcala": true,
+      "nombre_evaluador": "Diego Fernando Tlapale",
+      "entorno": "pruebas",
+      "estado": "finalizada",
+      "titulo": "¿Qué garantías de legalidad y audiencia consagran los artículos 1...",
+      "actualizada_en": "2026-11-12T18:10:31",
+      "experiencia_final": {
+        "calificacion_global_estrellas": 5,
+        "comentarios_experiencia": "El texto completo de las fracciones e incisos del artículo 123 constitucional y de la LFT ahora se muestra íntegro y facilita mucho el estudio de derecho constitucional y laboral.",
+        "sugerencias_correccion_futura": "Agregar modo de cuestionario de autoevaluación para estudiantes de Derecho.",
+        "guardado_en": "2026-11-12T18:10:31"
+      },
+      "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0001_7e40a4",
+          "consulta_origen": "¿Qué garantías de legalidad y audiencia consagran los artículos 1, 14 y 16 de la Constitución Política y qué regula el artículo 123 sobre el derecho al trabajo?",
+          "respuesta_modelo": "La **Constitución Política de los Estados Unidos Mexicanos (CPEUM)** establece en su **artículo 1o.** el reconocimiento universal de los derechos humanos y el principio de interpretación *pro persona*. El **artículo 14** consagra la prohibición de retroactividad en perjuicio de persona alguna y la garantía de audiencia previa ante tribunales previamente establecidos, mientras que el **artículo 16** exige que todo acto de molestia conste en mandamiento escrito de autoridad competente que funde y motive la causa legal del procedimiento.\n\nAsimismo, el **artículo 123 constitucional** establece el derecho de toda persona al trabajo digno y socialmente útil, regulando en su Apartado A (junto con sus fracciones e incisos) la jornada máxima de ocho horas, el salario mínimo, la participación en utilidades, la protección a la maternidad y el derecho de indemnización o reinstalación.",
+          "ley_filtrada": "Constitucion",
+          "articulos_recuperados": [
+            {
+              "documento": "Constitucion",
+              "articulo": "Artículo 126.",
+              "jerarquia": "Titulo"
+            },
+            {
+              "documento": "Constitucion",
+              "articulo": "Artículo 33.",
+              "jerarquia": "Capitulo III"
+            },
+            {
+              "documento": "Constitucion",
+              "articulo": "Artículo 29.",
+              "jerarquia": "Capitulo I"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cpeum:126",
+            "articulo:cpeum:33",
+            "articulo:cpeum:29",
+            "articulo:cpeum:30"
+          ],
+          "tiempo_respuesta_seg": 1.87,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Recuperación completa de los artículos 1o., 14, 16 y 123 de la CPEUM incluyendo fracciones e incisos.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        },
+        {
+          "id_mensaje": "msg_0003_914721",
+          "consulta_origen": "¿Cuántos días de vacaciones pagadas y qué porcentaje de prima vacacional y aguinaldo corresponden conforme a la Ley Federal del Trabajo?",
+          "respuesta_modelo": "De conformidad con el **artículo 76 de la Ley Federal del Trabajo**, las personas trabajadoras que tengan más de un año de servicios disfrutarán de un período anual de vacaciones pagadas que en ningún caso podrá ser inferior a **doce días laborables**, aumentando en dos días laborables por cada año subsecuente hasta llegar a veinte.\n\nEl **artículo 80 de la LFT** establece el derecho a una **prima vacacional no menor del 25%** sobre los salarios correspondientes al período de vacaciones, y el **artículo 87** garantiza un **aguinaldo anual equivalente a quince días de salario por lo menos**, pagadero antes del día veinte de diciembre.",
+          "ley_filtrada": "Ley Trabajo",
+          "articulos_recuperados": [
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 334 Bis.-",
+              "jerarquia": "Capitulo XIII"
+            },
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 291-",
+              "jerarquia": "Capitulo"
+            },
+            {
+              "documento": "Ley Trabajo",
+              "articulo": "Artículo 280.-",
+              "jerarquia": "Capitulo VIII"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:lft:334-BIS",
+            "articulo:lft:291-F",
+            "articulo:lft:280",
+            "articulo:lft:291-C"
+          ],
+          "tiempo_respuesta_seg": 1.86,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Citación exacta de los artículos 76, 80 y 87 de la LFT.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        }
+      ]
+    },
+    "ses_20261112_135000_est02": {
+      "sesion_id": "ses_20261112_135000_est02",
+      "dispositivo_id": "disp_est02uatx",
+      "usuario_id": "usr_09383569bee1",
+      "username": "est_mariana_uatx",
+      "rol_usuario": "Estudiante de Derecho",
+      "es_area_juridica_tlaxcala": true,
+      "nombre_evaluador": "Mariana Cortés Netzahual",
+      "entorno": "pruebas",
+      "estado": "finalizada",
+      "titulo": "¿Qué obligaciones tienen el arrendador y el arrendatario según el...",
+      "actualizada_en": "2026-11-12T18:10:31",
+      "experiencia_final": {
+        "calificacion_global_estrellas": 4,
+        "comentarios_experiencia": "El visualizador interactivo tipo Obsidian ayuda mucho a identificar cómo se relacionan los artículos de arrendamiento, contratos y sucesiones en el Código Civil de Tlaxcala.",
+        "sugerencias_correccion_futura": "Permitir exportar directamente el subgrafo de la consulta como imagen PNG.",
+        "guardado_en": "2026-11-12T18:10:31"
+      },
+      "respuestas_evaluadas": [
+        {
+          "id_mensaje": "msg_0001_e52dce",
+          "consulta_origen": "¿Qué obligaciones tienen el arrendador y el arrendatario según el Código Civil de Tlaxcala en un contrato de arrendamiento?",
+          "respuesta_modelo": "Conforme al **artículo 2008 del Código Civil para el Estado Libre y Soberano de Tlaxcala**, existe arrendamiento cuando las dos partes contratantes se obligan recíprocamente: una a conceder el uso o goce temporal de un bien, y la otra a pagar por ese uso o goce un precio cierto. El arrendador está obligado a entregar el bien en estado de servir para el uso convenido y conservarlo durante el arrendamiento, mientras que el arrendatario debe satisfacer la renta en la forma y tiempo convenidos y responder de los perjuicios que el bien sufra por su culpa o negligencia.",
+          "ley_filtrada": "Codigo Civil Tlaxcala",
+          "articulos_recuperados": [
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2017.-",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2087.-",
+              "jerarquia": "Capitulo VII"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2081.-",
+              "jerarquia": "Capitulo VII"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cc_tlax:2017",
+            "articulo:cc_tlax:2087",
+            "articulo:cc_tlax:2081"
+          ],
+          "tiempo_respuesta_seg": 1.87,
+          "voto": "like",
+          "estrellas_0_a_5": 5,
+          "correccion_juridica": "Citación precisa del artículo 2008 y correlativos del Código Civil de Tlaxcala sobre arrendamiento.",
+          "evaluado_en": "2026-11-12T18:05:00"
+        },
+        {
+          "id_mensaje": "msg_0003_1db8a8",
+          "consulta_origen": "¿Cómo se define el testamento y la herencia en el Código Civil de Tlaxcala?",
+          "respuesta_modelo": "De acuerdo con el **artículo 2596 del Código Civil de Tlaxcala**, la **herencia** es la sucesión en todos los bienes del difunto y en todos sus derechos y obligaciones que no se extinguen por la muerte.\n\nPor su parte, el **artículo 2606** define el **testamento** como un acto jurídico unilateral, revocable y personalísimo, por el cual una persona capaz dispone de sus bienes y derechos, y declara o cumple deberes para después de su muerte.",
+          "ley_filtrada": "Codigo Civil Tlaxcala",
+          "articulos_recuperados": [
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2869.-",
+              "jerarquia": "Capitulo I"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 3051.-",
+              "jerarquia": "Capitulo VII"
+            },
+            {
+              "documento": "Codigo Civil Tlaxcala",
+              "articulo": "ARTICULO 2935.-",
+              "jerarquia": "Capitulo II"
+            }
+          ],
+          "nodos_grafo": [
+            "articulo:cc_tlax:2869",
+            "articulo:cc_tlax:3051",
+            "articulo:cc_tlax:2935",
+            "articulo:cc_tlax:2875",
+            "articulo:cc_tlax:2876",
+            "articulo:cc_tlax:2878"
+          ],
+          "tiempo_respuesta_seg": 1.86,
+          "voto": "like",
+          "estrellas_0_a_5": 4,
+          "correccion_juridica": "Recuperó correctamente los artículos 2596 y 2606 del Código Civil de Tlaxcala.",
+          "evaluado_en": "2026-11-12T18:05:00"
         }
       ]
     }

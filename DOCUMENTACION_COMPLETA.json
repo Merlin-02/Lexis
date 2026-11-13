@@ -1,11 +1,11 @@
 {
   "sistema": {
-    "nombre": "LexIS",
-    "descripcion": "Sistema de asistencia legal automatizada basado en Inteligencia Artificial (IA)",
+    "nombre": "LEXIS",
+    "descripcion": "Sistema de asistencia legal automatizada basado en Inteligencia Artificial con arquitectura Híbrida + GraphRAG",
     "proposito": "Democratizar el acceso a la información jurídica, reduciendo brechas económicas, geográficas y de conocimiento",
-    "tipo": "Asistente conversacional legal (Legal Chatbot) con arquitectura RAG",
-    "estado": "En desarrollo activo",
-    "ultima_actualizacion": "Mayo 2025",
+    "tipo": "Asistente conversacional legal (Legal Chatbot) con arquitectura RAG Híbrida + Grafo de Conocimiento Jurídico (GraphRAG)",
+    "estado": "Completado y validado (Fases 1 a 7 de GraphRAG + Etapa 5 de Usabilidad verificadas)",
+    "ultima_actualizacion": "Noviembre 2026",
     "ubicacion": "Tlaxcala, México"
   },
   "equipo": [
@@ -48,7 +48,12 @@
   ],
   "resumen_normativas": {
     "total_normativas": 6,
-    "total_chunks": 10825
+    "total_chunks": 10825,
+    "nodos_grafo_totales": 7239,
+    "articulos_grafo": 7221,
+    "aristas_contiene": 7221,
+    "aristas_refiere_a": 3004,
+    "aristas_menciona_norma": 14
   },
   "arquitectura": {
     "componentes": [
@@ -122,8 +127,9 @@
   },
   "estructura_directorios": {
     "Code": {
-      "descripcion": "Código fuente principal",
+      "descripcion": "Código fuente principal y subsistema GraphRAG",
       "archivos": [
+        "app.py",
         "preparacion.py",
         "segmentacion.py",
         "vectorizacion.py",
@@ -132,8 +138,12 @@
         "analizador_legal.py",
         "indice_tematico.py",
         "mejoras.py",
+        "gestor_usuarios.py",
+        "gestor_evaluacion.py",
+        "reporte_evaluaciones.py",
         "test_unidades.py",
-        "prueba.py"
+        "grafo_lexis/",
+        "tests/"
       ]
     },
     "knowledge": {
@@ -498,18 +508,33 @@
     { "id": "H6", "descripcion": "Embeddings multilingües capturan mejor español jurídico" }
   ],
   "cronograma_vs_progreso": [
-    { "actividad": "Recopilación normativa", "periodo": "Feb-Mar", "estado": "✅ Completo" },
-    { "actividad": "Estructuración Ground Truth", "periodo": "Feb-Mar-Abr", "estado": "✅ Completo" },
-    { "actividad": "Segmentación y base vectorial", "periodo": "Mar-Abr", "estado": "✅ Completo" },
-    { "actividad": "Prompt Engineering", "periodo": "Mar-Abr", "estado": "✅ Completo" },
-    { "actividad": "Evaluación TT I", "periodo": "Abr-May", "estado": "✅ Completo" },
-    { "actividad": "Optimización motor RAG", "periodo": "May-Jun", "estado": "✅ Completo" },
-    { "actividad": "Interfaz visual + LLM", "periodo": "May-Jun", "estado": "⚠️ Interfaz terminal lista, falta web" },
-    { "actividad": "Métricas RAG", "periodo": "Sep-Oct", "estado": "⏳ Pendiente" },
-    { "actividad": "Pruebas usabilidad", "periodo": "Oct-Nov", "estado": "⏳ Pendiente" },
-    { "actividad": "Despliegue", "periodo": "Nov-Dic", "estado": "⏳ Pendiente" },
-    { "actividad": "Evaluación TT II", "periodo": "Dic", "estado": "⏳ Pendiente" }
+    { "actividad": "Recopilación normativa", "periodo": "Feb-Mar", "estado": "Completo" },
+    { "actividad": "Estructuración Ground Truth", "periodo": "Feb-Mar-Abr", "estado": "Completo" },
+    { "actividad": "Segmentación y base vectorial", "periodo": "Mar-Abr", "estado": "Completo" },
+    { "actividad": "Prompt Engineering", "periodo": "Mar-Abr", "estado": "Completo" },
+    { "actividad": "Evaluación TT I", "periodo": "Abr-May", "estado": "Completo" },
+    { "actividad": "Optimización motor RAG y GraphRAG (7 fases)", "periodo": "May-Sep", "estado": "Completo" },
+    { "actividad": "Interfaz visual Streamlit + Visualizador Obsidian + Login", "periodo": "Sep-Oct", "estado": "Completo" },
+    { "actividad": "Métricas RAG y sincronización O(1) grafo-vectorial", "periodo": "Oct", "estado": "Completo" },
+    { "actividad": "Pruebas de usabilidad y validación jurídica en Tlaxcala", "periodo": "Nov", "estado": "Completo" },
+    { "actividad": "Despliegue Cloud en Railway (Docker + modo ligero TF-IDF)", "periodo": "Nov", "estado": "Completo" },
+    { "actividad": "Evaluación TT II", "periodo": "Nov-Dic", "estado": "Completo" }
   ],
+  "resultados_usabilidad_etapa5": {
+    "usuarios_registrados": 6,
+    "evaluadores_area_juridica_tlaxcala": 4,
+    "usuarios_generales": 2,
+    "sesiones_finalizadas": 6,
+    "consultas_evaluadas": 16,
+    "votos_like": 15,
+    "votos_dislike": 1,
+    "porcentaje_aprobacion": 93.75,
+    "promedio_estrellas_respuesta_0_a_5": 4.69,
+    "desviacion_estandar_estrellas": 0.58,
+    "promedio_calificacion_experiencia_final": 4.67,
+    "tiempo_promedio_respuesta_seg": 2.03,
+    "promedio_nodos_grafo_activados": 3.69
+  },
   "problemas_conocidos": {
     "resueltos": [
       {

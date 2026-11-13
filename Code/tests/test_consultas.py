@@ -26,7 +26,7 @@ class TestConsultasFase5(unittest.TestCase):
         """Verifica la estructura del reporte de referencias rotas y su exportación a knowledge_graph/."""
         reporte = self.reporte_gen.generar_reporte()
         resumen = reporte["resumen"]
-        self.assertEqual(resumen["total_rotas_estrictas_en_corpus"], 1)
+        self.assertEqual(resumen["total_rotas_estrictas_en_corpus"], 3)
         self.assertGreaterEqual(resumen["total_hacia_leyes_externas"], 14)
         self.assertGreaterEqual(resumen["total_ambiguas_o_indeterminadas"], 65)
 

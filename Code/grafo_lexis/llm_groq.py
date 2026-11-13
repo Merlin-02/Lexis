@@ -15,7 +15,7 @@ if RUTA_ENV.exists():
 else:
     load_dotenv()
 
-MODELO_GROQ_DEFECTO = "openai/gpt-oss-20b"
+MODELO_GROQ_DEFECTO = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
 
 class DesambiguadorGroqLexis:

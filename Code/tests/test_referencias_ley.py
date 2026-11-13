@@ -68,7 +68,7 @@ class TestReferenciasLey(unittest.TestCase):
             for r in self.constructor.referencias_rotas
             if r.motivo == "articulo_inexistente"
         ]
-        self.assertEqual(len(inexistentes), 1)
+        self.assertEqual(len(inexistentes), 3)
         self.assertEqual(inexistentes[0].origen_id, "articulo:cpp_tlax:8-BIS")
         self.assertEqual(inexistentes[0].destino_mencionado, "articulo:cp_tlax:2310")
 

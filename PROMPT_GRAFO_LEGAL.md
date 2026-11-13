@@ -4,13 +4,13 @@
 
 **Repositorio:** `/home/merli_nx19/Documentos/Lexis`
 
-**Rama de trabajo:** `Merlin` (rama local)
+**Rama de trabajo:** `feature/grafo`
 
 **Entorno:** Python del entorno conda `Lexis`
 
 **Librería principal de grafos:** `networkx`
 
-**Estado:** Fase 1 revisada. La Fase 2 no debe iniciarse hasta que el usuario confirme las decisiones pendientes.
+**Estado:** Fases 1 a 7 completadas y verificadas.
 
 ---
 
@@ -798,28 +798,9 @@ El proyecto se considera terminado cuando:
 
 ## 16. Estado actual y siguiente paso
 
-**Fase actual:** Fase 1 revisada.
+**Fase actual:** Fases 1 a 7 completadas y verificadas.
 
-**Fase 2:** no iniciada.
-
-**Pendiente antes de Fase 2:** confirmación de las decisiones de la sección 5, especialmente:
-
-1. metadatos y fechas,
-2. tratamiento de transitorios,
-3. reparación de etiquetas truncadas,
-4. resolución de “Constitución”,
-5. rangos con BIS/TER,
-6. normas externas,
-7. multiplicidad de aristas,
-8. Fase 7 y reindexación.
-
-Cuando el usuario confirme, comenzar la Fase 2 con:
-
-- `modelos.py`,
-- `config_leyes.py`,
-- `cargador.py`,
-- `constructor_grafo.py`,
-- nodos y aristas `CONTIENE`,
-- estadísticas.
-
-No detectar referencias todavía.
+**Artefactos generados y sincronizados:**
+- Paquete `Code/grafo_lexis/` completo (`modelos.py`, `config_leyes.py`, `cargador.py`, `detector_referencias.py`, `constructor_grafo.py`, `consultas.py`, `reporte_rotas.py`, `exportador.py`, `neo4j_loader.py`, `recuperador_grafo.py`, `integracion_rag.py`, `visualizador_obsidian.py`, `llm_groq.py`, `cli.py`).
+- Exportaciones persistidas en `knowledge_graph/` (`grafo_lexis.json`, `grafo_lexis.graphml`, `estadisticas_grafo.json`, `reporte_referencias_rotas.json`, `visualizador_cerebro_lexis.html` y carpeta `neo4j/`).
+- Sincronización `O(1)` de `articulo_id` y `cve_ley` en los 10,825 chunks de `knowledge_chunks/` y `lexis_vectordb/`.

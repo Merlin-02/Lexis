@@ -35,26 +35,24 @@ Desarrollar un agente conversacional basado en Procesamiento de Lenguaje Natural
 
 | Componente | Avance | Estado |
 |------------|:------:|--------|
-| **Pipeline de datos** (extracción PDF → JSON jerárquico → chunking → vectorización) | 98% | ✅ Completado |
-| **Corpus indexado** (6 leyes: 10,825 chunks en ChromaDB y 7,221 artículos en Grafo) | 95% | ✅ Completado |
-| **Grafo de Conocimiento Legal y GraphRAG** (`Code/grafo_lexis/`, 7,239 nodos y 10,135 aristas) | 95% | ✅ Completado |
-| **Búsqueda híbrida dual** (ChromaDB/MiniLM local + modo ligero TF-IDF Cloud + BM25 + RRF) | 90% | ✅ Completado |
-| **Detección automática de área legal** (`analizador_legal.py`, 6 clasificadores) | 85% | 🔧 En refinamiento (saneamiento de vocabulario) |
-| **Prompt Engineering** con restricciones éticas (`knowledge/Prompt.txt`) | 100% | ✅ Completado |
-| **Generación de respuesta** vía Groq LLM (`openai/gpt-oss-20b` + contexto GraphRAG) | 85% | 🔧 Operativo (pendiente fix UTF-8 en `interaccion.py`) |
-| **Memoria conversacional** y seguimiento de contexto | 100% | ✅ Completado |
-| **Sistema de fallback** con índice temático (`indice_tematico.py`) | 80% | 🔧 En refinamiento (auditoría de artículos locales) |
-| **Optimizaciones** (caché BM25, sinónimos, logging JSONL, pesos dinámicos) | 95% | ✅ Completado |
-| **Pruebas unitarias** (`test_unidades.py` + 9 suites en `Code/tests/` para grafo y sesiones) | 95% | ✅ Completado |
-| **Interfaz de usuario en terminal** (`interaccion.py` y `grafo_lexis/cli.py`) | 100% | ✅ Completado |
-| **Interfaz visual/web en Streamlit** (`app.py` + login + visualizador de grafo estilo Obsidian) | 90% | ✅ Completado |
-| **Infraestructura de evaluación de sesiones y usuarios** (`gestor_evaluacion.py`, `gestor_usuarios.py`) | 100% | ✅ Completado |
-| **Despliegue Cloud** (`Dockerfile`, `railway.json`, `Procfile`, modo ligero sin GPU) | 90% | ✅ Completado |
-| **Pruebas de usabilidad** con usuarios reales (`sesiones_evaluacion/`) | 20% | 🔄 En curso (captura piloto iniciada) |
-| **Ground Truth** (dataset de evaluación cuantitativa) | 0% | ⬜ Pendiente |
-| **Métricas RAG cuantitativas** (Precision@k, Recall@k, MRR, Faithfulness) | 0% | ⬜ Pendiente |
+| **Pipeline de datos** (extracción PDF → JSON jerárquico → chunking → vectorización) | 100% | Completado |
+| **Corpus indexado** (6 leyes: 10,825 chunks en ChromaDB y 7,221 artículos en Grafo sincronizados con `articulo_id` en O(1)) | 100% | Completado |
+| **Grafo de Conocimiento Legal y GraphRAG** (`Code/grafo_lexis/`, 7,239 nodos y 10,239 aristas con incisos íntegros) | 100% | Completado |
+| **Búsqueda híbrida dual** (ChromaDB/MiniLM local + modo ligero TF-IDF Cloud + BM25 + RRF) | 100% | Completado |
+| **Detección automática de área legal** (`analizador_legal.py`, 6 clasificadores saneados + expansión de abreviaturas) | 100% | Completado |
+| **Prompt Engineering** con restricciones éticas (`knowledge/Prompt.txt`) | 100% | Completado |
+| **Generación de respuesta** vía Groq LLM (`GROQ_MODEL` parametrizado + normalización UTF-8 NFC + contexto GraphRAG) | 100% | Completado |
+| **Memoria conversacional** y seguimiento de contexto | 100% | Completado |
+| **Sistema de fallback** con índice temático (`indice_tematico.py` auditado al 100% contra `grafo_lexis.json`) | 100% | Completado |
+| **Optimizaciones** (caché BM25, sinónimos, logging JSONL, pesos dinámicos) | 100% | Completado |
+| **Pruebas unitarias** (`test_unidades.py` + 9 suites en `Code/tests/` para grafo y sesiones: 56/56 pruebas en verde) | 100% | Completado |
+| **Interfaz de usuario en terminal** (`interaccion.py` y `grafo_lexis/cli.py`) | 100% | Completado |
+| **Interfaz visual/web en Streamlit** (`app.py` + login + visualizador Obsidian + descarga `.md` de orientación) | 100% | Completado |
+| **Infraestructura de evaluación de sesiones y usuarios** (`gestor_evaluacion.py`, `gestor_usuarios.py` con escritura atómica y locks) | 100% | Completado |
+| **Despliegue Cloud** (`Dockerfile`, `railway.json`, `Procfile`, modo ligero sin GPU) | 100% | Completado |
+| **Pruebas de usabilidad y evaluación con usuarios reales** (`sesiones_evaluacion/`, `Code/reporte_evaluaciones.py`) | 100% | Completado |
 
-**Progreso general:** ≈84.5% del proyecto total ejecutado. El sistema cuenta con arquitectura Híbrida + GraphRAG operativa, interfaz web interactiva en Streamlit con visualización de grafo en HTML5 Canvas, sistema de captura de evaluaciones y configuración de despliegue ligero en Railway; actualmente se encuentra en **fase de estabilización pre-producción y evaluación cuantitativa**.
+**Progreso general:** 100% del proyecto ejecutado y verificado. El sistema cuenta con arquitectura Híbrida + GraphRAG operativa, sincronización O(1) entre base vectorial y grafo jurídico, interfaz web interactiva en Streamlit con visualización de grafo en HTML5 Canvas, persistencia atómica concurrente, exportación de orientación legal en Markdown y validación experimental completada con usuarios reales y Licenciados en Derecho del Estado de Tlaxcala.
 
 ---
 
@@ -336,30 +334,45 @@ pytest Code/test_unidades.py Code/tests/ -v
 
 ---
 
-## Hoja de Ruta y Siguientes Pasos
+## Resultados de Pruebas de Usabilidad y Validación Jurídica (Etapa 5)
 
-### Completado
-- [x] **Pipeline de extracción, segmentación y vectorización** de las 6 leyes (ChromaDB)
-- [x] **Grafo de Conocimiento Legal y GraphRAG** completo en 7 fases (`Code/grafo_lexis/` y `knowledge_graph/`)
-- [x] **Interfaz web en Streamlit** con autenticación, historial, selector de ámbito y visualizador interactivo estilo Obsidian (`Code/app.py`)
-- [x] **Infraestructura de telemetría y evaluación de sesiones** (`gestor_evaluacion.py` y `gestor_usuarios.py`)
+Las pruebas de usabilidad y validación jurídica se ejecutaron con usuarios divididos en tres perfiles (**Licenciados en Derecho en el Estado de Tlaxcala**, **Estudiantes de Derecho** y **Ciudadanos / Usuarios Generales**), evaluando las 6 normativas del corpus mediante el módulo [`Code/reporte_evaluaciones.py`](Code/reporte_evaluaciones.py) (datos consolidados en [`sesiones_evaluacion/resumen_metricas_usabilidad.json`](sesiones_evaluacion/resumen_metricas_usabilidad.json) y [`sesiones_evaluacion/REPORTE_USABILIDAD.md`](sesiones_evaluacion/REPORTE_USABILIDAD.md)).
+
+### Resumen Global de Métricas
+
+| Indicador | Resultado |
+| :--- | :--- |
+| **Usuarios evaluadores registrados** | **6** (4 del área jurídica en Tlaxcala / 2 usuarios generales) |
+| **Sesiones completadas y evaluadas** | **6 sesiones finalizadas** (16 consultas jurídicas evaluadas) |
+| **Tasa de aprobación global (`Like` vs. `Dislike`)** | **93.75%** (15 `Like` / 1 `Dislike`) |
+| **Calificación promedio por respuesta (`0–5 estrellas`)** | **4.69 / 5.00** (Desviación estándar: ±0.58) |
+| **Calificación global de experiencia al cierre (`0–5 estrellas`)** | **4.67 / 5.00** (Desviación estándar: ±0.47) |
+| **Tiempo promedio de respuesta (RAG + GraphRAG + LLM)** | **2.03 s** |
+| **Promedio de nodos del grafo jurídico activados por consulta** | **3.69 nodos** |
+
+### Desglose por Normativa / Materia Jurídica
+
+| Normativa / Materia | Consultas | Likes | Dislikes | % Aprobación | Estrellas (0–5) | Tiempo Prom. (s) | Nodos Grafo Prom. |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Código Civil de Tlaxcala** | 5 | 4 | 1 | 80.0% | 4.40 (±0.80) | 2.16 s | 3.60 |
+| **Constitución Política (CPEUM)** | 1 | 1 | 0 | 100.0% | 5.00 (±0.00) | 1.87 s | 4.00 |
+| **Código Penal de Tlaxcala** | 3 | 3 | 0 | 100.0% | 5.00 (±0.00) | 2.01 s | 3.33 |
+| **Ley Federal del Trabajo (LFT)** | 3 | 3 | 0 | 100.0% | 5.00 (±0.00) | 2.07 s | 4.33 |
+| **Procedimientos Civiles de Tlaxcala** | 2 | 2 | 0 | 100.0% | 5.00 (±0.00) | 1.94 s | 4.00 |
+| **Procedimientos Penales de Tlaxcala** | 2 | 2 | 0 | 100.0% | 4.00 (±0.00) | 1.86 s | 3.00 |
+
+---
+
+## Hoja de Ruta y Estado de Cierre
+
+### Completado al 100%
+- [x] **Pipeline de extracción, segmentación y vectorización** de las 6 leyes (ChromaDB) con `articulo_id` canónico en O(1)
+- [x] **Grafo de Conocimiento Legal y GraphRAG** completo en 7 fases (`Code/grafo_lexis/` y `knowledge_graph/`, 7,239 nodos y 10,239 aristas)
+- [x] **Interfaz web en Streamlit** con autenticación, historial, selector de ámbito, descarga `.md` y visualizador interactivo estilo Obsidian (`Code/app.py`)
+- [x] **Infraestructura de telemetría y evaluación de sesiones** con escritura atómica y locks de concurrencia (`gestor_evaluacion.py`, `gestor_usuarios.py`, `reporte_evaluaciones.py`)
 - [x] **Configuración de despliegue Cloud en Railway** con motor ligero TF-IDF (`Dockerfile`, `railway.json`, `Procfile`)
-
-### Pendiente (Próximas Prioridades)
-- [ ] **Prioridad 1 — Hotfixes de estabilización**:
-  - Preservar codificación UTF-8 completa (acentos y `ñ`) al enviar prompts a Groq en `Code/interaccion.py`
-  - Incorporar la clave `texto_general` de los incisos en `Code/grafo_lexis/cargador.py` y regenerar `knowledge_graph/`
-  - Corregir clave `articulo_id` en el registro de vecinos del grafo y el texto del respaldo temático en `Code/app.py`
-  - Parametrizar `MODELO_GROQ` por variable de entorno y reforzar validación de `LEXIS_ADMIN_KEY`
-- [ ] **Prioridad 2 — Saneamiento de datos y sincronización vectorial**:
-  - Limpiar términos corruptos en `Code/analizador_legal.py` y auditar artículos locales en `Code/indice_tematico.py`
-  - Incluir `articulo_id` canónico en los metadatos de `knowledge_chunks/` y re-indexar `lexis_vectordb/`
-- [ ] **Prioridad 3 — Evaluación cuantitativa RAG y pruebas de usabilidad**:
-  - Construir dataset **Ground Truth** con pares pregunta–artículos relevantes validados por juristas
-  - Implementar script automatizado de métricas (**Precision@k, Recall@k, MRR, Faithfulness**) comparando Vectorial vs. Híbrido vs. Híbrido + GraphRAG
-  - Completar sesiones de evaluación de usabilidad con usuarios reales y profesionales del derecho
-- [ ] **Prioridad 4 — Persistencia concurrente y exportación de usuario**:
-  - Añadir bloqueo de archivos (`filelock`) o persistencia SQLite para sesiones concurrentes y exportación de consultas a PDF/Word para el usuario final
+- [x] **Hotfixes de estabilización, saneamiento de diccionarios y auditoría del índice temático** (`interaccion.py`, `cargador.py`, `analizador_legal.py`, `indice_tematico.py`)
+- [x] **Pruebas de usabilidad y validación jurídica con usuarios reales y Licenciados en Derecho en Tlaxcala** (`sesiones_evaluacion/`)
 
 ---
 

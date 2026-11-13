@@ -204,6 +204,8 @@ def _cargar_corpus_desde_grafo_json() -> tuple[list[str], list[str], list[dict]]
                 "articulo": etiqueta_fmt,
                 "jerarquia": jerarquia,
                 "nodo_articulo_id": doc_id,
+                "articulo_id": doc_id,
+                "cve_ley": ley_id.replace("ley:", ""),
             }
         )
 
@@ -577,14 +579,18 @@ def busqueda_hibrida(
     resultados = []
     for doc_id in ids_finales:
         meta = diccionario_metadatos.get(doc_id, {})
+        art_id_can = meta.get("articulo_id") or meta.get("nodo_articulo_id") or ""
         resultados.append({
             "id"               : doc_id,
-            "nodo_articulo_id" : meta.get("nodo_articulo_id", doc_id),
+            "articulo_id"      : art_id_can,
+            "nodo_articulo_id" : art_id_can or doc_id,
+            "cve_ley"          : meta.get("cve_ley", ""),
             "texto"            : diccionario_textos[doc_id],
             "puntuacion_rrf"   : puntuaciones_rrf.get(doc_id, 0),
             "documento"        : meta.get("documento", "N/D"),
             "articulo"         : meta.get("articulo",  "N/D"),
             "jerarquia"        : meta.get("jerarquia",  "N/D"),
+            "metadatos"        : meta,
         })
 
     # MEJORA: Re-rankeo de resultados

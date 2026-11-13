@@ -124,6 +124,36 @@ def test_integracion_corpus_real_fase2():
     assert "articulo:cpc_tlax:540" in grafo
     assert "articulo:cpp_tlax:113" in grafo
 
+    # Verificar que el texto_completo incluya el contenido íntegro de los incisos (texto_general)
+    txt_123 = grafo.nodes["articulo:cpeum:123"]["texto_completo"]
+    assert "Inciso a)" in txt_123
+    assert len(txt_123) > 5000
+
+
+def test_construir_texto_completo_incisos_texto_general():
+    """Verifica que construir_texto_completo extraiga tanto 'texto' como 'texto_general' en incisos."""
+    reg_incisos = {
+        "articulo": "Artículo 123",
+        "jerarquia": "Título Sexto",
+        "texto_general": "Toda persona tiene derecho al trabajo digno.",
+        "fracciones": [
+            {
+                "fraccion": "I",
+                "texto_general": "La duración de la jornada máxima será de ocho horas.",
+                "incisos": [
+                    {"inciso": "a", "texto_general": "El patrono estará obligado a indemnizar al trabajador."}
+                ],
+            }
+        ],
+        "incisos_directos": [
+            {"inciso": "b", "texto_general": "El derecho de huelga es irrenunciable."}
+        ],
+        "historial_dof": [],
+    }
+    nodo = normalizar_registro_articulo(reg_incisos, "cpeum", "ley:cpeum", 123, False, 0)
+    assert "El patrono estará obligado a indemnizar al trabajador." in nodo.texto_completo
+    assert "El derecho de huelga es irrenunciable." in nodo.texto_completo
+
 
 class TestCargadorFase2(unittest.TestCase):
     def test_153_a_y_f_bis(self):
@@ -134,6 +164,9 @@ class TestCargadorFase2(unittest.TestCase):
 
     def test_229_bis_y_falso_ter(self):
         test_normalizacion_229_bis_y_falso_ter()
+
+    def test_incisos_texto_general(self):
+        test_construir_texto_completo_incisos_texto_general()
 
     def test_corpus_real_fase2(self):
         test_integracion_corpus_real_fase2()

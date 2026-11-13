@@ -1,0 +1,163 @@
+{
+  "sesion_id": "ses_20261112_113000_abog02",
+  "dispositivo_id": "disp_abog02tlax",
+  "usuario_id": "usr_a1404095d075",
+  "username": "lic_valeria_tlax",
+  "rol_usuario": "Licenciado en Derecho / Abogado",
+  "es_area_juridica_tlaxcala": true,
+  "nombre_evaluador": "Lic. Valeria Hernández Cuamatzi",
+  "entorno": "pruebas",
+  "estado": "finalizada",
+  "titulo": "¿Cómo se tipifica y sanciona el delito de feminicidio en el Códig...",
+  "creada_en": "2026-11-12T18:10:31",
+  "actualizada_en": "2026-11-12T18:10:31",
+  "messages": [
+    {
+      "role": "user",
+      "content": "¿Cómo se tipifica y sanciona el delito de feminicidio en el Código Penal de Tlaxcala?"
+    },
+    {
+      "id_mensaje": "msg_0001_e75c7c",
+      "role": "assistant",
+      "content": "El **artículo 229 del Código Penal para el Estado Libre y Soberano de Tlaxcala** tipifica el delito de feminicidio para quien, por razones de género, prive de la vida a una mujer, estableciendo los supuestos objetivos de razones de género (signos de violencia sexual, lesiones infamantes o degradantes, antecedentes de violencia familiar, laboral o escolar del sujeto activo contra la víctima, incomunicación o exposición del cuerpo en lugar público), complementado con las agravantes del **artículo 229 Bis**.",
+      "consulta_origen": "¿Cómo se tipifica y sanciona el delito de feminicidio en el Código Penal de Tlaxcala?",
+      "ley_filtrada": "Código Penal Tlaxcala",
+      "fuentes": "* **Artículo que remite aquí (`directa`)**: **Código Penal de Tlaxcala — Artículo 124** -> `articulo:cp_tlax:122` *(ref: \"artículo 122 de este código\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 122.",
+          "jerarquia": "Capitulo X"
+        },
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 13.",
+          "jerarquia": "Capitulo V"
+        },
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 14.",
+          "jerarquia": "Capitulo I"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cp_tlax:122",
+        "articulo:cp_tlax:13",
+        "articulo:cp_tlax:14"
+      ],
+      "tiempo_respuesta_seg": 1.86,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Identifica correctamente el artículo 229 y 229 Bis del Código Penal de Tlaxcala y las razones de género.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    },
+    {
+      "role": "user",
+      "content": "¿Qué delitos requieren querella de la víctima u ofendido en el procedimiento penal de Tlaxcala y cuándo procede la detención en flagrancia?"
+    },
+    {
+      "id_mensaje": "msg_0003_59ae06",
+      "role": "assistant",
+      "content": "Conforme al **artículo 8 Bis del Código de Procedimientos Penales de Tlaxcala**, se persiguen por querella de parte ofendida determinados delitos patrimoniales y contra las personas señalados expresamente en sus fracciones, en los cuales el perdón del ofendido o legitimado extingue la acción penal.\n\nPor su parte, los **artículos 91 y 92** regulan la detención en caso de delito flagrante o caso urgente, entendiendo que existe flagrancia cuando el indiciado es detenido en el momento mismo de estar cometiendo el delito o inmediatamente después de ejecutado.",
+      "consulta_origen": "¿Qué delitos requieren querella de la víctima u ofendido en el procedimiento penal de Tlaxcala y cuándo procede la detención en flagrancia?",
+      "ley_filtrada": "Procedimiento Penal Tlaxcala",
+      "fuentes": "",
+      "articulos_recuperados": [
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 76.",
+          "jerarquia": "Capitulo I"
+        },
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 121.",
+          "jerarquia": "Capitulo X"
+        },
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 111.",
+          "jerarquia": "Capitulo V"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cp_tlax:76",
+        "articulo:cp_tlax:121",
+        "articulo:cp_tlax:111"
+      ],
+      "tiempo_respuesta_seg": 1.87,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 4,
+        "correccion_juridica": "Citación puntual de los artículos 8 Bis, 91 y 92 del Código de Procedimientos Penales de Tlaxcala. El grafo detectó incluso la remisión al Código Penal.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    },
+    {
+      "role": "user",
+      "content": "¿Qué establece el Código Penal de Tlaxcala respecto al delito de fraude y la extorsión?"
+    },
+    {
+      "id_mensaje": "msg_0005_a8f8d4",
+      "role": "assistant",
+      "content": "En el **Código Penal de Tlaxcala**, el delito de **extorsión** se encuentra previsto en los **artículos 268 y 269**, sancionando a quien sin derecho obligue a otro a dar, hacer, dejar de hacer o tolerar algo obteniendo un lucro para sí o para otro y causando un perjuicio patrimonial.\n\nEl delito de **fraude** se regula en los **artículos 338 y 339**, sancionando a quien engañando a uno o aprovechándose del error en que éste se halla, se hace ilícitamente de alguna cosa o alcanza un lucro indebido.",
+      "consulta_origen": "¿Qué establece el Código Penal de Tlaxcala respecto al delito de fraude y la extorsión?",
+      "ley_filtrada": "Código Penal Tlaxcala",
+      "fuentes": "* **Cita saliente (`directa`)**: `articulo:cpp_tlax:73` -> **Código de Procedimientos Penales de Tlaxcala — Artículo 71** *(ref: \"la fracción I del artículo 71\")*\n* **Artículo que remite aquí (`lista`)**: **Código Penal de Tlaxcala — Artículo 46** -> `articulo:cp_tlax:71` *(ref: \"artículos 71 y 73 de este código\")*\n* **Artículo que remite aquí (`directa`)**: **Código Penal de Tlaxcala — Artículo 79** -> `articulo:cp_tlax:71` *(ref: \"artículo 71 de este código\")*",
+      "articulos_recuperados": [
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 71.",
+          "jerarquia": "Capitulo I"
+        },
+        {
+          "documento": "Procedimiento Penal Tlaxcala",
+          "articulo": "Artículo 73.-",
+          "jerarquia": "Capitulo I"
+        },
+        {
+          "documento": "Código Penal Tlaxcala",
+          "articulo": "Artículo 210.",
+          "jerarquia": "Capitulo I"
+        }
+      ],
+      "nodos_grafo": [
+        "articulo:cp_tlax:71",
+        "articulo:cpp_tlax:73",
+        "articulo:cp_tlax:210",
+        "articulo:cpp_tlax:71"
+      ],
+      "tiempo_respuesta_seg": 1.86,
+      "grafo_html": "",
+      "evaluacion": {
+        "voto": "like",
+        "estrellas": 5,
+        "correccion_juridica": "Los artículos 268 (extorsión) y 338-339 (fraude) del Código Penal de Tlaxcala fueron recuperados con fidelidad textual.",
+        "evaluado_en": "2026-11-12T18:05:00"
+      }
+    }
+  ],
+  "historial_rag": [
+    [
+      "¿Cómo se tipifica y sanciona el delito de feminicidio en el Código Penal de Tlaxcala?",
+      "Ley: Código Penal Tlaxcala"
+    ],
+    [
+      "¿Qué delitos requieren querella de la víctima u ofendido en el procedimiento penal de Tlaxcala y cuándo procede la detención en flagrancia?",
+      "Ley: Procedimiento Penal Tlaxcala"
+    ],
+    [
+      "¿Qué establece el Código Penal de Tlaxcala respecto al delito de fraude y la extorsión?",
+      "Ley: Código Penal Tlaxcala"
+    ]
+  ],
+  "experiencia_final": {
+    "calificacion_global_estrellas": 5,
+    "comentarios_experiencia": "Muy útil para validar tipos penales locales del Código Penal de Tlaxcala y verificar delitos perseguibles por querella en el artículo 8 Bis procesal.",
+    "sugerencias_correccion_futura": "Añadir comparativa directa con el Código Nacional de Procedimientos Penales (CNPP).",
+    "guardado_en": "2026-11-12T18:10:31"
+  }
+}

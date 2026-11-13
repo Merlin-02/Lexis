@@ -9,13 +9,61 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import tempfile
+import threading
 import unicodedata
 import uuid
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
+
+try:
+    import fcntl
+except ImportError:
+    fcntl = None  # type: ignore
+
+_LOCK_EVALUACION = threading.RLock()
+
+
+@contextmanager
+def _bloqueo_archivo_eval(ruta_lock: Path):
+    """Bloqueo concurrente a nivel de hilo y proceso para archivos de sesiones y evaluaciones."""
+    with _LOCK_EVALUACION:
+        ruta_lock.parent.mkdir(parents=True, exist_ok=True)
+        with open(ruta_lock, "a+", encoding="utf-8") as lf:
+            if fcntl is not None:
+                fcntl.flock(lf.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                if fcntl is not None:
+                    fcntl.flock(lf.fileno(), fcntl.LOCK_UN)
+
+
+def _escribir_json_atomico_eval(ruta_destino: Path, datos: Any) -> None:
+    """Escritura atómica de JSON mediante archivo temporal y reemplazo POSIX (os.replace)."""
+    ruta_destino.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_path = tempfile.mkstemp(
+        dir=str(ruta_destino.parent),
+        prefix=f".{ruta_destino.name}.",
+        suffix=".tmp",
+    )
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(datos, f, ensure_ascii=False, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, ruta_destino)
+    except Exception:
+        if os.path.exists(tmp_path):
+            try:
+                os.unlink(tmp_path)
+            except OSError:
+                pass
+        raise
 
 DIR_CODE = Path(__file__).resolve().parent
 ROOT_DIR = DIR_CODE.parent
@@ -179,10 +227,9 @@ class GestorSesionesEvaluacion:
                 break
 
         ruta = self.ruta_sesion(sesion_id)
-        with open(ruta, "w", encoding="utf-8") as f:
-            json.dump(datos_sesion, f, ensure_ascii=False, indent=2)
-
-        self._actualizar_consolidado(datos_sesion)
+        with _bloqueo_archivo_eval(self.base_dir / ".sesiones.lock"):
+            _escribir_json_atomico_eval(ruta, datos_sesion)
+            self._actualizar_consolidado(datos_sesion)
         return ruta
 
     def cargar_sesion(self, sesion_id: str) -> Optional[Dict[str, Any]]:
@@ -380,6 +427,7 @@ class GestorSesionesEvaluacion:
                         "ley_filtrada": msg.get("ley_filtrada", "Automático"),
                         "articulos_recuperados": msg.get("articulos_recuperados", []),
                         "nodos_grafo": msg.get("nodos_grafo", []),
+                        "tiempo_respuesta_seg": msg.get("tiempo_respuesta_seg"),
                         "voto": ev.get("voto"),
                         "estrellas_0_a_5": ev.get("estrellas"),
                         "correccion_juridica": ev.get("correccion_juridica", ""),
@@ -405,5 +453,4 @@ class GestorSesionesEvaluacion:
             "respuestas_evaluadas": respuestas_evaluadas,
         }
 
-        with open(self.archivo_consolidado, "w", encoding="utf-8") as f:
-            json.dump(consolidado, f, ensure_ascii=False, indent=2)
+        _escribir_json_atomico_eval(self.archivo_consolidado, consolidado)

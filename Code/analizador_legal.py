@@ -84,10 +84,10 @@ PALABRAS_CLAVE_POR_AREA = {
             'abogado', 'prueba', 'testigo', 'indicio', 'evidencia', 'código penal',
             'ley penal', 'delito', 'falta', 'infracción', 'sanción', 'pena', 'multa',
             'cárcel', 'reclusión', 'prisión preventiva', 'libertad', 'bajo',
-            'caución', 'fianza', 'cumpimiento', 'suspensión', 'condicional', 'beneficio',
+            'caución', 'fianza', 'cumplimiento', 'suspensión', 'condicional', 'beneficio',
             'remisión', 'perdón', 'gracia', 'indulto', 'amnistía', 'excarcelación',
-            'parole', 'libertad condicional', 'régimen', 'semiabierto', 'abierto',
-            'victimario', 'agresor', 'denunciante', 'demanda', 'querella', 'actuación',
+            'libertad condicional', 'régimen', 'semiabierto', 'abierto',
+            'victimario', 'agresor', 'denunciante', 'demanda', 'actuación',
             'investigación', 'averiguación', 'proceso', 'juicio', 'procedimiento',
             'recurso', 'apelación', 'amparo', 'revisión', 'circunstancia', 'atenuante',
             'agravante', 'calificación', 'tipicidad', 'culpabilidad', 'dolo', 'culpa',
@@ -99,7 +99,7 @@ PALABRAS_CLAVE_POR_AREA = {
             'autopsia', 'inspector', 'levantamiento', 'cadáver', 'restos', 'escena',
             'huella', 'dactilar', 'genético', 'adn', 'testimonio', 'declaración',
             'careo', 'interrogatorio', 'contrainterrogatorio', 'coartada', 'presunción',
-            ' innocence', 'dubio', 'in dubio pro reo', 'non bis in idem', 'cosa juzgada',
+            'inocencia', 'dubio', 'in dubio pro reo', 'non bis in idem', 'cosa juzgada',
             'legalidad', 'proporcionalidad', 'necesidad', 'racionalidad', 'finalidad',
             'violencia', 'golpe', 'golpes', 'pegar', 'pega', 'pego', 'agredir', 'agredido',
             'agresión', 'agresiva', 'agresor', 'lesionar', 'lesionado', 'lesion',
@@ -119,7 +119,7 @@ PALABRAS_CLAVE_POR_AREA = {
             'obligar', 'deber', 'derecho', 'acreedor', 'deudor', 'deuda', 'deudas',
             'prestación', 'cumplimiento', 'incumplimiento', 'resolución', 'rescisión',
             'novación', 'compensación', 'conjunción', 'subrogación', 'prescripción',
-            'caducidad', 'ténrmino', 'plazo', 'condición', 'modalidad', 'carga',
+            'caducidad', 'término', 'plazo', 'condición', 'modalidad', 'carga',
             'onus', 'prueba', 'presunción', 'ficción', 'excepción', 'defensa', 'acción',
             'juicio', 'proceso', 'procedimiento', 'sentencia', 'laudo', 'litis',
             'parte', 'demandante', 'demandado', 'tercero', 'interesado', 'legítimo',
@@ -129,46 +129,46 @@ PALABRAS_CLAVE_POR_AREA = {
             'matrimonio', 'divorcio', 'divorciarme', 'divorciar', 'concubinato', 'unión', 'pareja', 'filiación',
             'paternidad', 'maternidad', 'adopción', 'adopcion', 'adoptado', 'adoptada', 'adoptante', 'adoptar',
             'revocación de la adopción', 'revocar adopción', 'tutela', 'patria potestad',
-            'casa', 'vivienda', 'inmueble', 'departamento', 'departamento', 'terreno', 'lote',
+            'casa', 'vivienda', 'inmueble', 'departamento', 'terreno', 'lote',
             'propiedad', 'posesión', 'usufructo', 'servidumbre', 'derecho de paso', 'medidor',
-            'luz', 'agua', 'servicios', 'servicio público', 'servicios públicos'
-            'obligación alimentaria', 'pensión', 'menor', 'incapaz', 'interdicción',
-            'embargo', '垂recautelar', 'medida', 'cautelar', 'provisional', 'precautelar',
+            'luz', 'agua', 'servicios', 'servicio público', 'servicios públicos',
+            'obligación alimentaria', 'pensión', 'alimenticia', 'alimentos', 'menor', 'incapaz', 'interdicción',
+            'embargo', 'medida', 'cautelar', 'provisional', 'precautelar',
             'anexión', 'anexo', 'documento', 'escritura', 'pública', 'protocolo',
             'notario', 'registro', 'inscripción', 'matrícula', 'folio', 'real',
-            'hipoteca', 'gravamen', 'carga', 'liminación', 'cancelación', 'inscripción',
-            'usucapión', 'prescripción acquisitiva', 'dominio', 'posesión', 'tenencia',
+            'hipoteca', 'gravamen', 'liminación', 'cancelación',
+            'usucapión', 'prescripción adquisitiva', 'dominio', 'tenencia',
             'arrendamiento', 'renta', 'inquilino', 'arrendador', 'subarrendamiento',
             'comodato', 'préstamo', 'prestamo', 'mutuo', 'depósito', 'deposito', 'mandato',
             'gestión', 'representación', 'sociedad', 'asociación', 'fundación',
-            'corporación', 'moral', 'civil', 'comercio', 'mercantil', 'letra', 'cambio',
+            'corporación', 'comercio', 'mercantil', 'letra', 'cambio',
             'cheque', 'pagaré', 'pagare', 'factura', 'conciliación', 'transacción',
             'renuncia', 'remisión', 'compromiso', 'arbitraje', 'jurisdicción', 'voluntad',
             'autonomía', 'privada', 'orden público', 'buenas costumbres', 'moralidad',
             'ilegal', 'ilícito', 'inmoral', 'contravención', 'infracción', 'sanción',
             'indemnización', 'indemnizar', 'daño', 'perjuicio', 'lucro', 'cesante', 'daño moral',
-            'responsabilidad', 'civil', 'contractual', 'extracontractual', 'objetiva',
+            'responsabilidad', 'contractual', 'extracontractual', 'objetiva',
             'subjetiva', 'directo', 'indirecto', 'consecuencial', 'eximente', 'exculpante',
             'culpa', 'negligencia', 'impericia', 'imprudencia', 'dolo', 'caso fortuito',
-            'fuerza mayor', 'hecho', 'propio', 'ajeno', 'tercero', 'causa', 'efecto',
+            'fuerza mayor', 'hecho', 'propio', 'ajeno', 'causa', 'efecto',
             'relación', 'causal', 'imputación', 'atribución', 'imputabilidad',
-            'capacidad', 'derecho', 'capacidad de goce', 'capacidad de ejercicio',
-            'mayoría', 'edad', 'emancipación', 'menor', 'interdicto', 'sonámbulo',
+            'capacidad', 'capacidad de goce', 'capacidad de ejercicio',
+            'mayoría', 'edad', 'emancipación', 'interdicto', 'sonámbulo',
             'borracho', 'drogadicto', 'locura', 'demencia', 'enfermedad', 'mental',
             'incapacidad', 'inhabilitación', 'suspensión', 'quiebra', 'concurso',
-            'acreedor', 'deudor', 'insolvencia', 'beneficio', 'limitación', 'excarcelación',
-            'prisión', '治外法権', 'exención', 'privilegio', 'prerrogativa', 'inmunidad',
+            'insolvencia', 'beneficio', 'limitación', 'excarcelación',
+            'prisión', 'extraterritorialidad', 'exención', 'privilegio', 'prerrogativa', 'inmunidad',
             'domicilio', 'residencia', 'vecindad', 'nacionalidad', 'ciudadanía', 'extranjero',
             'apátrida', 'refugiado', 'migrante', 'indocumentado', 'visado', 'visa',
-            'pasaporte', 'identificación', 'documento', 'identidad', 'nombre', 'pseudónimo',
+            'pasaporte', 'identificación', 'identidad', 'nombre', 'pseudónimo',
             'alias', 'seudónimo', 'renombre', 'firma', 'rúbrica', 'signo', 'marca',
-            'logo', 'embblema', 'distintivo', 'denominación', 'razón social', 'denominación',
-            'social', 'objeto', 'social', 'domicilio', 'sede', 'representante', 'legal',
-            'poder', 'facultad', 'atribución', 'competencia', 'atribución', 'función',
+            'logo', 'emblema', 'distintivo', 'denominación', 'razón social',
+            'social', 'objeto', 'sede', 'representante legal',
+            'poder', 'facultad', 'competencia', 'función',
             'cargo', 'empleo', 'puesto', 'oficio', 'profesión', 'ocupación', 'actividad',
-            'industria', 'comercio', 'servicio', 'empresa', 'establecimiento', 'local',
+            'industria', 'servicio', 'empresa', 'establecimiento', 'local',
             'negocio', 'oficina', 'despacho', 'consultorio', 'taller', 'fábrica',
-            'náquina', 'herramienta', 'instrumento', 'utensilio', 'materia', 'prima',
+            'máquina', 'herramienta', 'instrumento', 'utensilio', 'materia', 'prima',
             'producto', 'elaboración', 'fabricación', 'manufactura', 'producción',
             'distribución', 'comercialización', 'venta', 'compra', 'adquisición',
             'enajenación', 'transferencia', 'transmisión', 'cesión', 'adjudicación',
@@ -209,23 +209,23 @@ PALABRAS_CLAVE_POR_AREA = {
             'analógica', 'restrictiva', 'extensiva', 'auténtica', 'usual', 'común',
             'vigencia', 'entrada', 'vigencia', 'publicación', 'promulgación', 'sanción',
             'vetar', 'orden jerárquico', 'superioridad', 'inferioridad', 'rango',
-            'ley fundamental', 'ley suprema', 'ley marco', 'ley orgánica', 'ley ordinal',
-            'ley делега', 'ley habilitante', 'decreto ley', 'decreto legislativo',
-            'decreto gubernamental', 'reglamento', 'reglamentario', 'circular', 'oficio',
-            'instructivo', 'directriz', 'guía', 'protocolo', 'procedimiento', 'norma',
-            'técnica', 'estándar', 'specification', 'requisito', 'condición', 'elemento',
-            'factor', 'aspecto', 'particular', 'general', 'universal', 'absoluto', 'relativo',
+            'ley fundamental', 'ley suprema', 'ley marco', 'ley orgánica', 'ley ordinaria',
+            'ley delegada', 'ley habilitante', 'decreto ley', 'decreto legislativo',
+            'decreto gubernamental', 'reglamentario', 'oficio',
+            'instructivo', 'directriz', 'guía', 'protocolo', 'procedimiento',
+            'técnica', 'estándar', 'especificación', 'requisito', 'condición', 'elemento',
+            'factor', 'aspecto', 'particular', 'universal', 'absoluto', 'relativo',
             'pleno', 'parcial', 'total', 'global', 'integral', 'completo', 'exhaustivo',
             'exclusivo', 'incluyente', 'excluyente', 'abierto', 'cerrado', 'limitado',
             'ilimitado', 'finito', 'infinito', 'permanente', 'temporal', 'transitorio',
             'provisional', 'definitivo', 'irrevocable', 'revocable', 'renunciable',
             'indisponible', 'disponible', 'transferible', 'intransferible', 'cesible',
-            'incesible', 'transmisible', 'intransmisible', 'dividible', 'indivisible',
-            'divisible', ' separable', 'inseparable', 'accesible', 'inaccesible', 'abordable',
+            'incesible', 'transmisible', 'intransmisible', 'divisible', 'indivisible',
+            'separable', 'inseparable', 'accesible', 'inaccesible', 'abordable',
             'inabordable', 'lícito', 'ilícito', 'legal', 'ilegal', 'legítimo', 'ilegítimo',
-            'constitucional', 'inconstitucional', 'convencional', 'inconvencional',
-            'legal', 'ilegal', 'reglamentario', 'irregular', 'anormal', 'típico',
-            'atípico', 'regular', 'estándar', 'anexo', 'adicional', 'complementario',
+            'inconstitucional', 'convencional', 'inconvencional',
+            'irregular', 'anormal', 'típico',
+            'atípico', 'regular', 'anexo', 'adicional', 'complementario',
             'modificatorio', 'derogatorio', 'abrogatorio', 'refundido', 'compilado'
         ],
         'palabras_excluyentes': []
@@ -245,7 +245,7 @@ PALABRAS_CLAVE_POR_AREA = {
             'tutor', 'curador', 'defensor', 'abogado', 'patrón', 'sindicato', 'asociación',
             'institución', 'entidad', 'persona', 'moral', 'física', 'demanda', 'contestación',
             'reconvención', 'excepción', 'defensa', 'objeciones', 'impugnación', 'recurso',
-            'apelación', 'revisión', 'amparo', 'queja', 'denuncia', 'querella', 'denuncia',
+            'apelación', 'revisión', 'amparo', 'queja', 'denuncia', 'querella',
             'acusación', 'cargo', 'imputación', 'atribución', 'tipificación', 'calificación',
             'delito', 'falta', 'infracción', 'sanción', 'pena', 'multa', 'cárcel',
             'prisión', 'reclusión', 'arresto', 'detención', 'custodia', 'arraigo',
@@ -254,15 +254,15 @@ PALABRAS_CLAVE_POR_AREA = {
             'presentación', 'intimación', 'citación', 'notificación', 'emplazamiento',
             'convocatoria', 'llamamiento', 'invitación', 'requerimiento', 'exhorto',
             'comisión', 'despacho', 'orden', 'mandamiento', 'auto', 'sentencia', 'laudo',
-            'lazo', 'fallo', 'veredicto', 'resolución', 'decreto', 'proveído', 'dictamen',
+            'plazo', 'fallo', 'veredicto', 'resolución', 'decreto', 'proveído', 'dictamen',
             'voto', 'mayoría', 'disidencia', 'opinión', 'razón', 'considerando',
             'resultando', 'antecedente', 'hecho', 'fundamento', 'derecho', 'motivos',
-            'fallo', 'parte', 'dispositivo', 'sentencia', 'definitiva', 'interlocutoria',
-            'provisional', 'parcial', 'total', 'absoluta', 'condenatoria', 'absolutoria',
-            'mixta', 'incidente', 'cuestión', 'incidente', 'tema', 'punto', 'objeto',
+            'dispositivo', 'definitiva', 'interlocutoria',
+            'parcial', 'total', 'absoluta', 'condenatoria', 'absolutoria',
+            'mixta', 'incidente', 'cuestión', 'tema', 'punto', 'objeto',
             'pretensión', 'reclamación', 'petitum', 'pedimento', 'solicitud', 'petición',
             'gestión', 'instancia', 'expediente', 'expediente judicial', 'carpeta',
-            'legajo', 'tomo', 'folio', '页码', 'documento', 'acta', 'constancia',
+            'legajo', 'tomo', 'folio', 'foja', 'documento', 'acta', 'constancia',
             'certificación', 'testimonio', 'copia', 'original', 'traslado', 'vista',
             'audiencia', 'vista', 'conciliación', 'medición', 'arbitraje', 'negociación',
             'mediador', 'conciliador', 'árbitro', 'compromisario', 'componedor', 'amigable',
@@ -301,10 +301,10 @@ PALABRAS_CLAVE_POR_AREA = {
             'acusación', 'cargo', 'imputación', 'atribución', 'denuncia', 'comunicación',
             'exposición', 'relato', 'narración', 'descripción', 'individualización',
             'identificación', 'determinación', 'calificación', 'tipificación', 'delito',
-            'crimen', 'infracción', 'falta', 'contravención', 'ilícito', 'ilgal',
-            'infracción penal', 'delito', 'hecho', 'hecho delictivo', 'conducta', 'acción',
+            'crimen', 'infracción', 'falta', 'contravención', 'ilícito', 'ilegal',
+            'infracción penal', 'hecho', 'hecho delictivo', 'conducta', 'acción',
             'omisión', 'comisión', 'participación', 'autoría', 'coautoría', 'complicidad',
-            'instigación', 'concierto', 'asociación', 'banda', 'organización', 'crimen',
+            'instigación', 'concierto', 'asociación', 'banda', 'organización',
             'organizado', 'elemento', 'objetivo', 'subjetivo', 'tipo', 'tipo penal',
             'tipicidad', 'atipicidad', 'conglobación', 'consumación', 'tentativa',
             'conato', 'fracaso', 'abandono', 'desistimiento', 'voluntario', 'involuntario',
@@ -314,161 +314,91 @@ PALABRAS_CLAVE_POR_AREA = {
             'ánimo', 'ánimo de lucro', 'ánimo de causar', 'ánimo de defraudar', 'ánimo de poseer',
             'animus', 'corpus', 'corpus delicti', 'cuerpo', 'cuerpo del delito', 'cosa',
             'cosa juzgada', 'cosa litigiosa', 'cosa prometida', 'cosa mueble', 'cosa inmueble',
-            'cosa fungible', 'cosa infungible', 'cosa consumible', 'cosa慕容', 'cosa principal',
-            'cosa accesoria', 'cosa aneja', 'cosa incidente', 'cosa adhesiva', 'cosajoin',
-            'cosa join', 'cosa join', 'cosa join', 'cosa join', 'cosa join', 'cosa join',
+            'cosa fungible', 'cosa infungible', 'cosa consumible', 'cosa principal',
+            'cosa accesoria', 'cosa aneja', 'cosa incidente', 'cosa adhesiva',
             'prueba', 'prueba testimonial', 'prueba pericial', 'prueba documental',
-            'prueba de inspectión', 'prueba de reconocimiento', 'prueba de careo',
+            'prueba de inspección', 'prueba de reconocimiento', 'prueba de careo',
             'prueba de inteligencia', 'prueba científica', 'prueba tecnológica',
-            'prueba digital', 'prueba electrónica', 'pruebahemática', 'prueba genética',
+            'prueba digital', 'prueba electrónica', 'prueba hemática', 'prueba genética',
             'prueba de adn', 'prueba de huella', 'prueba dactilar', 'prueba fotográfica',
-            'prueba videográfica', 'prueba auditiva', 'prueba de sonido', 'prueba de',
-            'presunción', 'presunción de inocencia', 'presunción de veracidad', 'presunción',
+            'prueba videográfica', 'prueba auditiva', 'prueba de sonido',
+            'presunción', 'presunción de inocencia', 'presunción de veracidad',
             'iuris', 'presunción iuris tantum', 'presunción iuris et de iure', 'indicio',
-            'indicio', 'indicio', 'indicio', 'indicio', 'indicio', 'indicio', 'indicio',
             'medida', 'cautelar', 'medida preventiva', 'medida provisional', 'medida asegurativa',
             'medida aseguratoria', 'detención', 'detención preventiva', 'detención domiciliaria',
-            'prisión', 'prisión preventiva', 'prisión preventiva oficiosa', 'prisión preventiva',
+            'prisión', 'prisión preventiva', 'prisión preventiva oficiosa',
             'justificada', 'prisión preventiva domiciliaria', 'arresto', 'arresto domiciliario',
             'arresto nocturno', 'reclusión', 'reclusión temporal', 'reclusión perpetua',
             'internamiento', 'internamiento preventivo', 'internamiento definitivo',
-            'custodia', 'custodia preventiva', 'custodia', 'custodia', 'custodia',
+            'custodia', 'custodia preventiva',
             'embargo', 'embargo preventivo', 'embargo de bienes', 'embargo de salarios',
             'embargo de cuentas', 'embargo de propiedades', 'secuestro', 'secuestro preventivo',
             'secuestro de bienes', 'incautación', 'incautación preventiva', 'decomiso',
             'decomiso de bienes', 'decomiso de instrumentos', 'decomiso de productos',
             'decomiso de ganancias', 'decomiso extendido', 'decomiso sin condena',
             'inmovilización', 'inmovilización de vehículos', 'inmovilización de cuentas',
-            'inmovilización de activos', 'inmovilización de bienes', 'inmovilización',
-            'embargo', 'fianza', 'fianza de radicar', 'fianza de presentación', 'fianza',
+            'inmovilización de activos', 'inmovilización de bienes',
+            'fianza', 'fianza de radicar', 'fianza de presentación',
             'caución', 'caución de radicar', 'caución de no huir', 'caución de evitar',
             'caución pecuniaria', 'libertad', 'libertad provisional', 'libertad condicional',
-            'libertad bajo', 'fianza', 'libertad bajo', 'fianza', 'libertad bajo', 'protesta',
-            'libertad', 'libertad vigilada', 'libertad restringida', 'libertad controlada',
-            'libertad', 'trabajo', 'trabajo comunitario', 'trabajo social', 'trabajo',
-            'servicio', 'servicio comunitario', 'arresto', 'arresto domiciliario', 'arresto',
-            'fin de semana', 'arresto', 'fin de semana', 'multa', 'multa', 'multa',
-            'pecuniaria', 'sanción', 'sanción pecuniaria', 'sanción restrictiva', 'sanción',
-            'suspensión', 'suspensión condicional', 'suspensión de derechos', 'suspensión',
-            'de funciones', 'suspensión de cargo', 'suspensión de actividad', 'suspensión',
+            'libertad bajo fianza', 'libertad bajo protesta',
+            'libertad vigilada', 'libertad restringida', 'libertad controlada',
+            'trabajo comunitario', 'trabajo social',
+            'servicio comunitario', 'fin de semana', 'multa',
+            'pecuniaria', 'sanción', 'sanción pecuniaria', 'sanción restrictiva',
+            'suspensión', 'suspensión condicional', 'suspensión de derechos',
+            'suspensión de funciones', 'suspensión de cargo', 'suspensión de actividad',
             'inhabilitación', 'inhabilitación temporal', 'inhabilitación perpetua',
             'inhabilitación de derechos', 'inhabilitación de funciones', 'destitución',
-            'destitución de cargo', 'destitución de función', 'expulsión', 'expulsión',
-            'del territorio', 'extranjería', 'extranjero', 'carta de naturaleza', 'carta',
-            'de naturaleza', 'carta de ciudadanía', 'carta', 'de residencia', 'carta',
-            'de lavor', 'perdón', 'perdón del ofendido', 'perdón judicial', 'amnistía',
-            'amnistía', 'indulto', 'indulto particular', 'indulto general', 'gracia',
-            'gracia', 'indulgencia', 'remisión', 'remisión de pena', 'remisión condicional',
-            'remisión', 'rehabilitación', 'rehabilitación civil', 'rehabilitación',
-            'judicial', 'rehabilitación', 'prescripción', 'prescripción de la acción',
-            'prescripción de la pena', 'prescripción extintiva', 'prescripción acquisitiva',
+            'destitución de cargo', 'destitución de función', 'expulsión',
+            'extranjería', 'extranjero', 'carta de naturaleza',
+            'carta de ciudadanía', 'carta de residencia',
+            'perdón', 'perdón del ofendido', 'perdón judicial', 'amnistía',
+            'indulto', 'indulto particular', 'indulto general', 'gracia',
+            'indulgencia', 'remisión', 'remisión de pena', 'remisión condicional',
+            'rehabilitación', 'rehabilitación civil', 'rehabilitación judicial',
+            'prescripción', 'prescripción de la acción',
+            'prescripción de la pena', 'prescripción extintiva', 'prescripción adquisitiva',
             'caducidad', 'caducidad de la acción', 'caducidad del derecho', 'perención',
-            'perención de la instancia', 'perención del proceso', 'abandono', 'abandono',
-            'de la acción', 'abandono del proceso', 'desistimiento', 'desistimiento',
-            'de la acción', 'desistimiento del querellante', 'desistimiento del accusador',
-            'arquitectura', 'transacción', 'conciliación', 'conciliación', 'acuerdo',
-            'acuerdo reparatorio', 'acuerdo conciliatorio', 'procedimiento', 'abreviado',
-            'procedimiento', 'ordinario', 'procedimiento', 'especial', 'procedimiento',
-            'sumario', 'procedimiento', 'sumarísimo', 'procedimiento', 'común', 'procedimiento',
-            'particular', 'procedimiento', 'genérico', 'procedimiento', 'específico',
-            'procedimiento', 'regular', 'procedimiento', 'irregular', 'procedimiento',
-            'normal', 'procedimiento', 'anormal', 'trámite', 'trámite ordinario', 'trámite',
-            'extraordinario', 'trámite', 'urgente', 'trámite', 'preferente', 'trámite',
-            'diferido', 'trámite', 'diferido', 'audiencia', 'audiencia', 'preliminar',
-            'audiencia', 'intermedia', 'audiencia', 'dejuicio', 'audiencia', 'de lectura',
-            'audiencia', 'deindividualización', 'audiencia', 'de individualización', 'audiencia',
-            'de veredicto', 'audiencia', 'de sentencing', 'audiencia', 'de arguments',
-            'audiencia', 'de alegatos', 'audiencia', 'de conclusiones', 'audiencia',
-            'de sentence', 'audiencia', 'de closing arguments', 'audiencia', 'de',
-            'vista', 'audiencia', 'de la causa', 'audiencia', 'pública', 'audiencia',
-            'privada', 'audiencia', 'a puerta cerrada', 'audiencia', 'con medios',
-            'comunicación', 'audiencia', 'con grabación', 'audiencia', 'con transmisión',
-            'audiencia', 'remota', 'audiencia', 'virtual', 'audiencia', 'presencial',
-            'audiencia', 'hibrida', 'práctica', 'práctica de prueba', 'práctica de diligencia',
-            'práctica de actuación', 'práctica de medio', 'práctica de prueba', 'práctica',
-            'de prueba testimonial', 'práctica', 'de prueba pericial', 'práctica', 'de',
-            'prueba', 'documental', 'práctica', 'de prueba', 'inspectiva', 'práctica',
-            'de prueba', 'de reconocimiento', 'práctica', 'de prueba', 'de careo',
-            'práctica', 'de prueba', 'de reconstrucción', 'práctica', 'de prueba',
-            'de inspectción ocular', 'práctica', 'de prueba', 'cientifico', 'práctica',
-            'de prueba', 'tecnológica', 'práctica', 'de prueba', 'digital', 'práctica',
-            'de prueba', 'electrónica', 'práctica', 'de prueba', 'testimonio', 'práctica',
-            'de prueba', 'declaratoria', 'práctica', 'de prueba', 'declaración', 'práctica',
-            'de prueba', 'declaración de parte', 'práctica', 'de prueba', 'declaración',
-            'de testigo', 'práctica', 'de prueba', 'declaración', 'de experto', 'práctica',
-            'de prueba', 'declaración', 'de imputado', 'práctica', 'de prueba', 'declaración',
-            'de víctima', 'práctica', 'de prueba', 'declaración', 'de ofendido', 'práctica',
-            'de prueba', 'declaración', 'de agraviado', 'práctica', 'de prueba',
-            'conclusión', 'conclusión de la investigación', 'conclusión del proceso',
-            'conclusión de la instruccion', 'conclusión', 'del procedimiento', 'cierre',
-            'cierre de la investigación', 'cierre del proceso', 'archivo', 'archivo',
-            'temporal', 'archivo', 'definitivo', 'archivo', 'por no ejercicio', 'archivo',
-            'por prescripción', 'archivo', 'por muerte', 'archivo', 'por amnistia',
-            'archivo', 'por indulto', 'sobreseimiento', 'sobreseimiento provisional',
-            'sobreseimiento definitivo', 'sobreseimiento por', 'sobreseimiento', 'por',
-            'insuficiencia', 'sobreseimiento', 'por no', 'sobreseimiento', 'por дело',
-            'sobreseimiento', 'por no', 'sobreseimiento', 'por дело', 'sobreseimiento',
-            'por atipicidad', 'sobreseimiento', 'por muerte', 'sobreseimiento', 'por',
-            'amnistía', 'sobreseimiento', 'por prescripción', 'sobreseimiento', 'por',
-            'extinción', 'sobreseimiento', 'por', 'cosajuzgada', 'sobreseimiento', 'por',
-            'transacción', 'sobreseimiento', 'por', 'conciliación', 'sobreseimiento',
-            'por', 'acuerdo', 'sobreseimiento', 'por', 'perdon', 'sobreseimiento',
-            'por', 'desistimiento', 'sobreseimiento', 'por', 'abandono', 'sobreseimiento',
-            'por', 'perención', 'sobreseimiento', 'libre', 'absolución', 'absolución',
-            'de la imputación', 'absolución', 'por', 'inimputabilidad', 'absolución',
-            'por', 'atipicidad', 'absolución', 'por', 'inexistencia', 'del hecho',
-            'absolución', 'por', 'falta', 'de', 'prueba', 'absolución', 'por', 'presunción',
-            'de', 'inocencia', 'absolución', 'por', 'cosa', 'juzgada', 'absolución',
-            'por', 'instancia', 'de', 'parte', 'absolución', 'por', 'falta', 'de',
-            'legitimación', 'absolución', 'por', 'falta', 'de', 'interés', 'absolución',
-            'por', 'transacción', 'absolución', 'por', 'conciliación', 'absolución',
-            'por', 'acuerdo', 'absolución', 'por', 'perdon', 'absolución', 'por',
-            'desistimiento', 'condena', 'condena', 'a', 'pena', 'de', 'prisión',
-            'condena', 'a', 'pena', 'de', 'multa', 'condena', 'a', 'pena', 'de',
-            'trabajo', 'condena', 'a', 'pena', 'de', 'servicio', 'condena', 'a',
-            'pena', 'de', 'prohibición', 'condena', 'a', 'pena', 'de', 'inhabilitación',
-            'condena', 'a', 'pena', 'de', 'destitución', 'condena', 'a', 'pena', 'de',
-            'expulsión', 'condena', 'a', 'pena', 'de', 'suspensión', 'condena', 'a',
-            'pena', 'de', 'remisión', 'condena', 'condena', 'condenatoria', 'sentencia',
-            'condenatoria', 'sentencia', 'absolutoria', 'sentencia', 'mixta', 'sentencia',
-            'definitiva', 'sentencia', 'interlocutoria', 'sentencia', 'provisional',
-            'sentencia', 'parcial', 'sentencia', 'total', 'sentencia', 'parcial', 'sentencia',
-            'completa', 'sentencia', 'firmada', 'sentencia', 'ejecutoriada', 'sentencia',
-            'recaída', 'fallo', 'fallo', 'condenatorio', 'fallo', 'absolutm', 'fallo',
-            'mixto', 'veredicto', 'veredicto', 'de culpabilidad', 'veredicto', 'de',
-            'inocencia', 'veredicto', 'de', 'no', 'culpable', 'veredicto', 'de', 'culpable',
-            'veredicto', 'de', 'no', 'culpable', 'por', 'razón', 'de', 'derecho',
-            'veredicto', 'de', 'culpable', 'por', 'razón', 'de', 'hecho', 'veredicto',
-            'de', 'no', 'culpable', 'por', 'insuficiencia', 'de', 'prueba', 'veredicto',
-            'de', 'no', 'culpable', 'por', 'duda', 'veredicto', 'de', 'no', 'culpable',
-            'por', 'presunción', 'de', 'inocencia', 'veredicto', 'de', 'no', 'culpable',
-            'por', 'cosa', 'juzgada', 'decision', 'decisión', 'jurisdiccional', 'decision',
-            'judicial', 'decision', 'procesal', 'decision', 'de', 'juicio', 'decision',
-            'de', 'proceso', 'decision', 'de', 'procedimiento', 'decision', 'de', 'trámite',
-            'decision', 'de', 'medida', 'decision', 'de', 'prueba', 'decision', 'de',
-            'sanción', 'decision', 'de', 'pena', 'decision', 'de', 'sentencia', 'decision',
-            'de', 'fallo', 'decision', 'de', 'veredicto', 'decision', 'de', 'absolución',
-            'decision', 'de', 'condena', 'decision', 'de', 'sobreseimiento', 'decision',
-            'de', 'archivo', 'decision', 'de', 'continuación', 'decision', 'de', 'suspensión',
-            'decision', 'de', 'interrupción', 'decision', 'de', 'terminación', 'decision',
-            'de', 'cierre', 'decision', 'de', 'extinción', 'decision', 'de', 'prescripción',
-            'decision', 'de', 'caducidad', 'decision', 'de', 'perención', 'decision',
-            'de', 'desistimiento', 'decision', 'de', 'abandono', 'decision', 'de',
-            'transacción', 'decision', 'de', 'conciliación', 'decision', 'de', 'acuerdo',
-            'decision', 'de', 'perdon', 'decision', 'de', 'remisión', 'decision', 'de',
-            'amnistía', 'decision', 'de', 'indulto', 'decision', 'de', 'gracia', 'decision',
-            'de', 'indulgencia', 'decision', 'de', 'rehabilitación', 'decision', 'de',
-            'restablecimiento', 'decision', 'de', 'restauración', 'decision', 'de',
-            'recuperación', 'decision', 'de', 'reinserción', 'decision', 'de', 'reintegración',
-            'decision', 'de', 'resocialización', 'decision', 'de', 'readaptación', 'decision',
-            'de', 'readaptación', 'social', 'decision', 'de', 'rehabilitación', 'social',
-            'decision', 'de', 'reinserción', 'social', 'decision', 'de', 'reintegración',
-            'social', 'decision', 'de', 'resocialización', 'decision', 'de', 'readaptación',
-            'social', 'decision', 'de', 'régimen', 'semiabierto', 'decision', 'de', 'régimen',
-            'abierto', 'decision', 'de', 'régimen', 'cerrado', 'decision', 'de', 'libertad',
-            'condicional', 'decision', 'de', 'libertad', 'provisional', 'decision', 'de',
-            'libertad', 'vigilada', 'decision', 'de', 'suspensión', 'condicional', 'de',
-            'la', 'pena', 'decision', 'de', 'suspensión', 'condicional', 'del', 'procedimiento'
+            'perención de la instancia', 'perención del proceso',
+            'abandono de la acción', 'abandono del proceso',
+            'desistimiento de la acción', 'desistimiento del querellante', 'desistimiento del acusador',
+            'transacción', 'conciliación', 'acuerdo',
+            'acuerdo reparatorio', 'acuerdo conciliatorio', 'procedimiento abreviado',
+            'procedimiento ordinario', 'procedimiento especial',
+            'procedimiento sumario', 'procedimiento sumarísimo',
+            'trámite ordinario', 'trámite extraordinario', 'trámite urgente', 'trámite preferente',
+            'trámite diferido', 'audiencia preliminar',
+            'audiencia intermedia', 'audiencia de juicio', 'audiencia de lectura',
+            'audiencia de individualización', 'audiencia de veredicto',
+            'audiencia de alegatos', 'audiencia de conclusiones',
+            'audiencia de vista', 'audiencia pública', 'audiencia privada',
+            'audiencia a puerta cerrada', 'audiencia remota', 'audiencia virtual',
+            'audiencia presencial', 'audiencia híbrida',
+            'práctica de prueba', 'práctica de diligencia', 'práctica de actuación',
+            'inspección ocular', 'declaración de parte', 'declaración de testigo',
+            'declaración de perito', 'declaración de imputado', 'declaración de víctima',
+            'declaración de ofendido', 'conclusión de la investigación', 'conclusión del proceso',
+            'conclusión de la instrucción', 'cierre de la investigación', 'cierre del proceso',
+            'archivo temporal', 'archivo definitivo', 'no ejercicio de la acción penal',
+            'sobreseimiento', 'sobreseimiento provisional', 'sobreseimiento definitivo',
+            'sobreseimiento por atipicidad', 'sobreseimiento por muerte',
+            'sobreseimiento por amnistía', 'sobreseimiento por prescripción',
+            'sobreseimiento por extinción', 'sobreseimiento por cosa juzgada',
+            'sobreseimiento por perdón', 'sobreseimiento por desistimiento',
+            'sobreseimiento libre', 'absolución', 'absolución de la imputación',
+            'absolución por inimputabilidad', 'absolución por atipicidad',
+            'absolución por inexistencia del hecho', 'absolución por falta de prueba',
+            'absolución por presunción de inocencia', 'condena', 'pena de prisión',
+            'pena de multa', 'sentencia condenatoria', 'sentencia absolutoria',
+            'sentencia mixta', 'sentencia definitiva', 'sentencia interlocutoria',
+            'sentencia provisional', 'sentencia firme', 'sentencia ejecutoriada',
+            'fallo condenatorio', 'fallo absolutorio', 'fallo mixto',
+            'veredicto', 'veredicto de culpabilidad', 'veredicto de inocencia',
+            'decisión jurisdiccional', 'decisión judicial', 'decisión procesal',
+            'reinserción social', 'rehabilitación social', 'readaptación social',
+            'régimen semiabierto', 'régimen abierto', 'régimen cerrado',
+            'suspensión condicional de la pena', 'suspensión condicional del procedimiento'
         ],
         'palabras_excluyentes': ['trabajo', 'laboral', 'civil', 'matrimonio', 'contrato', 'salario', 'pagar', 'pago']
     }
@@ -479,11 +409,11 @@ def normalizar_texto(texto: str) -> str:
     if not texto:
         return ""
     texto = texto.lower()
-    acentos = 'áéíóúüàèìòù'
-    sin_acentos = 'aeiouuaeiou'
+    acentos = 'áéíóúüàèìòùñ'
+    sin_acentos = 'aeiouuaeioun'
     replacements = str.maketrans(acentos, sin_acentos)
     texto = texto.translate(replacements)
-    texto = texto.translate(str.maketrans("", "", string.punctuation))
+    texto = texto.translate(str.maketrans("", "", string.punctuation + "¡¿«»“”‘’—"))
     return texto
 
 def extraer_texto_de_articulo(articulo: dict) -> str:
@@ -575,29 +505,31 @@ def detectar_area_legal(consulta: str) -> Optional[str]:
     palabras_no_legales = consulta_palabras.intersection(PALABRAS_NO_LEGALES)
     
     PRIORIDADES = {
-        'penal': 6,
-        'laboral': 6,
-        'civil': 6,
-        'constitucional': 5,
+        'laboral': 7,
+        'penal': 7,
+        'civil': 7,
+        'procesal_civil': 6,
         'procesal_penal': 6,
-        'procesal_civil': 6
+        'constitucional': 5
     }
     
     mejores_puntuaciones = {}
     total_palabras = len(consulta_palabras)
     
     for area, datos in PALABRAS_CLAVE_POR_AREA.items():
-        palabras_clave = [normalizarizarTexto(p) for p in datos['alta_prioridad']]
-        palabras_excluyentes = [normalizarizarTexto(p) for p in datos.get('palabras_excluyentes', [])]
+        palabras_clave = list(dict.fromkeys(normalizarizarTexto(p) for p in datos['alta_prioridad']))
+        palabras_excluyentes = list(dict.fromkeys(normalizarizarTexto(p) for p in datos.get('palabras_excluyentes', [])))
         
         # Buscar palabras completas o frases con límite de palabra
         coincidencias = set()
+        bono_frases = 0
         for kw in palabras_clave:
             if not kw:
                 continue
             if ' ' in kw:
                 if re.search(r'\b' + re.escape(kw) + r'\b', consulta_norm):
                     coincidencias.add(kw)
+                    bono_frases += 3  # Mayor especificidad para frases jurídicas compuestas
             elif kw in consulta_palabras:
                 coincidencias.add(kw)
         
@@ -620,7 +552,8 @@ def detectar_area_legal(consulta: str) -> Optional[str]:
         # Penalizar si hay muchas palabras no legales
         penalizacion_no_legales = len(palabras_no_legales) * 5
         
-        puntuacion = (len(coincidencias) * PRIORIDADES.get(area, 1) - 
+        puntuacion = (len(coincidencias) * PRIORIDADES.get(area, 1) +
+                      bono_frases -
                       len(exclusiones) * 3 - 
                       penalizacion_no_legales)
         
@@ -629,13 +562,17 @@ def detectar_area_legal(consulta: str) -> Optional[str]:
                 'puntuacion': puntuacion,
                 'coincidencias': list(coincidencias),
                 'exclusiones': list(exclusiones),
-                'proporcion_legal': proporcion_legal
+                'proporcion_legal': proporcion_legal,
+                'especificidad': sum(len(c) for c in coincidencias)
             }
     
     if not mejores_puntuaciones:
         return None
     
-    area_detectada = max(mejores_puntuaciones.items(), key=lambda x: x[1]['puntuacion'])
+    area_detectada = max(
+        mejores_puntuaciones.items(),
+        key=lambda x: (x[1]['puntuacion'], len(x[1]['coincidencias']), x[1]['especificidad'])
+    )
     
     # Verificar que la puntuación sea significativa
     if area_detectada[1]['puntuacion'] <= 0:
@@ -758,26 +695,58 @@ def analizar_coherencia_consulta(consulta: str) -> Tuple[bool, List[str]]:
     
     return True, sugerencias if sugerencias else ["Consulta procesable."]
 
+ABREVIATURAS_LEGALES = {
+    r'\barts?\.\s*': 'artículo ',
+    r'\bfracc?\.\s*': 'fracción ',
+    r'\binc\.\s*': 'inciso ',
+    r'\blft\b': 'Ley Federal del Trabajo',
+    r'\bcpeum\b': 'Constitución Política de los Estados Unidos Mexicanos',
+    r'\bcc\b': 'Código Civil',
+    r'\bcp\b': 'Código Penal',
+    r'\bmp\b': 'Ministerio Público',
+}
+
+
 def generar_consulta_corregida(consulta: str) -> str:
     """
-    Intenta mejorar una consulta poco coherente.
+    Mejora y normaliza una consulta expandiendo abreviaturas jurídicas
+    y depurando muletillas cuando la consulta tiene baja densidad léxica.
     """
-    es_coherente, sugerencias = analizar_coherencia_consulta(consulta)
-    
-    if es_coherente:
+    if not consulta or not consulta.strip():
         return consulta
-    
-    consulta_norm = normalizar_texto(consulta)
-    palabras = consulta_norm.split()
-    
-    palabras_vagas = {'ayuda', 'problema', 'cosa', 'asunto', 'situacion', 'favor', 'por favor', 'hola', 'buenos', 'dias', 'tardes', 'noches'}
-    
-    palabras_significativas = [p for p in palabras if p not in STOPWORDS and p not in palabras_vagas and len(p) > 3]
-    
-    if not palabras_significativas:
-        return consulta
-    
-    return consulta
+
+    consulta_expandida = consulta.strip()
+    for patron, reemplazo in ABREVIATURAS_LEGALES.items():
+        consulta_expandida = re.sub(patron, reemplazo, consulta_expandida, flags=re.IGNORECASE)
+
+    es_coherente, _ = analizar_coherencia_consulta(consulta_expandida)
+
+    palabras_vagas = {
+        'ayuda', 'problema', 'cosa', 'asunto', 'situacion', 'situación',
+        'favor', 'hola', 'buenos', 'buenas', 'dias', 'días', 'tardes', 'noches',
+        'disculpe', 'disculpa', 'oye', 'quisiera', 'necesito'
+    }
+
+    tokens_originales = consulta_expandida.split()
+    tokens_filtrados = [
+        t for t in tokens_originales
+        if normalizar_texto(t) not in palabras_vagas
+    ]
+
+    if not es_coherente:
+        consulta_norm = normalizar_texto(consulta_expandida)
+        palabras = consulta_norm.split()
+        palabras_significativas = [
+            p for p in palabras
+            if p not in STOPWORDS and p not in palabras_vagas and len(p) > 2
+        ]
+        if palabras_significativas:
+            return " ".join(palabras_significativas)
+
+    if tokens_filtrados and len(tokens_filtrados) < len(tokens_originales):
+        return " ".join(tokens_filtrados)
+
+    return consulta_expandida
 
 def obtener_palabras_clave_por_area(area: str) -> List[str]:
     """Obtiene las palabras clave para un área legal específica."""
