@@ -349,12 +349,12 @@ def aplicar_filtros(
         doc_val = meta.get("documento", "").lower()
         jer_val = meta.get("jerarquia",  "").lower()
 
-        # Matching más flexible: bidireccional
+        # Matching por coincidencia exacta/subcadena o todas las palabras distintivas
         cumple_doc = True
         if fd:
-            # Buscar si el filtro está en el documento O viceversa
+            palabras_fd = [p for p in fd.split() if len(p) > 3 and p != "tlaxcala"]
             cumple_doc = (fd in doc_val) or (doc_val in fd) or (
-                any(palabra in doc_val for palabra in fd.split() if len(palabra) > 3)
+                bool(palabras_fd) and all(palabra in doc_val for palabra in palabras_fd)
             )
         
         cumple_jer = True
@@ -421,18 +421,30 @@ def busqueda_hibrida(
         mapeo_exacto = {
             'código penal': 'Código Penal Tlaxcala',
             'codigo penal': 'Código Penal Tlaxcala',
+            'código penal tlaxcala': 'Código Penal Tlaxcala',
+            'codigo penal tlaxcala': 'Código Penal Tlaxcala',
             'penal': 'Código Penal Tlaxcala',
             'ley trabajo': 'Ley Trabajo',
             'ley del trabajo': 'Ley Trabajo',
+            'ley federal del trabajo': 'Ley Trabajo',
             'trabajo': 'Ley Trabajo',
             'laboral': 'Ley Trabajo',
             'código civil': 'Codigo Civil Tlaxcala',
             'codigo civil': 'Codigo Civil Tlaxcala',
+            'código civil tlaxcala': 'Codigo Civil Tlaxcala',
+            'codigo civil tlaxcala': 'Codigo Civil Tlaxcala',
             'civil': 'Codigo Civil Tlaxcala',
             'constitucion': 'Constitucion',
+            'constitución': 'Constitucion',
             'constitucional': 'Constitucion',
             'procedimiento civil': 'Procedimiento Civiles Tlaxcala',
+            'procedimientos civiles': 'Procedimiento Civiles Tlaxcala',
+            'procedimiento civiles tlaxcala': 'Procedimiento Civiles Tlaxcala',
+            'procedimientos civiles tlaxcala': 'Procedimiento Civiles Tlaxcala',
             'procedimiento penal': 'Procedimiento Penal Tlaxcala',
+            'procedimientos penales': 'Procedimiento Penal Tlaxcala',
+            'procedimiento penal tlaxcala': 'Procedimiento Penal Tlaxcala',
+            'procedimientos penales tlaxcala': 'Procedimiento Penal Tlaxcala',
         }
         
         # Si hay coincidencia exacta, usar ese documento
@@ -524,9 +536,29 @@ def busqueda_hibrida(
     )
 
     # ----------------------------------------------------------
-    # 3.5. Boost para conceptos legales clave
+    # 3.5. Boost para conceptos legales clave y citas exactas de artículos
     # ----------------------------------------------------------
+    import re
     consulta_lower = consulta.lower()
+    articulos_citados_query: set[str] = set()
+    for m_art in re.finditer(
+        r"\b(?:art[íi]culos?|arts?\.?)\s+([0-9]+(?:\s*(?:bis|ter|quater|quinquies|[a-g]))?(?:\s*(?:,|y|e|al|a)\s*[0-9]+(?:\s*(?:bis|ter|quater|quinquies|[a-g]))?)*)",
+        consulta_lower,
+    ):
+        bloque_nums = m_art.group(1)
+        for sub_m in re.finditer(r"([0-9]+(?:\s*(?:bis|ter|quater|quinquies|[a-g]))?)", bloque_nums):
+            articulos_citados_query.add(re.sub(r"[\s\-]+", "_", sub_m.group(1).strip().upper()))
+
+    if articulos_citados_query:
+        universo_docs = ids_permitidos if ids_permitidos is not None else diccionario_metadatos.keys()
+        for doc_id in universo_docs:
+            meta_doc = diccionario_metadatos.get(doc_id, {})
+            art_id_doc = str(meta_doc.get("articulo_id") or meta_doc.get("nodo_articulo_id") or doc_id)
+            sufijo_id = art_id_doc.split(":")[-1].upper().replace("-", "_") if ":" in art_id_doc else ""
+            if sufijo_id in articulos_citados_query:
+                puntuaciones_rrf[doc_id] = max(puntuaciones_rrf.get(doc_id, 0.0), 0.025) * 3.5
+
+    ids_por_relevancia = list(puntuaciones_rrf.keys())
     conceptos_boost = {
         'horas extras': 2.0,
         'hora extra': 2.0,
@@ -596,13 +628,15 @@ def busqueda_hibrida(
     # MEJORA: Re-rankeo de resultados
     if HABILITAR_RERANKEO and MEJORAS_DISPONIBLES and resultados:
         try:
+            p_rrf = 0.75 if articulos_citados_query else 0.3
+            p_sem = 0.25 if articulos_citados_query else 0.7
             resultados = rerankear_resultados(
                 resultados,
                 consulta,
                 modelo,
                 top_n=top_k,
-                peso_rrf=0.3,
-                peso_semantico=0.7
+                peso_rrf=p_rrf,
+                peso_semantico=p_sem
             )
         except Exception as e:
             print(f"  [INFO] Re-rankeo no disponible: {e}")

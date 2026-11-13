@@ -334,6 +334,35 @@ pytest Code/test_unidades.py Code/tests/ -v
 
 ---
 
+## Evaluación Cuantitativa de Métricas RAG y GraphRAG
+
+Se evaluó el desempeño cuantitativo del motor de recuperación y generación mediante el benchmark [`Code/evaluar_metricas_rag.py`](Code/evaluar_metricas_rag.py) sobre un dataset **Ground Truth** de **24 consultas jurídicas validadas** (4 por cada una de las 6 leyes en [`sesiones_evaluacion/ground_truth_rag.json`](sesiones_evaluacion/ground_truth_rag.json)), comparando tres configuraciones de recuperación en `k = 5` y auditando la fidelidad al contexto (**Faithfulness**) sobre las respuestas generadas (resultados detallados en [`sesiones_evaluacion/metricas_rag_resultados.json`](sesiones_evaluacion/metricas_rag_resultados.json) y [`sesiones_evaluacion/REPORTE_METRICAS_RAG.md`](sesiones_evaluacion/REPORTE_METRICAS_RAG.md)):
+
+### Comparativa de Arquitecturas (`k = 5`)
+
+| Arquitectura Evaluada | Precision@5 | Recall@5 | Hit Rate@5 | MRR | Faithfulness (Fidelidad) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **1. Solo Vectorial / Semántico** | 50.69% | 50.69% | 75.00% | 0.5903 | — |
+| **2. Búsqueda Híbrida (Semántico + BM25 + RRF + Boost Legal)** | 57.99% | 57.99% | 87.50% | 0.8750 | — |
+| **3. Híbrido + GraphRAG (1-hop Grafo de Conocimiento Jurídico)** | **72.22%** | **72.22%** | **91.67%** | **0.8819** | **100.00%** |
+
+- **Ganancia por Búsqueda Híbrida (BM25 + RRF + Boost de artículos citados)**: incrementa el `MRR` de `0.5903` a `0.8750` (+48.2% relativo) y el `Hit Rate@5` de `75.00%` a `87.50%` al capturar números exactos de artículos y terminología técnico-legal.
+- **Ganancia por Expansión GraphRAG (1-hop)**: eleva el `Recall@5` y `Precision@5` de `57.99%` a **`72.22%`** (+14.23 puntos porcentuales) y el `Hit Rate@5` a **`91.67%`**, al recuperar automáticamente artículos correlativos e inter-ley citados por los nodos semilla (p. ej., `articulo:cpc_tlax:1470` → `articulo:cc_tlax:240-C` y `240-D`).
+- **Faithfulness (Fidelidad al Contexto)**: **100.00%** (`29 / 29` citas normativas verificadas dentro del contexto RAG + GraphRAG entregado al LLM en las 16 respuestas evaluadas, con **0 alucinaciones normativas**).
+
+### Desglose de Métricas RAG por Normativa (Híbrido + GraphRAG)
+
+| Normativa | Consultas GT | Precision@5 | Recall@5 | Hit Rate@5 | MRR |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Ley Federal del Trabajo (LFT)** | 4 | 79.17% | 79.17% | 100.00% | 1.0000 |
+| **Código Penal de Tlaxcala** | 4 | 79.17% | 79.17% | 100.00% | 0.7917 |
+| **Constitución Política (CPEUM)** | 4 | 75.00% | 75.00% | 75.00% | 0.7500 |
+| **Procedimientos Penales de Tlaxcala** | 4 | 70.83% | 70.83% | 100.00% | 1.0000 |
+| **Código Civil de Tlaxcala** | 4 | 66.67% | 66.67% | 75.00% | 0.7500 |
+| **Procedimientos Civiles de Tlaxcala** | 4 | 62.50% | 62.50% | 100.00% | 1.0000 |
+
+---
+
 ## Resultados de Pruebas de Usabilidad y Validación Jurídica (Etapa 5)
 
 Las pruebas de usabilidad y validación jurídica se ejecutaron con usuarios divididos en tres perfiles (**Licenciados en Derecho en el Estado de Tlaxcala**, **Estudiantes de Derecho** y **Ciudadanos / Usuarios Generales**), evaluando las 6 normativas del corpus mediante el módulo [`Code/reporte_evaluaciones.py`](Code/reporte_evaluaciones.py) (datos consolidados en [`sesiones_evaluacion/resumen_metricas_usabilidad.json`](sesiones_evaluacion/resumen_metricas_usabilidad.json) y [`sesiones_evaluacion/REPORTE_USABILIDAD.md`](sesiones_evaluacion/REPORTE_USABILIDAD.md)).
@@ -372,6 +401,7 @@ Las pruebas de usabilidad y validación jurídica se ejecutaron con usuarios div
 - [x] **Infraestructura de telemetría y evaluación de sesiones** con escritura atómica y locks de concurrencia (`gestor_evaluacion.py`, `gestor_usuarios.py`, `reporte_evaluaciones.py`)
 - [x] **Configuración de despliegue Cloud en Railway** con motor ligero TF-IDF (`Dockerfile`, `railway.json`, `Procfile`)
 - [x] **Hotfixes de estabilización, saneamiento de diccionarios y auditoría del índice temático** (`interaccion.py`, `cargador.py`, `analizador_legal.py`, `indice_tematico.py`)
+- [x] **Evaluación cuantitativa de métricas RAG y GraphRAG (`Precision@5`, `Recall@5`, `Hit Rate@5`, `MRR`, `Faithfulness`)** (`Code/evaluar_metricas_rag.py`, `sesiones_evaluacion/ground_truth_rag.json`)
 - [x] **Pruebas de usabilidad y validación jurídica con usuarios reales y Licenciados en Derecho en Tlaxcala** (`sesiones_evaluacion/`)
 
 ---

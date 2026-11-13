@@ -1,0 +1,146 @@
+[
+  {
+    "id": "GT-LFT-01",
+    "ley": "Ley Trabajo",
+    "consulta": "¿Cuáles son las causas de rescisión de la relación de trabajo sin responsabilidad para el patrón y cómo debe entregarse el aviso de despido según el artículo 47?",
+    "articulos_relevantes": ["articulo:lft:47", "articulo:lft:43", "articulo:lft:161", "articulo:lft:185"]
+  },
+  {
+    "id": "GT-LFT-02",
+    "ley": "Ley Trabajo",
+    "consulta": "¿Qué indemnización de tres meses de salario y salarios vencidos corresponden por despido injustificado conforme a los artículos 48 y 50 de la Ley Federal del Trabajo?",
+    "articulos_relevantes": ["articulo:lft:48", "articulo:lft:50", "articulo:lft:49"]
+  },
+  {
+    "id": "GT-LFT-03",
+    "ley": "Ley Trabajo",
+    "consulta": "¿Cuántos días de vacaciones pagadas y qué porcentaje de prima vacacional corresponden al trabajador según los artículos 76 y 80 de la Ley Federal del Trabajo?",
+    "articulos_relevantes": ["articulo:lft:76", "articulo:lft:80", "articulo:lft:78", "articulo:lft:79"]
+  },
+  {
+    "id": "GT-LFT-04",
+    "ley": "Ley Trabajo",
+    "consulta": "¿Cuándo debe pagarse el aguinaldo anual y cuántos días de salario mínimo equivalen según el artículo 87 de la Ley Federal del Trabajo?",
+    "articulos_relevantes": ["articulo:lft:87"]
+  },
+  {
+    "id": "GT-CCT-01",
+    "ley": "Codigo Civil Tlaxcala",
+    "consulta": "¿Qué comprenden los alimentos y quiénes están obligados a dar pensión alimenticia a los hijos según los artículos 148, 154 y 157 del Código Civil de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cc_tlax:148", "articulo:cc_tlax:154", "articulo:cc_tlax:157", "articulo:cc_tlax:149"]
+  },
+  {
+    "id": "GT-CCT-02",
+    "ley": "Codigo Civil Tlaxcala",
+    "consulta": "¿Cómo procede el divorcio incausado y el convenio regulador en el Código Civil de Tlaxcala según los artículos 123 y 116?",
+    "articulos_relevantes": ["articulo:cc_tlax:123", "articulo:cc_tlax:116", "articulo:cc_tlax:106"]
+  },
+  {
+    "id": "GT-CCT-03",
+    "ley": "Codigo Civil Tlaxcala",
+    "consulta": "¿Qué obligaciones tiene el arrendador y cómo se regula el contrato de arrendamiento en el artículo 2008 del Código Civil de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cc_tlax:2008", "articulo:cc_tlax:2022", "articulo:cc_tlax:1854"]
+  },
+  {
+    "id": "GT-CCT-04",
+    "ley": "Codigo Civil Tlaxcala",
+    "consulta": "¿Qué es la herencia y el testamento conforme a los artículos 2596 y 2606 del Código Civil de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cc_tlax:2596", "articulo:cc_tlax:2606", "articulo:cc_tlax:2597"]
+  },
+  {
+    "id": "GT-CPT-01",
+    "ley": "Código Penal Tlaxcala",
+    "consulta": "¿Cómo se tipifica y sanciona el delito de robo y robo de vehículo en los artículos 321 y 330 del Código Penal de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cp_tlax:321", "articulo:cp_tlax:330", "articulo:cp_tlax:322"]
+  },
+  {
+    "id": "GT-CPT-02",
+    "ley": "Código Penal Tlaxcala",
+    "consulta": "¿Cuándo se considera que existen razones de género en el delito de feminicidio según el artículo 229 Bis del Código Penal de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cp_tlax:229_BIS", "articulo:cp_tlax:229"]
+  },
+  {
+    "id": "GT-CPT-03",
+    "ley": "Código Penal Tlaxcala",
+    "consulta": "¿En qué consiste el delito de fraude y cómo se sanciona conforme a los artículos 338 y 339 del Código Penal de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cp_tlax:338", "articulo:cp_tlax:339"]
+  },
+  {
+    "id": "GT-CPT-04",
+    "ley": "Código Penal Tlaxcala",
+    "consulta": "¿Cómo se sanciona el delito de extorsión en el artículo 268 del Código Penal de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cp_tlax:268", "articulo:cp_tlax:299"]
+  },
+  {
+    "id": "GT-CONST-01",
+    "ley": "Constitucion",
+    "consulta": "¿Qué establece el artículo 1o de la Constitución Política sobre los derechos humanos, el principio pro persona y la prohibición de discriminación?",
+    "articulos_relevantes": ["articulo:cpeum:1", "articulo:cpeum:29"]
+  },
+  {
+    "id": "GT-CONST-02",
+    "ley": "Constitucion",
+    "consulta": "¿Qué garantías de irretroactividad de la ley, audiencia previa y acto fundado y motivado consagran los artículos 14 y 16 constitucionales?",
+    "articulos_relevantes": ["articulo:cpeum:14", "articulo:cpeum:16"]
+  },
+  {
+    "id": "GT-CONST-03",
+    "ley": "Constitucion",
+    "consulta": "¿Qué derechos laborales, jornada máxima y salario mínimo establece el artículo 123 de la Constitución Política de los Estados Unidos Mexicanos?",
+    "articulos_relevantes": ["articulo:cpeum:123"]
+  },
+  {
+    "id": "GT-CONST-04",
+    "ley": "Constitucion",
+    "consulta": "¿En qué consiste el derecho de petición pacífica y respetuosa del artículo 8o y el acceso a la justicia pronta del artículo 17 constitucional?",
+    "articulos_relevantes": ["articulo:cpeum:8", "articulo:cpeum:17"]
+  },
+  {
+    "id": "GT-CPC-01",
+    "ley": "Procedimiento Civiles Tlaxcala",
+    "consulta": "¿Cómo se tramita la revocación de la adopción según el artículo 1470 del Código de Procedimientos Civiles de Tlaxcala y qué artículos del Código Civil cita?",
+    "articulos_relevantes": ["articulo:cpc_tlax:1470", "articulo:cc_tlax:240_C", "articulo:cc_tlax:240_D"]
+  },
+  {
+    "id": "GT-CPC-02",
+    "ley": "Procedimiento Civiles Tlaxcala",
+    "consulta": "¿Qué requisitos debe contener la demanda en un juicio civil según el artículo 804 del Código de Procedimientos Civiles de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpc_tlax:804", "articulo:cpc_tlax:805"]
+  },
+  {
+    "id": "GT-CPC-03",
+    "ley": "Procedimiento Civiles Tlaxcala",
+    "consulta": "¿Cuándo causan ejecutoria las sentencias definitivas y cómo se ejecuta la sentencia según los artículos 567 y 578 del Código de Procedimientos Civiles de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpc_tlax:567", "articulo:cpc_tlax:578", "articulo:cpc_tlax:588"]
+  },
+  {
+    "id": "GT-CPC-04",
+    "ley": "Procedimiento Civiles Tlaxcala",
+    "consulta": "¿Cómo se realiza el emplazamiento y las notificaciones personales conforme a los artículos 91 y 96 Bis del Código de Procedimientos Civiles de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpc_tlax:91", "articulo:cpc_tlax:96_BIS", "articulo:cpc_tlax:93"]
+  },
+  {
+    "id": "GT-CPP-01",
+    "ley": "Procedimiento Penal Tlaxcala",
+    "consulta": "¿Qué delitos se persiguen por querella de la víctima u ofendido según el artículo 8 Bis del Código de Procedimientos Penales de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpp_tlax:8_BIS", "articulo:cpp_tlax:4", "articulo:cpp_tlax:6"]
+  },
+  {
+    "id": "GT-CPP-02",
+    "ley": "Procedimiento Penal Tlaxcala",
+    "consulta": "¿Cuándo existe flagrancia y caso urgente en la detención conforme a los artículos 91 y 92 del Código de Procedimientos Penales de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpp_tlax:91", "articulo:cpp_tlax:92"]
+  },
+  {
+    "id": "GT-CPP-03",
+    "ley": "Procedimiento Penal Tlaxcala",
+    "consulta": "¿Cuáles son los requisitos para dictar el auto de formal prisión según los artículos 55 y 61 del Código de Procedimientos Penales de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpp_tlax:55", "articulo:cpp_tlax:60", "articulo:cpp_tlax:61"]
+  },
+  {
+    "id": "GT-CPP-04",
+    "ley": "Procedimiento Penal Tlaxcala",
+    "consulta": "¿Qué garantías de defensa, audiencia y derechos procesales tiene el inculpado conforme a los artículos 19, 21 y 25 del Código de Procedimientos Penales de Tlaxcala?",
+    "articulos_relevantes": ["articulo:cpp_tlax:19", "articulo:cpp_tlax:21", "articulo:cpp_tlax:23", "articulo:cpp_tlax:25"]
+  }
+]
